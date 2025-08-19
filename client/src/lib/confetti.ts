@@ -67,10 +67,50 @@ export function checkAndTriggerStreakMilestone(currentStreak: number) {
   return false;
 }
 
+// Confetti for clearing all reviews
+export function triggerAllClearConfetti() {
+  // Create a "all caught up" themed confetti celebration
+  const colors = ['#caffbf', '#9bf6ff', '#a0c4ff', '#e9ff70', '#ffd670'];
+  
+  // Gentle burst from top
+  confetti({
+    particleCount: 80,
+    spread: 50,
+    origin: { y: 0.3, x: 0.5 },
+    colors: colors,
+    zIndex: 9999,
+    shapes: ['circle', 'square']
+  });
+
+  // Side bursts
+  setTimeout(() => {
+    confetti({
+      particleCount: 60,
+      spread: 40,
+      origin: { y: 0.5, x: 0.2 },
+      colors: colors,
+      zIndex: 9999
+    });
+    
+    confetti({
+      particleCount: 60,
+      spread: 40,
+      origin: { y: 0.5, x: 0.8 },
+      colors: colors,
+      zIndex: 9999
+    });
+  }, 300);
+}
+
 // Manual test function for debugging
 export function testConfetti() {
   console.log('🧪 Manual confetti test triggered');
   triggerMilestoneConfetti();
+}
+
+export function testAllClearConfetti() {
+  console.log('🧪 Manual all-clear confetti test triggered');
+  triggerAllClearConfetti();
 }
 
 // Reset confetti tracker (for testing)

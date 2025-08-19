@@ -120,6 +120,19 @@ export const reviewsSlice = (set: any, get: any): ReviewsSlice => ({
     const updatedReviews = [...filteredReviews, nextReview];
     set({ reviews: updatedReviews });
     
+    // Check if all reviews are now cleared (for confetti celebration)
+    const { getReviewStats } = get();
+    const newStats = getReviewStats();
+    if (newStats.overdue + newStats.dueToday === 0) {
+      // Import confetti function dynamically to avoid circular imports
+      import('../../lib/confetti').then(({ triggerAllClearConfetti }) => {
+        setTimeout(() => {
+          triggerAllClearConfetti();
+          console.log('🎉 All reviews cleared! Well done!');
+        }, 500); // Small delay for better UX
+      });
+    }
+    
     // Persist to storage
     try {
       await storage.saveReviews(updatedReviews);

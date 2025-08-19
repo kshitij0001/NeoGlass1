@@ -15,7 +15,7 @@ import Tests from "@/pages/tests";
 import Progress from "@/pages/progress";
 import Settings from "@/pages/settings";
 import { useLocation } from "wouter";
-import { checkAndTriggerStreakMilestone, testConfetti } from "@/lib/confetti";
+import { checkAndTriggerStreakMilestone, testConfetti, testAllClearConfetti } from "@/lib/confetti";
 
 function AppContent() {
   const { initialize, isInitialized, isLoading, settings, getCurrentStreak } = useStore();
@@ -39,11 +39,12 @@ function AppContent() {
     }
   }, [isInitialized, getCurrentStreak]);
 
-  // Add global test function for debugging (development only)
+  // Add global test functions for debugging (development only)
   useEffect(() => {
     if (typeof window !== 'undefined' && import.meta.env.DEV) {
       (window as any).testConfetti = testConfetti;
-      console.log('🧪 Test function available: window.testConfetti()');
+      (window as any).testAllClearConfetti = testAllClearConfetti;
+      console.log('🧪 Test functions available: window.testConfetti(), window.testAllClearConfetti()');
     }
   }, []);
 
