@@ -179,24 +179,42 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
   const handleChapterChange = (value: string) => {
     if (value.startsWith('topic-')) {
       // User selected a topic directly from search
-      const parts = value.split('-');
-      const chapterId = parts[1];
-      const topicId = parts[2];
+      // Need to find the original chapter and topic by searching through the data
+      // since IDs can contain hyphens and simple splitting doesn't work
       
-      console.log('Selected topic:', { chapterId, topicId, value }); // Debug log
+      console.log('Selected topic value:', value);
       
-      // Find the actual chapter and topic objects to verify they exist
-      const chapter = selectedSubjectData?.chapters.find(c => c.id === chapterId);
-      const topic = chapter?.topics.find(t => t.id === topicId);
+      // Find the topic by searching through all chapters and topics
+      let foundChapter: any = null;
+      let foundTopic: any = null;
       
-      if (chapter && topic) {
-        setSelectedChapter(chapterId);
-        setSelectedTopic(topicId);
+      if (selectedSubjectData) {
+        for (const chapter of selectedSubjectData.chapters) {
+          for (const topic of chapter.topics) {
+            const expectedValue = `topic-${chapter.id}-${topic.id}`;
+            if (expectedValue === value) {
+              foundChapter = chapter;
+              foundTopic = topic;
+              break;
+            }
+          }
+          if (foundChapter && foundTopic) break;
+        }
+      }
+      
+      if (foundChapter && foundTopic) {
+        console.log('Found chapter and topic:', { 
+          chapterName: foundChapter.name, 
+          topicName: foundTopic.name,
+          chapterId: foundChapter.id,
+          topicId: foundTopic.id
+        });
+        setSelectedChapter(foundChapter.id);
+        setSelectedTopic(foundTopic.id);
         setIsCreatingChapter(false);
         setIsCreatingTopic(false);
-        console.log('Set chapter and topic:', { chapterName: chapter.name, topicName: topic.name });
       } else {
-        console.error('Could not find chapter or topic:', { chapterId, topicId, chapter: !!chapter, topic: !!topic });
+        console.error('Could not find matching chapter and topic for value:', value);
       }
     } else {
       setIsCreatingChapter(false);
