@@ -120,17 +120,28 @@ export function Combobox({
               className="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 border-none"
             />
           </div>
-          <div className="max-h-60 overflow-y-auto overscroll-contain" style={{ touchAction: 'pan-y' }}>
-            <CommandList className="overflow-visible max-h-none">
+          <div 
+            className="max-h-60 overflow-y-auto overscroll-contain border-0 p-1" 
+            style={{ touchAction: 'pan-y' }}
+            onWheel={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
+          >
             {Object.keys(groupedOptions).length > 0 ? (
               Object.entries(groupedOptions).map(([category, categoryOptions]) => (
-                <CommandGroup key={category} heading={category}>
+                <div key={category}>
+                  {category && (
+                    <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+                      {category}
+                    </div>
+                  )}
                   {categoryOptions.map((option) => (
-                    <CommandItem
+                    <div
                       key={option.value}
-                      value={option.value}
-                      onSelect={() => handleSelect(option.value)}
-                      className="font-bold hover:bg-white/50 dark:hover:bg-gray-700/50"
+                      onClick={() => handleSelect(option.value)}
+                      className={cn(
+                        "relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm font-bold hover:bg-white/50 dark:hover:bg-gray-700/50 transition-colors",
+                        value === option.value && "bg-accent text-accent-foreground"
+                      )}
                     >
                       <Check
                         className={cn(
@@ -139,28 +150,27 @@ export function Combobox({
                         )}
                       />
                       {option.label}
-                    </CommandItem>
+                    </div>
                   ))}
-                </CommandGroup>
+                </div>
               ))
             ) : (
-              <CommandEmpty className="py-6 text-center text-sm">
+              <div className="py-6 text-center text-sm">
                 {emptyMessage}
-              </CommandEmpty>
+              </div>
             )}
             
             {allowCreate && onCreateNew && searchQuery.trim() && !hasExactMatch && (
-              <CommandGroup>
-                <CommandItem
-                  onSelect={handleCreateNew}
-                  className="font-bold hover:bg-white/50 dark:hover:bg-gray-700/50 text-electric-blue"
+              <div>
+                <div
+                  onClick={handleCreateNew}
+                  className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm font-bold hover:bg-white/50 dark:hover:bg-gray-700/50 text-electric-blue transition-colors"
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   {createNewLabel}: "{searchQuery}"
-                </CommandItem>
-              </CommandGroup>
+                </div>
+              </div>
             )}
-            </CommandList>
           </div>
         </Command>
       </PopoverContent>
