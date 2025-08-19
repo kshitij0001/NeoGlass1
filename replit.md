@@ -8,6 +8,8 @@ The application is built as a full-stack solution with a React frontend and Expr
 
 ## Recent Changes (August 2025)
 
+- **Text Contrast System**: Implemented automatic contrast adjustment for all colored elements in light/dark modes with luminance-based calculations
+- **Streak Milestone Celebrations**: Extended streak tracking to 400 days with confetti celebrations every 10 days when the app opens
 - **Replit Migration**: Successfully migrated project from Replit Agent to standard Replit environment with proper client/server separation and security best practices
 - **Vercel Deployment Fix**: Fixed critical deployment issues by updating Node.js runtime to 20.x, correcting output directory paths, and streamlining routing configuration
 

@@ -15,15 +15,29 @@ import Tests from "@/pages/tests";
 import Progress from "@/pages/progress";
 import Settings from "@/pages/settings";
 import { useLocation } from "wouter";
+import { checkAndTriggerStreakMilestone } from "@/lib/confetti";
 
 function AppContent() {
-  const { initialize, isInitialized, isLoading, settings } = useStore();
+  const { initialize, isInitialized, isLoading, settings, getCurrentStreak } = useStore();
   const [, setLocation] = useLocation();
   const [currentRoute] = useLocation();
 
   useEffect(() => {
     initialize();
   }, [initialize]);
+
+  useEffect(() => {
+    // Check for streak milestones after app initializes
+    if (isInitialized) {
+      const currentStreak = getCurrentStreak();
+      setTimeout(() => {
+        const triggered = checkAndTriggerStreakMilestone(currentStreak);
+        if (triggered) {
+          console.log(`🎉 Milestone celebration triggered for ${currentStreak} day streak!`);
+        }
+      }, 1000); // Delay to ensure app is fully loaded
+    }
+  }, [isInitialized, getCurrentStreak]);
 
   useEffect(() => {
     // Apply theme on startup

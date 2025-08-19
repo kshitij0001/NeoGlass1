@@ -245,7 +245,7 @@ export const reviewsSlice = (set: any, get: any): ReviewsSlice => ({
     let currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
     
-    for (let i = 0; i < 100; i++) { // Check last 100 days max
+    for (let i = 0; i < 400; i++) { // Check last 400 days max
       const checkDate = new Date(currentDate);
       checkDate.setDate(checkDate.getDate() - i);
       
