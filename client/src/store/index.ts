@@ -17,14 +17,14 @@ export const useStore = create<AppStore>()(
     (set, get) => ({
       isInitialized: false,
       isLoading: true,
-      
+
       async initialize() {
         try {
           set({ isLoading: true });
-          
+
           // Initialize storage
           await storage.init();
-          
+
           // Load all data
           await Promise.all([
             get().loadSyllabus(),
@@ -32,15 +32,16 @@ export const useStore = create<AppStore>()(
             get().loadEvents(),
             get().loadSettings(),
             get().loadTests(),
+            get().loadStreakRestores(), // Added this line to load streak restores
           ]);
-          
+
           set({ isInitialized: true, isLoading: false });
         } catch (error) {
           console.error('Failed to initialize store:', error);
           set({ isLoading: false });
         }
       },
-      
+
       ...syllabusSlice(set, get),
       ...reviewsSlice(set, get),
       ...settingsSlice(set, get),

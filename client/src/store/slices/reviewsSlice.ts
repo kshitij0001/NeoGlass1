@@ -17,6 +17,7 @@ import { storage } from '@/lib/storage';
 export interface ReviewsSlice {
   reviews: Review[];
   events: ManualEvent[];
+  streakRestoresUsed: number;
   setReviews: (reviews: Review[]) => void;
   setEvents: (events: ManualEvent[]) => void;
   loadReviews: () => Promise<void>;
@@ -32,11 +33,15 @@ export interface ReviewsSlice {
   getReviewStats: () => ReturnType<typeof getReviewStats>;
   getSevenDayOverview: () => ReturnType<typeof getNextSevenDaysReviewCount>;
   getCurrentStreak: () => number;
+  useStreakRestore: () => boolean;
+  getStreakRestoresRemaining: () => number;
+  loadStreakRestores: () => Promise<void>;
 }
 
 export const reviewsSlice = (set: any, get: any): ReviewsSlice => ({
   reviews: [],
   events: [],
+  streakRestoresUsed: 0,
   
   setReviews: (reviews) => set({ reviews }),
   setEvents: (events) => set({ events }),
@@ -207,12 +212,34 @@ export const reviewsSlice = (set: any, get: any): ReviewsSlice => ({
     const { reviews } = get();
     if (reviews.length === 0) return 0;
     
-    // Calculate streak based on consecutive days with completed reviews
-    const sortedReviews = reviews
-      .filter((r: Review) => r.lastReviewed)
-      .sort((a: Review, b: Review) => new Date(b.lastReviewed!).getTime() - new Date(a.lastReviewed!).getTime());
+    // Calculate streak based on consecutive days with study activity (completions OR topic additions)
+    const allStudyDates = new Set<string>();
     
-    if (sortedReviews.length === 0) return 0;
+    // Add dates when reviews were completed
+    reviews
+      .filter((r: Review) => r.lastReviewed)
+      .forEach((review: Review) => {
+        const reviewDate = new Date(review.lastReviewed!);
+        reviewDate.setHours(0, 0, 0, 0);
+        allStudyDates.add(reviewDate.toDateString());
+      });
+    
+    // Add dates when topics were added for review
+    reviews.forEach((review: Review) => {
+      const createdDate = new Date(review.createdAt);
+      createdDate.setHours(0, 0, 0, 0);
+      allStudyDates.add(createdDate.toDateString());
+    });
+
+    // Add streak restore date if it exists
+    const lastStreakRestore = localStorage.getItem('lastStreakRestore');
+    if (lastStreakRestore) {
+      const restoreDate = new Date(lastStreakRestore);
+      restoreDate.setHours(0, 0, 0, 0);
+      allStudyDates.add(restoreDate.toDateString());
+    }
+    
+    if (allStudyDates.size === 0) return 0;
     
     let streak = 0;
     let currentDate = new Date();
@@ -222,19 +249,43 @@ export const reviewsSlice = (set: any, get: any): ReviewsSlice => ({
       const checkDate = new Date(currentDate);
       checkDate.setDate(checkDate.getDate() - i);
       
-      const hasReviewOnDate = sortedReviews.some((review: Review) => {
-        const reviewDate = new Date(review.lastReviewed!);
-        reviewDate.setHours(0, 0, 0, 0);
-        return reviewDate.getTime() === checkDate.getTime();
-      });
+      const hasStudyActivityOnDate = allStudyDates.has(checkDate.toDateString());
       
-      if (hasReviewOnDate) {
+      if (hasStudyActivityOnDate) {
         streak++;
-      } else if (i > 0) { // Allow for today to not have reviews yet
+      } else if (i > 0) { // Allow for today to not have activity yet
         break;
       }
     }
     
     return streak;
+  },
+
+  useStreakRestore: () => {
+    const { streakRestoresUsed } = get();
+    if (streakRestoresUsed >= 20) return false;
+    
+    const newUsedCount = streakRestoresUsed + 1;
+    set({ streakRestoresUsed: newUsedCount });
+    
+    // Persist to localStorage
+    localStorage.setItem('streakRestoresUsed', newUsedCount.toString());
+    
+    return true;
+  },
+
+  getStreakRestoresRemaining: () => {
+    const { streakRestoresUsed } = get();
+    return Math.max(0, 20 - streakRestoresUsed);
+  },
+
+  async loadStreakRestores() {
+    try {
+      const stored = localStorage.getItem('streakRestoresUsed');
+      const streakRestoresUsed = stored ? parseInt(stored) : 0;
+      set({ streakRestoresUsed });
+    } catch (error) {
+      console.error('Failed to load streak restores:', error);
+    }
   },
 });
