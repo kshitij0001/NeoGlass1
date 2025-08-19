@@ -73,6 +73,7 @@ export function Combobox({
   };
 
   const handleSelect = (selectedValue: string) => {
+    console.log('Combobox handleSelect called with:', selectedValue);
     if (selectedValue === value) {
       onValueChange("");
     } else {
@@ -137,7 +138,12 @@ export function Combobox({
                   {categoryOptions.map((option) => (
                     <div
                       key={option.value}
-                      onClick={() => handleSelect(option.value)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('Option clicked:', option.value, option.label);
+                        handleSelect(option.value);
+                      }}
                       className={cn(
                         "relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm font-bold hover:bg-white/50 dark:hover:bg-gray-700/50 transition-colors",
                         value === option.value && "bg-accent text-accent-foreground"
