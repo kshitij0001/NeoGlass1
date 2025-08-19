@@ -110,7 +110,7 @@ async function registerRoutes(app2) {
 var __filename3 = fileURLToPath3(import.meta.url);
 var __dirname3 = path3.dirname(__filename3);
 var app = express2();
-var PORT = process.env.PORT || 5e3;
+var PORT = process.env.PORT ? parseInt(process.env.PORT) : 5e3;
 app.use(express2.json());
 app.use(express2.urlencoded({ extended: true }));
 app.use((req, res, next) => {
@@ -123,7 +123,7 @@ app.use((req, res, next) => {
     next();
   }
 });
-await registerRoutes(app);
+registerRoutes(app);
 if (process.env.NODE_ENV === "production") {
   const publicPath = path3.join(__dirname3, "public");
   app.use(express2.static(publicPath));
