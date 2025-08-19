@@ -75,6 +75,14 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
 
     const subject = selectedSubjectData?.name || "";
 
+    console.log('Submit - State values:', { 
+      selectedChapter, 
+      selectedTopic, 
+      selectedSubject, 
+      subject,
+      selectedChapterData: !!selectedChapterData 
+    });
+
     // Handle custom chapter creation
     if (isCreatingChapter && newChapterName.trim()) {
       const customChapterId = `custom-chapter-${Date.now()}`;
@@ -104,7 +112,18 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
       topicName = topicData?.name || "";
     }
 
-    if (!chapterId || !topicId) return;
+    console.log('Submit - Final values:', { 
+      chapterId, 
+      topicId, 
+      chapterName, 
+      topicName, 
+      subject 
+    });
+
+    if (!chapterId || !topicId) {
+      console.error('Submit failed - missing IDs:', { chapterId, topicId });
+      return;
+    }
 
     // Use reviewDate if it's different from today, or if starting immediately
     const today = format(new Date(), 'yyyy-MM-dd');
@@ -120,9 +139,11 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
     // Create initial review (SRS system will handle subsequent reviews on completion)
     if (!customDate) {
       // Normal SRS scheduling - create first review with 4-day interval
+      console.log('Adding review with SRS:', { topicId, subject, chapterName, topicName, difficulty });
       addReview(topicId, subject, chapterName, topicName, difficulty, undefined, 4);
     } else {
       // Custom date - create single review
+      console.log('Adding review with custom date:', { topicId, subject, chapterName, topicName, difficulty, customDate });
       addReview(topicId, subject, chapterName, topicName, difficulty, customDate);
     }
 
@@ -162,10 +183,21 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
       const chapterId = parts[1];
       const topicId = parts[2];
       
-      setSelectedChapter(chapterId);
-      setSelectedTopic(topicId);
-      setIsCreatingChapter(false);
-      setIsCreatingTopic(false);
+      console.log('Selected topic:', { chapterId, topicId, value }); // Debug log
+      
+      // Find the actual chapter and topic objects to verify they exist
+      const chapter = selectedSubjectData?.chapters.find(c => c.id === chapterId);
+      const topic = chapter?.topics.find(t => t.id === topicId);
+      
+      if (chapter && topic) {
+        setSelectedChapter(chapterId);
+        setSelectedTopic(topicId);
+        setIsCreatingChapter(false);
+        setIsCreatingTopic(false);
+        console.log('Set chapter and topic:', { chapterName: chapter.name, topicName: topic.name });
+      } else {
+        console.error('Could not find chapter or topic:', { chapterId, topicId, chapter: !!chapter, topic: !!topic });
+      }
     } else {
       setIsCreatingChapter(false);
       setSelectedChapter(value);
