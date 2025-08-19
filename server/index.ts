@@ -1,8 +1,8 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import { initializeViteDevServer } from './vite.js';
-import { createRoutes } from './routes.js';
+import { setupVite } from './vite.js';
+import { registerRoutes } from './routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 });
 
 // API routes
-createRoutes(app);
+await registerRoutes(app);
 
 // Production static file serving
 if (process.env.NODE_ENV === 'production') {
@@ -45,7 +45,8 @@ if (process.env.NODE_ENV === 'production') {
   });
 } else {
   // Development mode with Vite
-  initializeViteDevServer(app);
+  const server = await registerRoutes(app);
+  await setupVite(app, server);
 }
 
 // Start server (only in development)
