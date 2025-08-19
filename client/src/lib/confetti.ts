@@ -1,34 +1,48 @@
 import confetti from 'canvas-confetti';
 
 export function triggerMilestoneConfetti() {
-  // Create a colorful confetti explosion
+  // Create a colorful confetti explosion using the app's pastel palette
   const colors = ['#e38d88', '#b3b6df', '#90ab98', '#eebc81', '#fdffb6', '#caffbf', '#9bf6ff', '#a0c4ff', '#ffc6ff'];
   
-  // First burst
+  // First burst - large explosion from center
   confetti({
-    particleCount: 100,
-    spread: 70,
-    origin: { y: 0.6 },
-    colors: colors
+    particleCount: 150,
+    spread: 80,
+    origin: { y: 0.6, x: 0.5 },
+    colors: colors,
+    zIndex: 9999
   });
 
-  // Second burst with delay
+  // Second burst from left
+  setTimeout(() => {
+    confetti({
+      particleCount: 100,
+      spread: 60,
+      origin: { y: 0.7, x: 0.2 },
+      colors: colors,
+      zIndex: 9999
+    });
+  }, 200);
+
+  // Third burst from right
+  setTimeout(() => {
+    confetti({
+      particleCount: 100,
+      spread: 60,
+      origin: { y: 0.7, x: 0.8 },
+      colors: colors,
+      zIndex: 9999
+    });
+  }, 400);
+
+  // Final celebration burst
   setTimeout(() => {
     confetti({
       particleCount: 80,
-      spread: 60,
-      origin: { y: 0.7 },
-      colors: colors
-    });
-  }, 300);
-
-  // Third smaller burst
-  setTimeout(() => {
-    confetti({
-      particleCount: 50,
-      spread: 50,
-      origin: { y: 0.8 },
-      colors: colors
+      spread: 100,
+      origin: { y: 0.5, x: 0.5 },
+      colors: colors,
+      zIndex: 9999
     });
   }, 600);
 }
@@ -44,12 +58,23 @@ export function checkAndTriggerStreakMilestone(currentStreak: number) {
   const lastStreakTriggered = lastConfettiStreak ? parseInt(lastConfettiStreak) : 0;
   
   if (shouldTriggerMilestoneConfetti(currentStreak) && currentStreak !== lastStreakTriggered) {
-    setTimeout(() => {
-      triggerMilestoneConfetti();
-    }, 500); // Small delay for better UX
+    console.log(`🎉 ${currentStreak} day streak milestone! 🎊`);
+    triggerMilestoneConfetti();
     localStorage.setItem('lastConfettiStreak', currentStreak.toString());
     return true;
   }
   
   return false;
+}
+
+// Manual test function for debugging
+export function testConfetti() {
+  console.log('🧪 Manual confetti test triggered');
+  triggerMilestoneConfetti();
+}
+
+// Reset confetti tracker (for testing)
+export function resetConfettiTracker() {
+  localStorage.removeItem('lastConfettiStreak');
+  console.log('🔄 Confetti tracker reset');
 }
