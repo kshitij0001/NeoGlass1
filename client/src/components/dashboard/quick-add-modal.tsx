@@ -75,14 +75,6 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
 
     const subject = selectedSubjectData?.name || "";
 
-    console.log('Submit - State values:', { 
-      selectedChapter, 
-      selectedTopic, 
-      selectedSubject, 
-      subject,
-      selectedChapterData: !!selectedChapterData 
-    });
-
     // Handle custom chapter creation
     if (isCreatingChapter && newChapterName.trim()) {
       const customChapterId = `custom-chapter-${Date.now()}`;
@@ -112,18 +104,7 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
       topicName = topicData?.name || "";
     }
 
-    console.log('Submit - Final values:', { 
-      chapterId, 
-      topicId, 
-      chapterName, 
-      topicName, 
-      subject 
-    });
-
-    if (!chapterId || !topicId) {
-      console.error('Submit failed - missing IDs:', { chapterId, topicId });
-      return;
-    }
+    if (!chapterId || !topicId) return;
 
     // Use reviewDate if it's different from today, or if starting immediately
     const today = format(new Date(), 'yyyy-MM-dd');
@@ -139,11 +120,9 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
     // Create initial review (SRS system will handle subsequent reviews on completion)
     if (!customDate) {
       // Normal SRS scheduling - create first review with 4-day interval
-      console.log('Adding review with SRS:', { topicId, subject, chapterName, topicName, difficulty });
       addReview(topicId, subject, chapterName, topicName, difficulty, undefined, 4);
     } else {
       // Custom date - create single review
-      console.log('Adding review with custom date:', { topicId, subject, chapterName, topicName, difficulty, customDate });
       addReview(topicId, subject, chapterName, topicName, difficulty, customDate);
     }
 
@@ -182,8 +161,6 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
       // Need to find the original chapter and topic by searching through the data
       // since IDs can contain hyphens and simple splitting doesn't work
       
-      console.log('Selected topic value:', value);
-      
       // Find the topic by searching through all chapters and topics
       let foundChapter: any = null;
       let foundTopic: any = null;
@@ -203,18 +180,10 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
       }
       
       if (foundChapter && foundTopic) {
-        console.log('Found chapter and topic:', { 
-          chapterName: foundChapter.name, 
-          topicName: foundTopic.name,
-          chapterId: foundChapter.id,
-          topicId: foundTopic.id
-        });
         setSelectedChapter(foundChapter.id);
         setSelectedTopic(foundTopic.id);
         setIsCreatingChapter(false);
         setIsCreatingTopic(false);
-      } else {
-        console.error('Could not find matching chapter and topic for value:', value);
       }
     } else {
       setIsCreatingChapter(false);

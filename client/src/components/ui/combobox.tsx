@@ -73,7 +73,6 @@ export function Combobox({
   };
 
   const handleSelect = (selectedValue: string) => {
-    console.log('Combobox handleSelect called with:', selectedValue);
     if (selectedValue === value) {
       onValueChange("");
     } else {
@@ -141,7 +140,6 @@ export function Combobox({
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        console.log('Option clicked:', option.value, option.label);
                         handleSelect(option.value);
                       }}
                       className={cn(
