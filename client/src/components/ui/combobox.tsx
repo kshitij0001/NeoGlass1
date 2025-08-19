@@ -110,7 +110,7 @@ export function Combobox({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[400px] p-0 glass-morphism border-2 border-brutal-black dark:border-white bg-white/95 dark:bg-gray-800/95 backdrop-blur-md">
-        <Command>
+        <Command className="overflow-hidden">
           <div className="flex items-center border-b px-3">
             <Input
               ref={inputRef}
@@ -120,7 +120,8 @@ export function Combobox({
               className="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 border-none"
             />
           </div>
-          <CommandList>
+          <div className="max-h-60 overflow-y-auto overscroll-contain" style={{ touchAction: 'pan-y' }}>
+            <CommandList className="overflow-visible max-h-none">
             {Object.keys(groupedOptions).length > 0 ? (
               Object.entries(groupedOptions).map(([category, categoryOptions]) => (
                 <CommandGroup key={category} heading={category}>
@@ -159,7 +160,8 @@ export function Combobox({
                 </CommandItem>
               </CommandGroup>
             )}
-          </CommandList>
+            </CommandList>
+          </div>
         </Command>
       </PopoverContent>
     </Popover>
