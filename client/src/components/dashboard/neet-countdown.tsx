@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useStore } from "@/store";
 import { parseISO, differenceInDays, differenceInHours, differenceInMinutes } from "date-fns";
+import { Calendar, Clock, Target } from "lucide-react";
+import { getCardColor } from "@/lib/colors";
 
 interface CountdownData {
   days: number;
@@ -17,11 +19,11 @@ export function NeetCountdown() {
     const updateCountdown = () => {
       const now = new Date();
       const neetDate = parseISO(settings.neetDate);
-      
+
       const days = Math.max(0, differenceInDays(neetDate, now));
       const hours = Math.max(0, differenceInHours(neetDate, now) % 24);
       const minutes = Math.max(0, differenceInMinutes(neetDate, now) % 60);
-      
+
       setCountdown({ days, hours, minutes });
     };
 
@@ -32,8 +34,12 @@ export function NeetCountdown() {
   }, [settings.neetDate]);
 
   return (
-    <Card className="neobrutalist-card p-6 rounded-2xl mb-6 neet-countdown-card" style={{ backgroundColor: '#e66789', color: '#2c1810' }}>
-      <div className="text-center">
+    <Card
+      className="neobrutalist-card p-4 rounded-xl relative overflow-hidden group hover:scale-105 transition-transform duration-200"
+      style={{ backgroundColor: getCardColor('countdown') }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-red-400/30 to-orange-400/30"></div>
+      <div className="text-center relative z-10">
         <h2 className="text-2xl font-black mb-2" data-testid="countdown-title">
           NEET 2026
         </h2>

@@ -3,16 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Flame, RotateCcw } from "lucide-react";
 import { useStore } from "@/store";
 import { useToast } from "@/hooks/use-toast";
+import { getCardColor } from "@/lib/colors";
 
 export function StreakIndicator() {
   const { getCurrentStreak, useStreakRestore, getStreakRestoresRemaining, reviews } = useStore();
   const { toast } = useToast();
   const currentStreak = getCurrentStreak();
   const restoresRemaining = getStreakRestoresRemaining();
-  
+
   // Check if user has had any previous activity (completed reviews or used streak restore)
   const hasHadPreviousActivity = reviews.some(r => r.lastReviewed) || localStorage.getItem('lastStreakRestore');
-  
+
   const nextMilestone = Math.ceil((currentStreak + 1) / 10) * 10;
   const daysToMilestone = nextMilestone - currentStreak;
 
@@ -37,7 +38,11 @@ export function StreakIndicator() {
   };
 
   return (
-    <Card className="p-4 rounded-xl shadow-sm bg-bright-1 border-none">
+    <Card
+      className="neobrutalist-card p-4 rounded-xl text-white relative overflow-hidden group hover:scale-105 transition-all duration-200"
+      style={{ backgroundColor: getCardColor('streak') }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 to-orange-400/20"></div>
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className={currentStreak > 0 ? "animate-pulse" : ""}>
