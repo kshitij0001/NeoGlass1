@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Combobox, ComboboxOption } from "@/components/ui/combobox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { X, Plus } from "lucide-react";
@@ -30,6 +31,26 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
 
   const selectedSubjectData = syllabus.find(s => s.id === selectedSubject);
   const selectedChapterData = selectedSubjectData?.chapters.find(c => c.id === selectedChapter);
+  
+  // Prepare chapter options for combobox
+  const chapterOptions: ComboboxOption[] = selectedSubjectData ? 
+    selectedSubjectData.chapters.map(chapter => ({
+      value: chapter.id,
+      label: chapter.name,
+      category: "Chapters"
+    })) : [];
+  
+  // Add topics to search results
+  const topicOptions: ComboboxOption[] = selectedSubjectData ? 
+    selectedSubjectData.chapters.flatMap(chapter => 
+      chapter.topics.map(topic => ({
+        value: `topic-${topic.id}`,
+        label: `${topic.name} (in ${chapter.name})`,
+        category: "Topics"
+      }))
+    ) : [];
+  
+  const allSearchOptions = [...chapterOptions, ...topicOptions];
 
   const handleSubmit = () => {
     if (!selectedSubject) return;
@@ -122,27 +143,58 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
   };
 
   const handleChapterChange = (value: string) => {
-    if (value === "create-new") {
-      setIsCreatingChapter(true);
-      setSelectedChapter("");
+    if (value.startsWith('topic-')) {
+      // User selected a topic directly from search
+      const topicId = value.replace('topic-', '');
+      const topic = selectedSubjectData?.chapters
+        .flatMap(c => c.topics)
+        .find(t => t.id === topicId);
+      
+      const chapter = selectedSubjectData?.chapters
+        .find(c => c.topics.some(t => t.id === topicId));
+      
+      if (topic && chapter) {
+        setSelectedChapter(chapter.id);
+        setSelectedTopic(topicId);
+        setIsCreatingChapter(false);
+        setIsCreatingTopic(false);
+      }
     } else {
       setIsCreatingChapter(false);
       setSelectedChapter(value);
+      setSelectedTopic("");
+      setIsCreatingTopic(false);
+      setNewTopicName("");
     }
+  };
+  
+  const handleCreateNewChapter = (chapterName: string) => {
+    setNewChapterName(chapterName);
+    setIsCreatingChapter(true);
+    setSelectedChapter("");
     setSelectedTopic("");
     setIsCreatingTopic(false);
     setNewTopicName("");
   };
 
   const handleTopicChange = (value: string) => {
-    if (value === "create-new") {
-      setIsCreatingTopic(true);
-      setSelectedTopic("");
-    } else {
-      setIsCreatingTopic(false);
-      setSelectedTopic(value);
-    }
+    setIsCreatingTopic(false);
+    setSelectedTopic(value);
   };
+  
+  const handleCreateNewTopic = (topicName: string) => {
+    setNewTopicName(topicName);
+    setIsCreatingTopic(true);
+    setSelectedTopic("");
+  };
+  
+  // Prepare topic options for the selected chapter
+  const currentTopicOptions: ComboboxOption[] = selectedChapterData ? 
+    selectedChapterData.topics.map(topic => ({
+      value: topic.id,
+      label: topic.name,
+      category: "Topics"
+    })) : [];
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -204,41 +256,26 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
                 </Button>
               </div>
             ) : (
-              <Select 
-                value={selectedChapter} 
-                onValueChange={handleChapterChange} 
-                disabled={!selectedSubject}
-              >
-                <SelectTrigger className="w-full border-3 border-brutal-black dark:border-white bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm font-bold" data-testid="chapter-select">
-                  <SelectValue placeholder="Select Chapter" />
-                </SelectTrigger>
-                <SelectContent className="glass-morphism border-2 border-brutal-black dark:border-white bg-white/95 dark:bg-gray-800/95 backdrop-blur-md max-h-60">
-                  {selectedSubjectData?.chapters.map((chapter) => (
-                    <SelectItem 
-                      key={chapter.id} 
-                      value={chapter.id}
-                      className="font-bold hover:bg-white/50 dark:hover:bg-gray-700/50"
-                    >
-                      {chapter.name}
-                    </SelectItem>
-                  ))}
-                  <SelectItem 
-                    value="create-new"
-                    className="font-bold hover:bg-white/50 dark:hover:bg-gray-700/50 text-electric-blue"
-                  >
-                    <div className="flex items-center">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Create New Chapter
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+              <div data-testid="chapter-combobox">
+                <Combobox
+                  options={allSearchOptions}
+                  value={selectedChapter}
+                  onValueChange={handleChapterChange}
+                  onCreateNew={handleCreateNewChapter}
+                  placeholder="Select or search chapter/topic..."
+                  searchPlaceholder="Type to search chapters and topics..."
+                  emptyMessage="No chapters or topics found"
+                  createNewLabel="Create new chapter"
+                  disabled={!selectedSubject}
+                  className="w-full"
+                />
+              </div>
             )}
           </div>
 
           <div>
             <Label className="block text-sm font-bold text-brutal-black dark:text-white mb-2">
-              Topic
+              Topic {selectedTopic && !isCreatingTopic && "(Auto-selected)"}
             </Label>
             {isCreatingTopic ? (
               <div className="space-y-2">
@@ -261,35 +298,20 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
                 </Button>
               </div>
             ) : (
-              <Select 
-                value={selectedTopic} 
-                onValueChange={handleTopicChange} 
-                disabled={!selectedChapter && !isCreatingChapter}
-              >
-                <SelectTrigger className="w-full border-3 border-brutal-black dark:border-white bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm font-bold" data-testid="topic-select">
-                  <SelectValue placeholder="Select Topic" />
-                </SelectTrigger>
-                <SelectContent className="glass-morphism border-2 border-brutal-black dark:border-white bg-white/95 dark:bg-gray-800/95 backdrop-blur-md max-h-60">
-                  {selectedChapterData?.topics.map((topic) => (
-                    <SelectItem 
-                      key={topic.id} 
-                      value={topic.id}
-                      className="font-bold hover:bg-white/50 dark:hover:bg-gray-700/50 text-sm"
-                    >
-                      {topic.name}
-                    </SelectItem>
-                  ))}
-                  <SelectItem 
-                    value="create-new"
-                    className="font-bold hover:bg-white/50 dark:hover:bg-gray-700/50 text-electric-blue text-sm"
-                  >
-                    <div className="flex items-center">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Create New Topic
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+              <div data-testid="topic-combobox">
+                <Combobox
+                  options={currentTopicOptions}
+                  value={selectedTopic}
+                  onValueChange={handleTopicChange}
+                  onCreateNew={handleCreateNewTopic}
+                  placeholder="Select or search topic..."
+                  searchPlaceholder="Type to search topics..."
+                  emptyMessage="No topics found"
+                  createNewLabel="Create new topic"
+                  disabled={!selectedChapter && !isCreatingChapter}
+                  className="w-full"
+                />
+              </div>
             )}
           </div>
 

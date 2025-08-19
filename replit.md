@@ -8,6 +8,12 @@ The application is built as a full-stack solution with a React frontend and Expr
 
 ## Recent Changes (August 2025)
 
+- **Enhanced Chapter/Topic Selection**: Implemented searchable combobox for Quick Add Review modal allowing users to:
+  - Type to search through chapters and topics instantly
+  - Auto-select topics directly from search results
+  - Create new chapters/topics when no matches found
+  - Improved user experience with combined chapter and topic search
+
 - **Animated Gradient Background**: Implemented slowly shifting gradient background using all 14 pastel colors with 30-second animation cycle for gentle, dynamic movement across all pages
 - **Confetti Celebration System**: Implemented dual confetti celebrations using canvas-confetti library:
   - Streak milestones: Vibrant confetti every 10 days (10, 20, 30, etc.) when app opens  
