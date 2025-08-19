@@ -177,26 +177,26 @@ export default function ProgressPage() {
             <Card 
               className="border text-card-foreground shadow-sm neobrutalist-card p-4 rounded-xl"
               style={{ 
-                backgroundColor: `var(--card-averagescore-color, #e4c1f9)`,
-                color: `var(--card-averagescore-contrast, #334153)`
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card-averagescore-color') || '#e4c1f9',
+                color: getComputedStyle(document.documentElement).getPropertyValue('--card-averagescore-contrast') || '#334153'
               }}
             >
               <div className="flex items-center space-x-3">
                 <Target 
                   className="h-8 w-8" 
-                  style={{ color: `var(--card-averagescore-contrast, #334153)` }} 
+                  style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-averagescore-contrast') || '#334153' }} 
                 />
                 <div>
                   <div 
                     className="text-2xl font-black" 
-                    style={{ color: `var(--card-averagescore-contrast, #334153)` }} 
+                    style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-averagescore-contrast') || '#334153' }} 
                     data-testid="overall-progress"
                   >
                     {overallPercentage}%
                   </div>
                   <div 
                     className="text-xs font-bold" 
-                    style={{ color: `var(--card-averagescore-contrast, #334153)` }}
+                    style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-averagescore-contrast') || '#334153' }}
                   >
                     Overall Progress
                   </div>
@@ -207,26 +207,26 @@ export default function ProgressPage() {
             <Card 
               className="border text-card-foreground shadow-sm neobrutalist-card p-4 rounded-xl"
               style={{ 
-                backgroundColor: `var(--card-streak-color, #98f5e1)`,
-                color: `var(--card-streak-contrast, #1a3426)`
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card-streak-color') || '#98f5e1',
+                color: getComputedStyle(document.documentElement).getPropertyValue('--card-streak-contrast') || '#1a3426'
               }}
             >
               <div className="flex items-center space-x-3">
                 <TrendingUp 
                   className="h-8 w-8" 
-                  style={{ color: `var(--card-streak-contrast, #1a3426)` }} 
+                  style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-streak-contrast') || '#1a3426' }} 
                 />
                 <div>
                   <div 
                     className="text-2xl font-black" 
-                    style={{ color: `var(--card-streak-contrast, #1a3426)` }} 
+                    style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-streak-contrast') || '#1a3426' }} 
                     data-testid="current-streak"
                   >
                     {currentStreak}
                   </div>
                   <div 
                     className="text-xs font-bold" 
-                    style={{ color: `var(--card-streak-contrast, #1a3426)` }}
+                    style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-streak-contrast') || '#1a3426' }}
                   >
                     Day Streak
                   </div>

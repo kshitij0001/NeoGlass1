@@ -80,7 +80,6 @@ const defaultColors: CustomColors = {
     totalTests: suggestiveColors[0][4], // #cfbaf0
   },
   eventTypes: {
-    study: suggestiveColors[0][5], // #a3c4f3
     exam: suggestiveColors[1][1], // #ffd6a5
     revision: suggestiveColors[1][3], // #caffbf
     break: suggestiveColors[2][7], // #f6d6ff
