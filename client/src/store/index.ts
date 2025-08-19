@@ -32,8 +32,10 @@ export const useStore = create<AppStore>()(
             get().loadEvents(),
             get().loadSettings(),
             get().loadTests(),
-            get().loadStreakRestores(), // Added this line to load streak restores
           ]);
+
+          // Load streak restores separately (non-critical for startup)
+          get().loadStreakRestores();
 
           set({ isInitialized: true, isLoading: false });
         } catch (error) {
