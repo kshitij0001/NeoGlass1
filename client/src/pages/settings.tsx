@@ -391,8 +391,7 @@ export default function Settings() {
               <p className="text-xs mt-4">
                 This app uses spaced repetition intervals: [4, 7, 14, 28, 40] days to optimize your learning.
               </p>
-              <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                <p className="text-xs font-bold text-brutal-black dark:text-white mb-2">Restore Credits</p>
+              <div className="mt-4 text-center">
                 <div className="font-mono text-xs">
                   {'•'.repeat(useStore.getState().getStreakRestoresRemaining()) + '○'.repeat(useStore.getState().streakRestoresUsed)}
                 </div>
