@@ -199,24 +199,27 @@ export default function Tests() {
           <div className="grid grid-cols-2 gap-4 mb-6">
             <Card 
               className="border text-card-foreground shadow-sm neobrutalist-card p-4 rounded-xl"
-              style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card-averagescore-color') || '#e4c1f9' }}
+              style={{ 
+                backgroundColor: `var(--card-averagescore-color, #e4c1f9)`,
+                color: `var(--card-averagescore-contrast, #334153)`
+              }}
             >
               <div className="flex items-center space-x-3">
                 <Target 
                   className="h-8 w-8" 
-                  style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-averagescore-contrast') || '#334153' }} 
+                  style={{ color: `var(--card-averagescore-contrast, #334153)` }} 
                 />
                 <div>
                   <div 
                     className="text-2xl font-black" 
-                    style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-averagescore-contrast') || '#334153' }} 
+                    style={{ color: `var(--card-averagescore-contrast, #334153)` }} 
                     data-testid="average-score"
                   >
                     {averageScore}%
                   </div>
                   <div 
                     className="text-xs font-bold" 
-                    style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-averagescore-contrast') || '#334153' }}
+                    style={{ color: `var(--card-averagescore-contrast, #334153)` }}
                   >
                     Average Score
                   </div>
@@ -226,24 +229,27 @@ export default function Tests() {
 
             <Card 
               className="border text-card-foreground shadow-sm neobrutalist-card p-4 rounded-xl"
-              style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card-totaltests-color') || '#cdb4db' }}
+              style={{ 
+                backgroundColor: `var(--card-totaltests-color, #cdb4db)`,
+                color: `var(--card-totaltests-contrast, #334153)`
+              }}
             >
               <div className="flex items-center space-x-3">
                 <Calendar 
                   className="h-8 w-8" 
-                  style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-totaltests-contrast') || '#334153' }} 
+                  style={{ color: `var(--card-totaltests-contrast, #334153)` }} 
                 />
                 <div>
                   <div 
                     className="text-2xl font-black" 
-                    style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-totaltests-contrast') || '#334153' }} 
+                    style={{ color: `var(--card-totaltests-contrast, #334153)` }} 
                     data-testid="total-tests"
                   >
                     {tests.length}
                   </div>
                   <div 
                     className="text-xs font-bold" 
-                    style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-totaltests-contrast') || '#334153' }}
+                    style={{ color: `var(--card-totaltests-contrast, #334153)` }}
                   >
                     Total Tests
                   </div>
