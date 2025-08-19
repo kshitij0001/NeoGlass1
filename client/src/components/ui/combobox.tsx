@@ -115,7 +115,7 @@ export function Combobox({
               className="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 border-none"
             />
           </div>
-          <CommandList className="max-h-60">
+          <CommandList className="max-h-60 overflow-y-auto">
             {Object.keys(groupedOptions).length > 0 ? (
               Object.entries(groupedOptions).map(([category, categoryOptions]) => (
                 <CommandGroup key={category} heading={category}>

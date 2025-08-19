@@ -40,11 +40,11 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
       category: "Chapters"
     })) : [];
   
-  // Add topics to search results
+  // Add topics to search results with unique keys
   const topicOptions: ComboboxOption[] = selectedSubjectData ? 
-    selectedSubjectData.chapters.flatMap(chapter => 
-      chapter.topics.map(topic => ({
-        value: `topic-${topic.id}`,
+    selectedSubjectData.chapters.flatMap((chapter, chapterIndex) => 
+      chapter.topics.map((topic, topicIndex) => ({
+        value: `topic-${chapter.id}-${topic.id}-${chapterIndex}-${topicIndex}`,
         label: `${topic.name} (in ${chapter.name})`,
         category: "Topics"
       }))
@@ -145,7 +145,9 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
   const handleChapterChange = (value: string) => {
     if (value.startsWith('topic-')) {
       // User selected a topic directly from search
-      const topicId = value.replace('topic-', '');
+      // Extract the actual topic ID from the complex key
+      const parts = value.split('-');
+      const topicId = parts[2]; // topic-{chapterId}-{topicId}-{chapterIndex}-{topicIndex}
       const topic = selectedSubjectData?.chapters
         .flatMap(c => c.topics)
         .find(t => t.id === topicId);
