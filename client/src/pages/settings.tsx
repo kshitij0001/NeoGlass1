@@ -100,7 +100,6 @@ export default function Settings() {
   return (
     <div className="min-h-screen">
       <StickyMotivationBar />
-
       <div className="max-w-sm mx-auto frosted min-h-screen pb-20">
         <div className="p-4">
           <div className="flex items-center mb-6">
@@ -388,7 +387,7 @@ export default function Settings() {
             <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
               <p><strong>NEET 2026 Study Companion</strong></p>
               <p>Version 1.0.0</p>
-              <p>Built with ❤️ for NEET aspirants</p>
+              <p>Built with ❤️ for My Bunny 🐰</p>
               <p className="text-xs mt-4">
                 This app uses spaced repetition intervals: [4, 7, 14, 28, 40] days to optimize your learning.
               </p>
