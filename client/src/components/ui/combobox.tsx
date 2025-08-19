@@ -14,6 +14,7 @@ export interface ComboboxOption {
 
 interface ComboboxProps {
   options: ComboboxOption[];
+  getFilteredOptions?: (searchQuery: string) => ComboboxOption[];
   value?: string;
   onValueChange: (value: string) => void;
   placeholder?: string;
@@ -28,6 +29,7 @@ interface ComboboxProps {
 
 export function Combobox({
   options,
+  getFilteredOptions,
   value,
   onValueChange,
   placeholder = "Select option...",
@@ -49,10 +51,13 @@ export function Combobox({
     }
   }, [open]);
 
-  const filteredOptions = options.filter((option) =>
-    option.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (option.category && option.category.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  // Use custom filtering function if provided, otherwise use default filtering
+  const filteredOptions = getFilteredOptions 
+    ? getFilteredOptions(searchQuery)
+    : options.filter((option) =>
+        option.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (option.category && option.category.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
 
   const selectedOption = options.find((option) => option.value === value);
   const hasExactMatch = filteredOptions.some(option => 

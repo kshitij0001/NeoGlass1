@@ -32,25 +32,38 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
   const selectedSubjectData = syllabus.find(s => s.id === selectedSubject);
   const selectedChapterData = selectedSubjectData?.chapters.find(c => c.id === selectedChapter);
   
-  // Prepare chapter options for combobox
+  // Create chapter options for combobox
   const chapterOptions: ComboboxOption[] = selectedSubjectData ? 
     selectedSubjectData.chapters.map(chapter => ({
       value: chapter.id,
       label: chapter.name,
       category: "Chapters"
     })) : [];
-  
-  // Add topics to search results with unique keys
-  const topicOptions: ComboboxOption[] = selectedSubjectData ? 
-    selectedSubjectData.chapters.flatMap((chapter, chapterIndex) => 
-      chapter.topics.map((topic, topicIndex) => ({
-        value: `topic-${chapter.id}-${topic.id}-${chapterIndex}-${topicIndex}`,
-        label: `${topic.name} (in ${chapter.name})`,
-        category: "Topics"
-      }))
-    ) : [];
-  
-  const allSearchOptions = [...chapterOptions, ...topicOptions];
+
+  // Filter options based on search query
+  const getFilteredOptions = (searchQuery: string): ComboboxOption[] => {
+    if (!selectedSubjectData || !searchQuery.trim()) {
+      return chapterOptions;
+    }
+
+    const query = searchQuery.toLowerCase();
+    const matchingChapters = chapterOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
+
+    const matchingTopics = selectedSubjectData.chapters
+      .flatMap(chapter => 
+        chapter.topics
+          .filter(topic => topic.name.toLowerCase().includes(query))
+          .map(topic => ({
+            value: `topic-${chapter.id}-${topic.id}`,
+            label: `${topic.name} (in ${chapter.name})`,
+            category: "Topics"
+          }))
+      );
+
+    return [...matchingChapters, ...matchingTopics];
+  };
 
   const handleSubmit = () => {
     if (!selectedSubject) return;
@@ -145,22 +158,14 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
   const handleChapterChange = (value: string) => {
     if (value.startsWith('topic-')) {
       // User selected a topic directly from search
-      // Extract the actual topic ID from the complex key
       const parts = value.split('-');
-      const topicId = parts[2]; // topic-{chapterId}-{topicId}-{chapterIndex}-{topicIndex}
-      const topic = selectedSubjectData?.chapters
-        .flatMap(c => c.topics)
-        .find(t => t.id === topicId);
+      const chapterId = parts[1];
+      const topicId = parts[2];
       
-      const chapter = selectedSubjectData?.chapters
-        .find(c => c.topics.some(t => t.id === topicId));
-      
-      if (topic && chapter) {
-        setSelectedChapter(chapter.id);
-        setSelectedTopic(topicId);
-        setIsCreatingChapter(false);
-        setIsCreatingTopic(false);
-      }
+      setSelectedChapter(chapterId);
+      setSelectedTopic(topicId);
+      setIsCreatingChapter(false);
+      setIsCreatingTopic(false);
     } else {
       setIsCreatingChapter(false);
       setSelectedChapter(value);
@@ -260,7 +265,8 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
             ) : (
               <div data-testid="chapter-combobox">
                 <Combobox
-                  options={allSearchOptions}
+                  options={chapterOptions}
+                  getFilteredOptions={getFilteredOptions}
                   value={selectedChapter}
                   onValueChange={handleChapterChange}
                   onCreateNew={handleCreateNewChapter}
