@@ -32,12 +32,12 @@ export function NeetCountdown() {
   }, [settings.neetDate]);
 
   return (
-    <Card className="neobrutalist-card p-6 rounded-2xl mb-6 neet-countdown-card" style={{ backgroundColor: '#e66789' }}>
+    <Card className="neobrutalist-card p-6 rounded-2xl mb-6 neet-countdown-card" style={{ backgroundColor: '#e66789', color: '#2c1810' }}>
       <div className="text-center">
-        <h2 className="text-2xl font-black text-dark-text mb-2" data-testid="countdown-title">
+        <h2 className="text-2xl font-black mb-2" data-testid="countdown-title">
           NEET 2026
         </h2>
-        <div className="flex justify-center space-x-4 text-dark-text">
+        <div className="flex justify-center space-x-4">
           <div className="text-center">
             <div className="text-3xl font-black" data-testid="countdown-days">
               {countdown.days}

@@ -7,7 +7,7 @@ import { useState } from "react";
 import { isOverdue, isDueToday } from "@/lib/srs";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { getSubjectColor, getDifficultyColor } from "@/lib/colors";
+import { getSubjectColor, getDifficultyColor, getSubjectContrastColor, getDifficultyContrastColor } from "@/lib/colors";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 
@@ -189,7 +189,9 @@ function ReviewCard({
   getRelativeDate,
 }: ReviewCardProps) {
   const subjectColor = getSubjectColor(review.subject);
+  const subjectContrastColor = getSubjectContrastColor(review.subject);
   const difficultyColor = getDifficultyColor(review.difficulty);
+  const difficultyContrastColor = getDifficultyContrastColor(review.difficulty);
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | 'up' | 'down' | null>(null);
   const [swipeProgress, setSwipeProgress] = useState(0);
   const [isPerformingAction, setIsPerformingAction] = useState(false);
@@ -300,8 +302,11 @@ function ReviewCard({
           </p>
           <div className="flex items-center space-x-2 mt-2">
             <Badge 
-              className="text-black font-bold border border-gray-300 dark:border-gray-600"
-              style={{ backgroundColor: difficultyColor }}
+              className="font-bold border border-gray-300 dark:border-gray-600"
+              style={{ 
+                backgroundColor: difficultyColor,
+                color: difficultyContrastColor
+              }}
             >
               {review.difficulty}
             </Badge>

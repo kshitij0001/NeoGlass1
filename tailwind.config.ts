@@ -112,10 +112,20 @@ export default {
         'dark-text': 'hsl(220, 15%, 25%)', // Much darker text for readability
         'glass-white': 'rgba(255, 255, 255, 0.1)',
         'glass-dark': 'rgba(0, 0, 0, 0.1)',
-        // Subject Colors
+        // Subject Colors with Contrast
         'physics-color': 'var(--physics-color)',
+        'physics-contrast': 'var(--physics-contrast)',
         'chemistry-color': 'var(--chemistry-color)',
+        'chemistry-contrast': 'var(--chemistry-contrast)',
         'biology-color': 'var(--biology-color)',
+        'biology-contrast': 'var(--biology-contrast)',
+        // Difficulty Colors with Contrast
+        'difficulty-easy': 'var(--difficulty-easy-color)',
+        'difficulty-easy-contrast': 'var(--difficulty-easy-contrast)',
+        'difficulty-medium': 'var(--difficulty-medium-color)',
+        'difficulty-medium-contrast': 'var(--difficulty-medium-contrast)',
+        'difficulty-hard': 'var(--difficulty-hard-color)',
+        'difficulty-hard-contrast': 'var(--difficulty-hard-contrast)',
       },
       borderRadius: {
         lg: "var(--radius)",

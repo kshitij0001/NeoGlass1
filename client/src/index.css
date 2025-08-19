@@ -38,11 +38,22 @@
   --chart-5: hsl(27 87% 67%);
   --radius: 0.75rem;
 
-  /* Consistent Subject Colors - Updated */
+  /* Consistent Subject Colors - Updated with contrast pairs */
   --physics-color: #e9897e; /* Updated physics color */
+  --physics-contrast: #2c1810; /* Dark text for physics backgrounds */
   --chemistry-color: #f3d9df; /* Updated chemistry color */
+  --chemistry-contrast: #3a1f26; /* Dark text for chemistry backgrounds */
   --biology-color: #95D2B3; /* Updated biology color */
+  --biology-contrast: #1a3426; /* Dark text for biology backgrounds */
   --review-health-color: #95D2B3; /* Dedicated review health color */
+  
+  /* Difficulty Colors with contrast pairs */
+  --difficulty-easy-color: #95D2B3;
+  --difficulty-easy-contrast: #1a3426;
+  --difficulty-medium-color: #f3d9df;
+  --difficulty-medium-contrast: #3a1f26;
+  --difficulty-hard-color: #e9897e;
+  --difficulty-hard-contrast: #2c1810;
 
   /* Update star animation for new background */
   --star-color: rgba(255, 255, 255, 0.8);
@@ -80,6 +91,14 @@
   --chart-3: hsl(30 80% 55%);
   --chart-4: hsl(280 65% 60%);
   --chart-5: hsl(340 75% 55%);
+  
+  /* Dark mode contrast colors - lighter text for dark backgrounds */
+  --physics-contrast: #f5e5e0;
+  --chemistry-contrast: #faf5f7;
+  --biology-contrast: #e8f4ed;
+  --difficulty-easy-contrast: #e8f4ed;
+  --difficulty-medium-contrast: #faf5f7;
+  --difficulty-hard-contrast: #f5e5e0;
 }
 
 @layer base {
@@ -132,17 +151,20 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  /* Subject color utility classes */
+  /* Subject color utility classes with automatic contrast */
   .physics-bg {
     background-color: var(--physics-color) !important;
+    color: var(--physics-contrast) !important;
   }
 
   .chemistry-bg {
     background-color: var(--chemistry-color) !important;
+    color: var(--chemistry-contrast) !important;
   }
 
   .biology-bg {
     background-color: var(--biology-color) !important;
+    color: var(--biology-contrast) !important;
   }
 
   .physics-text {
@@ -157,6 +179,18 @@
     color: var(--biology-color) !important;
   }
 
+  .physics-contrast-text {
+    color: var(--physics-contrast) !important;
+  }
+
+  .chemistry-contrast-text {
+    color: var(--chemistry-contrast) !important;
+  }
+
+  .biology-contrast-text {
+    color: var(--biology-contrast) !important;
+  }
+
   .physics-border {
     border-color: var(--physics-color) !important;
   }
@@ -169,17 +203,20 @@
     border-color: var(--biology-color) !important;
   }
 
-  /* Difficulty color utility classes */
+  /* Difficulty color utility classes with automatic contrast */
   .difficulty-easy {
     background-color: var(--difficulty-easy-color) !important;
+    color: var(--difficulty-easy-contrast) !important;
   }
 
   .difficulty-medium {
     background-color: var(--difficulty-medium-color) !important;
+    color: var(--difficulty-medium-contrast) !important;
   }
 
   .difficulty-hard {
     background-color: var(--difficulty-hard-color) !important;
+    color: var(--difficulty-hard-contrast) !important;
   }
 
   .difficulty-easy-text {
@@ -192,6 +229,18 @@
 
   .difficulty-hard-text {
     color: var(--difficulty-hard-color) !important;
+  }
+
+  .difficulty-easy-contrast-text {
+    color: var(--difficulty-easy-contrast) !important;
+  }
+
+  .difficulty-medium-contrast-text {
+    color: var(--difficulty-medium-contrast) !important;
+  }
+
+  .difficulty-hard-contrast-text {
+    color: var(--difficulty-hard-contrast) !important;
   }
 
   .difficulty-easy-border {
