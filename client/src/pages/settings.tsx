@@ -393,7 +393,7 @@ export default function Settings() {
               </p>
               <div className="mt-4 text-center">
                 <div className="font-mono text-xs">
-                  {'•'.repeat(useStore.getState().getStreakRestoresRemaining()) + '○'.repeat(useStore.getState().streakRestoresUsed)}
+                  {'•'.repeat(useStore.getState().getStreakRestoresRemaining())}
                 </div>
               </div>
             </div>
