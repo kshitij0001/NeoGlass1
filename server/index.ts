@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 
 // Middleware
 app.use(express.json());
@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 });
 
 // API routes
-await registerRoutes(app);
+registerRoutes(app);
 
 // Production static file serving
 if (process.env.NODE_ENV === 'production') {
