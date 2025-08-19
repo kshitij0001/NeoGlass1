@@ -271,6 +271,40 @@
 
 
 
+  /* Animated gradient background */
+  .animated-gradient {
+    background: linear-gradient(-45deg, #e38d88, #b3b6df, #90ab98, #eebc81, #fdffb6, #caffbf, #9bf6ff, #a0c4ff, #ffc6ff, #e9ff70, #ffd670, #ff9770, #ff70a6, #70d6ff);
+    background-size: 600% 600%;
+    animation: gradientShift 30s ease-in-out infinite;
+  }
+
+  .animated-gradient-dark {
+    background: linear-gradient(-45deg, #2a1f1f, #1f1f2a, #1f2a1f, #2a251f, #2a2a1f, #1f2a22, #1f252a, #1f212a, #2a1f2a, #1f2a1f, #2a1f22, #2a1f1f, #1f1f2a, #1f2a2a);
+    background-size: 600% 600%;
+    animation: gradientShift 30s ease-in-out infinite;
+  }
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    20% {
+      background-position: 100% 50%;
+    }
+    40% {
+      background-position: 100% 100%;
+    }
+    60% {
+      background-position: 50% 100%;
+    }
+    80% {
+      background-position: 0% 100%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
   /* Ensure main content is readable over starfield */
   
   /* Ensure confetti canvas is properly positioned */

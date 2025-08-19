@@ -8,6 +8,7 @@ The application is built as a full-stack solution with a React frontend and Expr
 
 ## Recent Changes (August 2025)
 
+- **Animated Gradient Background**: Implemented slowly shifting gradient background using all 14 pastel colors with 30-second animation cycle for gentle, dynamic movement across all pages
 - **Confetti Celebration System**: Implemented dual confetti celebrations using canvas-confetti library:
   - Streak milestones: Vibrant confetti every 10 days (10, 20, 30, etc.) when app opens  
   - All reviews cleared: Gentle "all caught up" confetti when user completes all daily reviews

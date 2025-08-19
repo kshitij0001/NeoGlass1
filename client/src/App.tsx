@@ -71,7 +71,7 @@ function AppContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+      <div className="min-h-screen animated-gradient dark:animated-gradient-dark flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-mustard border-t-transparent mx-auto mb-4"></div>
           <p className="text-lg font-bold text-brutal-black dark:text-white">Loading NEET Companion...</p>
@@ -81,7 +81,7 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative animated-gradient dark:animated-gradient-dark">
       <div className="relative z-10">
         <Switch>
           <Route path="/" component={Dashboard} />
