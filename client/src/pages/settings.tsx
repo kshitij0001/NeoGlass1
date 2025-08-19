@@ -100,7 +100,7 @@ export default function Settings() {
   return (
     <div className="min-h-screen">
       <StickyMotivationBar />
-      <div className="max-w-sm mx-auto frosted min-h-screen pb-20">
+      <div className="max-w-sm mx-auto main-content min-h-screen pb-20">
         <div className="p-4">
           <div className="flex items-center mb-6">
             <SettingsIcon className="h-6 w-6 mr-3 text-brutal-black dark:text-white" />

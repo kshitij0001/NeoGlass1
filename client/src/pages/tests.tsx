@@ -95,7 +95,7 @@ export default function Tests() {
   return (
     <div className="min-h-screen relative">
       <StickyMotivationBar />
-      <div className="max-w-sm mx-auto frosted min-h-screen pb-20">
+      <div className="max-w-sm mx-auto main-content min-h-screen pb-20">
         <div className="p-4">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-black text-brutal-black dark:text-white">Test Performance</h1>

@@ -130,7 +130,7 @@ export default function Plan() {
     <div className="min-h-screen relative">
       <StickyMotivationBar />
 
-      <div className="max-w-sm mx-auto min-h-screen pb-20 main-content glass-morphism border-2 border-brutal-black/20 dark:border-white/20 rounded-3xl p-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md">
+      <div className="max-w-sm mx-auto min-h-screen pb-20 main-content">
         <div className="p-4">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-black text-brutal-black dark:text-white">NEET 2026 Syllabus</h1>

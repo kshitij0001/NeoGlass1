@@ -6,7 +6,7 @@ export default function Calendar() {
     <div className="min-h-screen">
       <StickyMotivationBar />
 
-      <div className="max-w-sm mx-auto min-h-screen pb-20 main-content glass-morphism border-2 border-brutal-black/20 dark:border-white/20 rounded-3xl p-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md">
+      <div className="max-w-sm mx-auto min-h-screen pb-20 main-content">
         <CalendarView />
       </div>
     </div>
