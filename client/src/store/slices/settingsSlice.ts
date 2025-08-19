@@ -13,6 +13,15 @@ export interface CustomColors {
     Medium: string;
     Hard: string;
   };
+  cards: {
+    countdown: string;
+    streak: string;
+    averageScore: string;
+    totalTests: string;
+  };
+  eventTypes: {
+    [key: string]: string; // Allow for dynamic event types
+  };
 }
 
 export interface SettingsSlice {
@@ -28,6 +37,8 @@ export interface SettingsSlice {
   updateAutoSnooze: (enabled: boolean) => void;
   updateSubjectColor: (subject: keyof CustomColors['subjects'], color: string) => void;
   updateDifficultyColor: (difficulty: keyof CustomColors['difficulties'], color: string) => void;
+  updateCardColor: (card: keyof CustomColors['cards'], color: string) => void;
+  updateEventTypeColor: (eventType: string, color: string) => void;
   resetColorsToDefault: () => void;
   exportData: () => Promise<Blob>;
   importData: (file: File) => Promise<void>;
@@ -43,10 +54,18 @@ const defaultSettings: Settings = {
   autoSnooze: false,
 };
 
+const suggestiveColors = [
+  ["#fbf8cc","#fde4cf","#ffcfd2","#f1c0e8","#cfbaf0","#a3c4f3","#90dbf4","#8eecf5","#98f5e1","#b9fbc0"],
+  ["#ffadad","#ffd6a5","#fdffb6","#caffbf","#9bf6ff","#a0c4ff","#bdb2ff","#ffc6ff","#fffffc"],
+  ["#e4dde3","#ffd1ad","#fbc5c8","#f5a3c0","#dae7e3","#99ced6","#ffd4b0","#f6d6ff","#8b9ed4","#c1baea"],
+  ["#e4dde3","#f9c8da","#fbdadc","#fff1e6","#dae7e3","#bee1e6","#edece8","#e3e7f2","#f6cbcb","#cddafd"],
+  ["#ffe09e","#fff394","#fbff94","#eeff8f","#e1ff94","#cfff91","#c0ff8c","#9dff8a","#94ffaf","#a6fff2"]
+];
+
 const defaultColors: CustomColors = {
   subjects: {
     Physics: '#e9897e', // bright-6
-    Chemistry: '#f3d9df', // bright-2  
+    Chemistry: '#f3d9df', // bright-2
     Biology: '#95D2B3', // bright-4
   },
   difficulties: {
@@ -54,14 +73,37 @@ const defaultColors: CustomColors = {
     Medium: '#eab308', // yellow-500
     Hard: '#ef4444', // red-500
   },
+  cards: {
+    countdown: suggestiveColors[0][0],
+    streak: suggestiveColors[1][0],
+    averageScore: suggestiveColors[2][0],
+    totalTests: suggestiveColors[3][0],
+  },
+  eventTypes: {}, // Initially empty, will be populated dynamically
+};
+
+// Helper function to apply custom colors to CSS variables
+const applyCustomColors = (customColors: CustomColors) => {
+  Object.entries(customColors.subjects).forEach(([subject, color]) => {
+    document.documentElement.style.setProperty(`--${subject.toLowerCase()}-color`, color);
+  });
+  Object.entries(customColors.difficulties).forEach(([difficulty, color]) => {
+    document.documentElement.style.setProperty(`--difficulty-${difficulty.toLowerCase()}-color`, color);
+  });
+  Object.entries(customColors.cards).forEach(([card, color]) => {
+    document.documentElement.style.setProperty(`--card-${card.toLowerCase()}-color`, color);
+  });
+  Object.entries(customColors.eventTypes).forEach(([eventType, color]) => {
+    document.documentElement.style.setProperty(`--eventtype-${eventType.toLowerCase()}-color`, color);
+  });
 };
 
 export const settingsSlice = (set: any, get: any): SettingsSlice => ({
   settings: defaultSettings,
   customColors: defaultColors,
-  
+
   setSettings: (settings) => set({ settings }),
-  
+
   async loadSettings() {
     try {
       const storedSettings = await storage.getSettings();
@@ -70,75 +112,73 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
       } else {
         await storage.saveSettings(defaultSettings);
       }
-      
+
       // Load custom colors from localStorage
       const storedColors = localStorage.getItem('customColors');
       if (storedColors) {
-        const customColors = JSON.parse(storedColors);
-        set({ customColors });
-        
-        // Apply colors to CSS custom properties
-        Object.entries(customColors.subjects).forEach(([subject, color]) => {
-          document.documentElement.style.setProperty(`--${subject.toLowerCase()}-color`, color);
-        });
-        Object.entries(customColors.difficulties).forEach(([difficulty, color]) => {
-          document.documentElement.style.setProperty(`--difficulty-${difficulty.toLowerCase()}-color`, color);
-        });
+        const parsedColors = JSON.parse(storedColors);
+        // Ensure all new keys are present, merge with defaults if necessary
+        const mergedColors = {
+          ...defaultColors,
+          ...parsedColors,
+          subjects: { ...defaultColors.subjects, ...parsedColors.subjects },
+          difficulties: { ...defaultColors.difficulties, ...parsedColors.difficulties },
+          cards: { ...defaultColors.cards, ...parsedColors.cards },
+          eventTypes: { ...defaultColors.eventTypes, ...parsedColors.eventTypes },
+        };
+        set({ customColors: mergedColors });
+        applyCustomColors(mergedColors);
       } else {
-        // Set default colors
-        Object.entries(defaultColors.subjects).forEach(([subject, color]) => {
-          document.documentElement.style.setProperty(`--${subject.toLowerCase()}-color`, color);
-        });
-        Object.entries(defaultColors.difficulties).forEach(([difficulty, color]) => {
-          document.documentElement.style.setProperty(`--difficulty-${difficulty.toLowerCase()}-color`, color);
-        });
+        // Set default colors and apply them
+        set({ customColors: defaultColors });
+        applyCustomColors(defaultColors);
       }
     } catch (error) {
       console.error('Failed to load settings:', error);
     }
   },
-  
+
   updateTheme: (theme) => {
     const { settings } = get();
     const updatedSettings = { ...settings, theme };
     set({ settings: updatedSettings });
-    
+
     // Apply theme to document
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
-    
+
     // Persist to localStorage for immediate next load
     localStorage.setItem('theme', theme);
   },
-  
+
   updateNeetDate: (neetDate) => {
     const { settings } = get();
     set({ settings: { ...settings, neetDate } });
   },
-  
+
   updateNotifications: (notifications) => {
     const { settings } = get();
     set({ settings: { ...settings, notifications } });
   },
-  
+
   updateSoundEnabled: (soundEnabled) => {
     const { settings } = get();
     set({ settings: { ...settings, soundEnabled } });
   },
-  
+
   updateDailyGoal: (dailyGoal) => {
     const { settings } = get();
     set({ settings: { ...settings, dailyGoal } });
   },
-  
+
   updateAutoSnooze: (autoSnooze) => {
     const { settings } = get();
     set({ settings: { ...settings, autoSnooze } });
   },
-  
+
   updateSubjectColor: (subject, color) => {
     const { customColors } = get();
     const updatedColors = {
@@ -149,12 +189,12 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
       },
     };
     set({ customColors: updatedColors });
-    
+
     // Apply to CSS custom properties
     document.documentElement.style.setProperty(`--${subject.toLowerCase()}-color`, color);
     localStorage.setItem('customColors', JSON.stringify(updatedColors));
   },
-  
+
   updateDifficultyColor: (difficulty, color) => {
     const { customColors } = get();
     const updatedColors = {
@@ -165,30 +205,57 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
       },
     };
     set({ customColors: updatedColors });
-    
+
     // Apply to CSS custom properties
     document.documentElement.style.setProperty(`--difficulty-${difficulty.toLowerCase()}-color`, color);
     localStorage.setItem('customColors', JSON.stringify(updatedColors));
   },
-  
+
+  updateCardColor: (card, color) => {
+    const { customColors } = get();
+    const updatedColors = {
+      ...customColors,
+      cards: {
+        ...customColors.cards,
+        [card]: color,
+      },
+    };
+    set({ customColors: updatedColors });
+
+    // Apply to CSS custom properties
+    document.documentElement.style.setProperty(`--card-${card.toLowerCase()}-color`, color);
+    localStorage.setItem('customColors', JSON.stringify(updatedColors));
+  },
+
+  updateEventTypeColor: (eventType, color) => {
+    const { customColors } = get();
+    const updatedColors = {
+      ...customColors,
+      eventTypes: {
+        ...customColors.eventTypes,
+        [eventType]: color,
+      },
+    };
+    set({ customColors: updatedColors });
+
+    // Apply to CSS custom properties
+    document.documentElement.style.setProperty(`--eventtype-${eventType.toLowerCase()}-color`, color);
+    localStorage.setItem('customColors', JSON.stringify(updatedColors));
+  },
+
   resetColorsToDefault: () => {
     set({ customColors: defaultColors });
-    
+
     // Reset CSS custom properties
-    Object.entries(defaultColors.subjects).forEach(([subject, color]) => {
-      document.documentElement.style.setProperty(`--${subject.toLowerCase()}-color`, color);
-    });
-    Object.entries(defaultColors.difficulties).forEach(([difficulty, color]) => {
-      document.documentElement.style.setProperty(`--difficulty-${difficulty.toLowerCase()}-color`, color);
-    });
-    
+    applyCustomColors(defaultColors);
+
     localStorage.setItem('customColors', JSON.stringify(defaultColors));
   },
-  
+
   async exportData() {
     return await storage.exportData();
   },
-  
+
   async importData(file) {
     await storage.importData(file);
     // Reload all data after import
@@ -200,16 +267,17 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
       store.loadTests(),
     ]);
   },
-  
+
   async resetAllData() {
     await storage.clear();
     // Reset to defaults
     const store = get() as any;
-    set({ 
+    set({
       settings: defaultSettings,
       reviews: [],
       events: [],
       tests: [],
+      customColors: defaultColors, // Reset custom colors as well
     });
     await store.loadSyllabus(); // Reload default syllabus
   },

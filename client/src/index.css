@@ -55,6 +55,28 @@
   --difficulty-hard-color: #e9897e;
   --difficulty-hard-contrast: #2c1810;
 
+  /* Card Colors with contrast pairs */
+  --card-countdown-color: #ffcfd2;
+  --card-countdown-contrast: #2c1810;
+  --card-streak-color: #98f5e1;
+  --card-streak-contrast: #1a3426;
+  --card-averagescore-color: #e4c1f9;
+  --card-averagescore-contrast: #2c1026;
+  --card-totaltests-color: #cdb4db;
+  --card-totaltests-contrast: #2c1026;
+
+  /* Event Type Colors with contrast pairs */
+  --event-study-color: #a3c4f3;
+  --event-study-contrast: #1a2c3a;
+  --event-exam-color: #ffd6a5;
+  --event-exam-contrast: #2c1810;
+  --event-revision-color: #caffbf;
+  --event-revision-contrast: #1a3426;
+  --event-break-color: #f6d6ff;
+  --event-break-contrast: #2c1026;
+  --event-other-color: #e3e7f2;
+  --event-other-contrast: #1a2c3a;
+
   /* Update star animation for new background */
   --star-color: rgba(255, 255, 255, 0.8);
 }

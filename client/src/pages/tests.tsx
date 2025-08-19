@@ -197,26 +197,56 @@ export default function Tests() {
 
           {/* Overview Cards */}
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <Card className="border text-card-foreground shadow-sm neobrutalist-card p-4 rounded-xl bg-[#e4c1f9]">
+            <Card 
+              className="border text-card-foreground shadow-sm neobrutalist-card p-4 rounded-xl"
+              style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card-averagescore-color') || '#e4c1f9' }}
+            >
               <div className="flex items-center space-x-3">
-                <Target className="h-8 w-8" style={{ color: '#334153' }} />
+                <Target 
+                  className="h-8 w-8" 
+                  style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-averagescore-contrast') || '#334153' }} 
+                />
                 <div>
-                  <div className="text-2xl font-black" style={{ color: '#334153' }} data-testid="average-score">
+                  <div 
+                    className="text-2xl font-black" 
+                    style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-averagescore-contrast') || '#334153' }} 
+                    data-testid="average-score"
+                  >
                     {averageScore}%
                   </div>
-                  <div className="text-xs font-bold" style={{ color: '#334153' }}>Average Score</div>
+                  <div 
+                    className="text-xs font-bold" 
+                    style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-averagescore-contrast') || '#334153' }}
+                  >
+                    Average Score
+                  </div>
                 </div>
               </div>
             </Card>
 
-            <Card className="border text-card-foreground shadow-sm neobrutalist-card p-4 rounded-xl bg-[#cdb4db]">
+            <Card 
+              className="border text-card-foreground shadow-sm neobrutalist-card p-4 rounded-xl"
+              style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card-totaltests-color') || '#cdb4db' }}
+            >
               <div className="flex items-center space-x-3">
-                <Calendar className="h-8 w-8" style={{ color: '#334153' }} />
+                <Calendar 
+                  className="h-8 w-8" 
+                  style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-totaltests-contrast') || '#334153' }} 
+                />
                 <div>
-                  <div className="text-2xl font-black" style={{ color: '#334153' }} data-testid="total-tests">
+                  <div 
+                    className="text-2xl font-black" 
+                    style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-totaltests-contrast') || '#334153' }} 
+                    data-testid="total-tests"
+                  >
                     {tests.length}
                   </div>
-                  <div className="text-xs font-bold" style={{ color: '#334153' }}>Total Tests</div>
+                  <div 
+                    className="text-xs font-bold" 
+                    style={{ color: getComputedStyle(document.documentElement).getPropertyValue('--card-totaltests-contrast') || '#334153' }}
+                  >
+                    Total Tests
+                  </div>
                 </div>
               </div>
             </Card>

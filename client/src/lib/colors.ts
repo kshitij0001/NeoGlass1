@@ -35,6 +35,16 @@ export function getDifficultyColors() {
   };
 }
 
+export function getCardColor(card: string): string {
+  return getComputedStyle(document.documentElement)
+    .getPropertyValue(`--card-${card.toLowerCase()}-color`) || '#6b7280';
+}
+
+export function getEventTypeColor(eventType: string): string {
+  return getComputedStyle(document.documentElement)
+    .getPropertyValue(`--event-${eventType.toLowerCase()}-color`) || '#6b7280';
+}
+
 // Helper function to calculate contrast color
 function getContrastColor(backgroundColor: string): string {
   // Remove # from hex color
@@ -70,6 +80,28 @@ export function applyCustomColors(colors: any) {
     document.documentElement.style.setProperty(`--difficulty-${difficultyKey}-color`, color as string);
     document.documentElement.style.setProperty(`--difficulty-${difficultyKey}-contrast`, contrastColor);
   });
+
+  // Apply card colors with automatic contrast
+  if (colors.cards) {
+    Object.entries(colors.cards).forEach(([card, color]) => {
+      const cardKey = card.toLowerCase();
+      const contrastColor = getContrastColor(color as string);
+      
+      document.documentElement.style.setProperty(`--card-${cardKey}-color`, color as string);
+      document.documentElement.style.setProperty(`--card-${cardKey}-contrast`, contrastColor);
+    });
+  }
+
+  // Apply event type colors with automatic contrast
+  if (colors.eventTypes) {
+    Object.entries(colors.eventTypes).forEach(([eventType, color]) => {
+      const eventTypeKey = eventType.toLowerCase();
+      const contrastColor = getContrastColor(color as string);
+      
+      document.documentElement.style.setProperty(`--event-${eventTypeKey}-color`, color as string);
+      document.documentElement.style.setProperty(`--event-${eventTypeKey}-contrast`, contrastColor);
+    });
+  }
 }
 
 // Utility function to get both color and contrast for subjects
