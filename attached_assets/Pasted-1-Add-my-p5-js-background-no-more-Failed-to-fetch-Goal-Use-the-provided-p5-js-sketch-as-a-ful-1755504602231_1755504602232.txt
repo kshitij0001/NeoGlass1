@@ -1,0 +1,231 @@
+1) Add my p5.js background (no more “Failed to fetch”)
+
+Goal: Use the provided p5.js sketch as a full-screen background on every page.
+
+Steps:
+
+Install p5 properly (if using Vite):
+
+npm i p5
+
+In src/p5Background.js, place my sketch code.
+
+Guard missing OPC and define defaults so the sketch runs outside OPC:
+
+// at the very top of p5Background.js
+window.OPC = window.OPC || { slider: () => {} };
+
+// Provide fallbacks used by the sketch:
+let seed = typeof window.seed === 'number' ? window.seed : Math.floor(Math.random()*1000);
+let tile_count = typeof window.tile_count === 'number' ? window.tile_count : 7;
+let margin = typeof window.margin === 'number' ? window.margin : 20;
+let speed = typeof window.speed === 'number' ? window.speed : 3;
+
+
+Fix the typo in my code where pSpeed was set incorrectly:
+
+let pSpeed = speed; // not tile_count
+
+
+Mount the canvas once and resize on orientation change:
+
+Export an initP5Background() from p5Background.js that creates the sketch and calls resizeCanvas in windowResized().
+
+Import and call initP5Background() in src/main.js (or your root layout) after the DOM is ready.
+
+Put the canvas in a fixed, behind-everything container:
+
+<!-- index.html body -->
+<div id="bg-root" style="position:fixed; inset:0; z-index:-1;"></div>
+
+
+In the sketch, createCanvas(windowWidth, windowHeight).parent('bg-root').
+
+Acceptance criteria:
+
+The app loads without the Vite overlay error.
+
+Canvas is full-screen, fixed behind content on every page.
+
+Rotating the phone resizes the canvas correctly.
+
+2) Frosted glass over content to reduce distraction
+
+Add a global class and apply it to main content wrappers:
+
+/* global.css */
+.frosted {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 12px;
+}
+
+
+Acceptance criteria:
+
+Main reading areas use .frosted.
+
+Text has AA contrast over the frosted area.
+
+Animations are visible but muted behind the frost.
+
+3) Base background color
+
+Set the base page background to #472982 (not just the selected section):
+
+html, body {
+  background: #472982;
+}
+
+
+Acceptance criteria:
+
+The overall page background (behind the canvas) is #472982.
+
+The “selected section” styles are untouched unless they were incorrectly overriding the base.
+
+4) Card readability
+
+All cards are solid color (no transparency over the animated background):
+
+.card {
+  background: #ffffff; /* or your theme surface color */
+}
+
+
+Acceptance criteria:
+
+No text sits directly on the moving pattern.
+
+Cards remain readable on mobile.
+
+5) Color fixes (Neubrutalist palette adjustments)
+
+Biology: change from #ced6b3 to #16a34a (bold green).
+
+Replace only the color token #9333ea (accent) with a yellow shade #f6c90e.
+
+Do not change the “review” color to yellow unless that color was literally #9333ea.
+
+Acceptance criteria:
+
+Biology chips/tags/badges show #16a34a.
+
+Wherever the design used #9333ea as an accent, it now uses #f6c90e.
+
+Review color remains what it was unless it was #9333ea.
+
+6) “7-Day Overview” should show next 7 calendar days, not weekdays
+
+Replace weekday labels with dates starting today (local timezone: Asia/Kolkata):
+
+import { addDays, format } from 'date-fns';
+const tzNow = new Date(); // rely on device tz (IST)
+const next7 = Array.from({ length: 7 }, (_, i) => addDays(tzNow, i));
+const labels = next7.map(d => format(d, 'dd MMM')); // e.g., 18 Aug
+
+
+Use these 7 dates to query upcoming reviews and render the graph.
+
+Acceptance criteria:
+
+The labels are actual dates (e.g., “18 Aug, 19 Aug, … 24 Aug”).
+
+Counts reflect upcoming reviews per day, not weekday buckets.
+
+7) Calendar alignment & non-morphing cells
+
+Fix alignment to the real month grid and stop cells from resizing.
+
+Generate the grid from the first day of the month:
+
+import { startOfMonth, startOfWeek, endOfWeek, endOfMonth, eachDayOfInterval } from 'date-fns';
+
+const first = startOfMonth(viewDate);
+const last  = endOfMonth(viewDate);
+const gridStart = startOfWeek(first, { weekStartsOn: 0 }); // Sunday
+const gridEnd   = endOfWeek(last,  { weekStartsOn: 0 });
+
+const days = eachDayOfInterval({ start: gridStart, end: gridEnd });
+
+
+Fixed cell height and show max 3 items with “+X more”:
+
+.calendar-cell {
+  height: 104px;
+  overflow: hidden;
+}
+
+
+Click a day → open modal/drawer with full list.
+
+Acceptance criteria:
+
+Calendar weeks align with the actual month (no shifted days).
+
+Cells no longer expand to fit content.
+
+“+X more” appears when items > 3.
+
+8) Reviews vs Events (don’t mix them)
+
+Reviews: created by SRS → display as reviews, not events.
+
+Events: created by the user.
+
+In the compact cell view, render at most 3 items with a visual legend:
+
+Vertical mini-bar = difficulty level.
+
+Horizontal line color = subject color.
+
+Topic name on top line (truncated with ellipsis).
+
+Acceptance criteria:
+
+Reviews and events are stored and rendered distinctly.
+
+Compact view shows the bars/lines + topic text.
+
+Full list appears only in the day modal.
+
+9) Fix the Vite overlay / “Failed to fetch”
+
+If the error is from the HMR overlay, set:
+
+// vite.config.js
+export default {
+  server: {
+    hmr: { overlay: true } // keep it; only disable if it blocks usage
+  }
+}
+
+
+Ensure all imports are valid and the p5 file is included exactly once.
+
+If a service worker or extension causes fetch issues, ensure the app still runs; do not rely on remote fetches for local assets.
+
+Acceptance criteria:
+
+App boots with no blocking overlay.
+
+p5 sketch is loaded via ESM or CDN, but not both.
+
+10) Tests / Done checklist (must pass)
+
+ p5 background present on every page, behind content, sized correctly.
+
+ Base background is #472982.
+
+ Cards are solid and readable.
+
+ Biology is #16a34a; accent #9333ea → #f6c90e; review color unchanged unless it was #9333ea.
+
+ “7-Day Overview” shows next 7 dates (IST), with correct counts.
+
+ Calendar grid aligns to the real month; cells fixed height; “+X more” works.
+
+ Reviews vs Events are distinct in storage and UI.
+
+ No “Failed to fetch” or missing p5 file errors.

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neubrutalist Background</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: #472982; /* base background */
+    }
+
+    .background {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .circle {
+      position: absolute;
+      bottom: -200px;
+      border-radius: 50%;
+      opacity: 0.85;
+      animation-name: floatUp;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+      }
+      10% { opacity: 0.9; }
+      90% { opacity: 0.9; }
+      100% {
+        transform: translateY(-120vh) scale(0.8);
+        opacity: 0;
+      }
+    }
+
+    /* Example frosted glass card on top */
+    .content {
+      position: relative;
+      z-index: 10;
+      margin: 2rem;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 12px;
+      font-family: sans-serif;
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+
+  <div class="content">
+    <h1>Neubrutalist App</h1>
+    <p>This is your frosted glass content area.</p>
+  </div>
+
+  <script>
+    const colors = ['#ff1b1c', '#0057ff', '#f6c90e', '#16a34a', '#7b2cbf', '#ff6f00'];
+    const background = document.querySelector('.background');
+
+    function spawnCircle() {
+      const circle = document.createElement('div');
+      circle.classList.add('circle');
+
+      // random size
+      const size = Math.random() * 150 + 60; // 60–210px
+      circle.style.width = `${size}px`;
+      circle.style.height = `${size}px`;
+
+      // random horizontal position
+      circle.style.left = `${Math.random() * 100}%`;
+
+      // random color
+      circle.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+      // random animation duration
+      const duration = Math.random() * 10 + 12; // 12–22s
+      circle.style.animationDuration = `${duration}s`;
+
+      background.appendChild(circle);
+
+      // remove circle when animation ends & respawn
+      setTimeout(() => {
+        background.removeChild(circle);
+        spawnCircle();
+      }, duration * 1000);
+    }
+
+    // spawn initial batch
+    const initialCircles = 15;
+    for (let i = 0; i < initialCircles; i++) {
+      spawnCircle();
+    }
+  </script>
+</body>
+</html>

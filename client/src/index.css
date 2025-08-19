@@ -1,0 +1,551 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(330 8% 97%);
+  /* Very soft warm white */
+  --foreground: hsl(220 15% 25%);
+  /* Dark readable text */
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(220 15% 25%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(220 15% 25%);
+  --primary: hsl(242 33% 85%);
+  /* Soft lavender */
+  --primary-foreground: hsl(220 15% 25%);
+  --secondary: hsl(330 8% 95%);
+  /* Very light warm gray */
+  --secondary-foreground: hsl(220 15% 25%);
+  --muted: hsl(330 8% 95%);
+  --muted-foreground: hsl(220 15% 45%);
+  --accent: hsl(242 33% 85%);
+  /* Soft lavender */
+  --accent-foreground: hsl(220 15% 25%);
+  --destructive: hsl(0 72% 81%);
+  /* Soft red */
+  --destructive-foreground: hsl(220 15% 25%);
+  --border: hsl(220 13% 85%);
+  /* Visible but soft border */
+  --input: hsl(0 0% 98%);
+  --ring: hsl(242 33% 85%);
+  --chart-1: hsl(12 76% 61%);
+  --chart-2: hsl(173 58% 39%);
+  --chart-3: hsl(197 37% 24%);
+  --chart-4: hsl(43 74% 66%);
+  --chart-5: hsl(27 87% 67%);
+  --radius: 0.75rem;
+
+  /* Consistent Subject Colors - Updated */
+  --physics-color: #e9897e; /* Updated physics color */
+  --chemistry-color: #f3d9df; /* Updated chemistry color */
+  --biology-color: #95D2B3; /* Updated biology color */
+  --review-health-color: #95D2B3; /* Dedicated review health color */
+
+  /* Update star animation for new background */
+  --star-color: rgba(255, 255, 255, 0.8);
+}
+
+.dark {
+  --background: hsl(240 8% 12%);
+  /* Muted dark #1a1a1f */
+  --foreground: hsl(0 0% 85%);
+  /* Muted white #d9d9d9 */
+  --card: hsl(240 8% 15%);
+  /* Slightly lighter card background #262626 */
+  --card-foreground: hsl(0 0% 85%);
+  --popover: hsl(240 8% 15%);
+  --popover-foreground: hsl(0 0% 85%);
+  --primary: hsl(0 0% 85%);
+  --primary-foreground: hsl(240 8% 12%);
+  --secondary: hsl(240 8% 20%);
+  /* Secondary elements #333333 */
+  --secondary-foreground: hsl(0 0% 85%);
+  --muted: hsl(240 8% 20%);
+  --muted-foreground: hsl(0 0% 65%);
+  /* Muted text #a6a6a6 */
+  --accent: hsl(240 8% 20%);
+  --accent-foreground: hsl(0 0% 85%);
+  --destructive: hsl(0 62.8% 30.6%);
+  --destructive-foreground: hsl(60 9.1% 97.8%);
+  --border: hsl(0 0% 25%);
+  /* More visible borders #404040 */
+  --input: hsl(240 8% 18%);
+  /* Input backgrounds #2e2e2e */
+  --ring: hsl(24 5.7% 82.9%);
+  --chart-1: hsl(220 70% 50%);
+  --chart-2: hsl(160 60% 45%);
+  --chart-3: hsl(30 80% 55%);
+  --chart-4: hsl(280 65% 60%);
+  --chart-5: hsl(340 75% 55%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    min-height: 100%;
+    background: linear-gradient(135deg, #fbf8cc 0%, #fde4cf 25%, #cfbaf0 50%, #a3c4f3 75%, #98f5e1 100%);
+    background-attachment: fixed;
+  }
+
+  body {
+    background: transparent;
+    color: var(--foreground);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Ensure all cards have solid backgrounds for readability over dark starfield */
+  .card,
+  .bg-card {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  }
+
+  .dark .card,
+  .dark .bg-card {
+    background: rgba(20, 20, 20, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  /* Add main content background overlay for better readability */
+  .main-content {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    border-radius: 1rem;
+    margin: 1rem;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .main-content {
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Subject color utility classes */
+  .physics-bg {
+    background-color: var(--physics-color) !important;
+  }
+
+  .chemistry-bg {
+    background-color: var(--chemistry-color) !important;
+  }
+
+  .biology-bg {
+    background-color: var(--biology-color) !important;
+  }
+
+  .physics-text {
+    color: var(--physics-color) !important;
+  }
+
+  .chemistry-text {
+    color: var(--chemistry-color) !important;
+  }
+
+  .biology-text {
+    color: var(--biology-color) !important;
+  }
+
+  .physics-border {
+    border-color: var(--physics-color) !important;
+  }
+
+  .chemistry-border {
+    border-color: var(--chemistry-color) !important;
+  }
+
+  .biology-border {
+    border-color: var(--biology-color) !important;
+  }
+
+  /* Difficulty color utility classes */
+  .difficulty-easy {
+    background-color: var(--difficulty-easy-color) !important;
+  }
+
+  .difficulty-medium {
+    background-color: var(--difficulty-medium-color) !important;
+  }
+
+  .difficulty-hard {
+    background-color: var(--difficulty-hard-color) !important;
+  }
+
+  .difficulty-easy-text {
+    color: var(--difficulty-easy-color) !important;
+  }
+
+  .difficulty-medium-text {
+    color: var(--difficulty-medium-color) !important;
+  }
+
+  .difficulty-hard-text {
+    color: var(--difficulty-hard-color) !important;
+  }
+
+  .difficulty-easy-border {
+    border-color: var(--difficulty-easy-color) !important;
+  }
+
+  .difficulty-medium-border {
+    border-color: var(--difficulty-medium-color) !important;
+  }
+
+  .difficulty-hard-border {
+    border-color: var(--difficulty-hard-color) !important;
+  }
+
+  .biology-border {
+    border-color: var(--biology-color) !important;
+  }
+
+  /* Review health background color */
+  .review-health-bg {
+    background-color: #77ae75 !important;
+  }
+
+  /* Dark text utility class */
+  .dark-text {
+    color: hsl(220 15% 25%) !important;
+  }
+
+
+
+  /* Ensure main content is readable over starfield */
+  #root {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* NEET Countdown specific styling */
+  .neet-countdown-card {
+    background: #e66789 !important;
+  }
+
+  .dark .neet-countdown-card {
+    background: #e66789 !important;
+  }
+}
+
+@layer utilities {
+
+  /* Soft card components */
+  .neobrutalist-card {
+    @apply border border-gray-200 shadow-soft rounded-2xl;
+  }
+
+  .dark .neobrutalist-card {
+    @apply border-gray-700;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .neobrutalist-btn {
+    @apply border border-gray-200 dark:border-gray-700 shadow-soft transition-all duration-200 rounded-xl;
+  }
+
+  .neobrutalist-btn:active {
+    @apply translate-y-0.5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .neobrutalist-btn:active {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Glassmorphism */
+  .glass-morphism {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .dark .glass-morphism {
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  /* Frosted glass effect */
+  .frosted {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 12px;
+  }
+
+  .dark .frosted {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  /* Fixed calendar cell height */
+  .calendar-cell {
+    height: 104px;
+    overflow: hidden;
+  }
+
+  /* Starfield background */
+  #stars,
+  #stars2,
+  #stars3 {
+    position: fixed;
+    z-index: -1;
+  }
+
+  #stars {
+    width: 1px;
+    height: 1px;
+    background: transparent;
+    box-shadow: 1780px 1216px #FFF, 1223px 1851px #FFF, 1020px 1477px #FFF, 1143px 1299px #FFF, 275px 1835px #FFF, 1344px 1628px #FFF, 1831px 1820px #FFF, 284px 892px #FFF, 1204px 402px #FFF, 1899px 1191px #FFF, 1580px 1326px #FFF, 1096px 1754px #FFF, 1525px 900px #FFF, 1882px 1721px #FFF, 92px 834px #FFF, 1404px 1479px #FFF, 1176px 1737px #FFF, 1640px 805px #FFF, 346px 1725px #FFF, 1490px 1870px #FFF, 1213px 1064px #FFF, 412px 1980px #FFF, 1635px 622px #FFF, 1871px 1049px #FFF, 1348px 1872px #FFF, 1340px 1203px #FFF, 1726px 1661px #FFF, 857px 1675px #FFF, 1790px 1777px #FFF, 1654px 701px #FFF, 965px 1887px #FFF, 1408px 1132px #FFF, 1092px 1716px #FFF, 1551px 1410px #FFF, 1650px 1616px #FFF, 1645px 1321px #FFF, 1896px 1804px #FFF, 1142px 1404px #FFF, 1690px 1846px #FFF, 1761px 1073px #FFF, 1568px 1635px #FFF, 1155px 1813px #FFF, 1484px 1142px #FFF, 1158px 1616px #FFF, 1721px 1979px #FFF, 901px 1097px #FFF, 1695px 1610px #FFF, 1157px 1889px #FFF, 1638px 1572px #FFF, 1537px 1624px #FFF, 1691px 1871px #FFF, 1189px 1072px #FFF, 1078px 1882px #FFF, 1299px 1842px #FFF, 1705px 1705px #FFF, 1384px 1870px #FFF, 1475px 1443px #FFF, 1875px 1924px #FFF, 1725px 1177px #FFF, 1500px 1673px #FFF, 1518px 1047px #FFF, 1881px 1657px #FFF, 1295px 1310px #FFF, 1789px 1684px #FFF, 1684px 1024px #FFF, 1887px 1761px #FFF, 1723px 1451px #FFF, 1176px 1914px #FFF, 1800px 1299px #FFF, 1652px 1642px #FFF, 1726px 1949px #FFF, 1707px 1531px #FFF, 1171px 1976px #FFF, 1644px 1085px #FFF, 1516px 1814px #FFF, 1191px 1677px #FFF, 1897px 1056px #FFF, 1643px 1713px #FFF, 1791px 1445px #FFF, 1553px 1397px #FFF, 1720px 1140px #FFF, 1675px 1690px #FFF, 1555px 1925px #FFF, 1844px 1970px #FFF, 1567px 1164px #FFF, 1708px 1036px #FFF, 1896px 1924px #FFF, 1853px 1969px #FFF, 1688px 1289px #FFF, 1506px 1067px #FFF, 1838px 1555px #FFF, 1645px 1310px #FFF, 1876px 1938px #FFF, 1884px 1027px #FFF, 1142px 1934px #FFF, 1560px 1816px #FFF, 1727px 1715px #FFF, 1718px 1899px #FFF, 1645px 1838px #FFF, 1854px 1347px #FFF, 1540px 1715px #FFF, 1709px 1580px #FFF, 1711px 1828px #FFF, 1159px 1982px #FFF, 1540px 1027px #FFF, 1843px 1921px #FFF, 1885px 1664px #FFF, 1515px 1715px #FFF, 1721px 1854px #FFF, 1684px 1948px #FFF, 1897px 1176px #FFF, 1674px 1755px #FFF, 1834px 1971px #FFF, 1154px 1028px #FFF, 1559px 1688px #FFF, 1872px 1636px #FFF, 1563px 1837px #FFF, 1696px 1075px #FFF, 1195px 1870px #FFF, 1851px 1172px #FFF, 1709px 1698px #FFF, 1640px 1845px #FFF, 1553px 1163px #FFF, 1695px 1826px #FFF, 1895px 1996px #FFF, 1672px 1814px #FFF, 1722px 1978px #FFF, 1696px 1554px #FFF, 1515px 1832px #FFF, 1729px 1857px #FFF, 1699px 1689px #FFF, 1871px 1628px #FFF, 1720px 1677px #FFF, 1512px 1838px #FFF, 1840px 1935px #FFF, 1187px 1934px #FFF, 1871px 1647px #FFF, 1680px 1793px #FFF, 1856px 1045px #FFF, 1162px 1828px #FFF, 1573px 1688px #FFF, 1851px 1615px #FFF, 1558px 1830px #FFF, 1723px 1614px #FFF, 1873px 1697px #FFF, 1838px 1971px #FFF, 1678px 1844px #FFF, 1891px 1172px #FFF, 1659px 1687px #FFF, 1870px 1612px #FFF, 1851px 1695px #FFF, 1842px 1827px #FFF, 1696px 1568px #FFF, 1529px 1692px #FFF, 1161px 1970px #FFF, 1699px 1659px #FFF, 1529px 1690px #FFF, 1876px 1827px #FFF, 1687px 1845px #FFF, 1714px 1863px #FFF, 1687px 1632px #FFF, 1720px 1875px #FFF, 1644px 1697px #FFF, 1838px 1945px #FFF, 1677px 1683px #FFF, 1526px 1832px #FFF, 1526px 1693px #FFF, 1883px 1624px #FFF, 1696px 1855px #FFF, 1897px 1655px #FFF, 1561px 1674px #FFF, 1728px 1692px #FFF, 1872px 1628px #FFF, 1898px 1693px #FFF, 1642px 1849px #FFF, 1870px 1658px #FFF, 1727px 1684px #FFF, 1697px 1852px #FFF, 1886px 1615px #FFF, 1556px 1689px #FFF, 1885px 1659px #FFF, 1723px 1688px #FFF, 1870px 1858px #FFF, 1559px 1831px #FFF, 1872px 1615px #FFF, 1698px 1858px #FFF, 1713px 1687px #FFF, 1870px 1683px #FFF, 1858px 1854px #FFF, 1883px 1629px #FFF, 1557px 1689px #FFF, 1699px 1859px #FFF, 1856px 1660px #FFF, 1885px 1687px #FFF, 1728px 1851px #FFF, 1698px 1616px #FFF, 1561px 1833px #FFF, 1728px 1689px #FFF, 1870px 1688px #FFF, 1887px 1616px #FFF, 1869px 1858px #FFF, 1887px 1659px #FFF, 1728px 1689px #FFF, 1885px 1859px #FFF, 1727px 1688px #FFF, 1556px 1831px #FFF;
+    animation: animStar 50s linear infinite;
+  }
+
+  #stars2 {
+    width: 2px;
+    height: 2px;
+    background: transparent;
+    box-shadow: 679px 1506px #FFF, 1717px 776px #FFF, 1963px 1235px #FFF, 1285px 1827px #FFF, 1944px 1754px #FFF, 1178px 1364px #FFF, 1802px 1582px #FFF, 1141px 1190px #FFF, 155px 1880px #FFF, 1967px 1848px #FFF, 166px 1738px #FFF, 1795px 1191px #FFF, 1072px 1714px #FFF, 1963px 1093px #FFF, 1687px 1355px #FFF, 1353px 1473px #FFF, 1026px 1821px #FFF, 1434px 1570px #FFF, 1877px 1734px #FFF, 1681px 1521px #FFF, 1808px 1080px #FFF, 1024px 1833px #FFF, 1620px 1040px #FFF, 1761px 1314px #FFF, 1296px 1175px #FFF, 1647px 1649px #FFF, 1893px 1451px #FFF, 1270px 1319px #FFF, 1877px 1158px #FFF, 1354px 1726px #FFF, 1303px 1093px #FFF, 1877px 1885px #FFF, 1895px 1453px #FFF, 1270px 1080px #FFF, 1877px 1833px #FFF, 1895px 1755px #FFF, 1270px 1314px #FFF, 1877px 1521px #FFF, 1354px 1040px #FFF, 1303px 1649px #FFF, 1647px 1451px #FFF, 1893px 1319px #FFF, 1270px 1158px #FFF, 1877px 1726px #FFF, 1354px 1093px #FFF, 1303px 1885px #FFF, 1647px 1453px #FFF, 1893px 1080px #FFF, 1270px 1833px #FFF, 1877px 1755px #FFF, 1354px 1314px #FFF, 1303px 1521px #FFF, 1647px 1040px #FFF, 1893px 1649px #FFF, 1270px 1451px #FFF, 1877px 1319px #FFF, 1354px 1158px #FFF, 1303px 1726px #FFF, 1647px 1093px #FFF, 1893px 1885px #FFF, 1270px 1453px #FFF, 1877px 1080px #FFF, 1354px 1833px #FFF, 1303px 1755px #FFF, 1647px 1314px #FFF, 1893px 1521px #FFF, 1270px 1040px #FFF, 1877px 1649px #FFF, 1354px 1451px #FFF, 1303px 1319px #FFF, 1647px 1158px #FFF, 1893px 1726px #FFF, 1270px 1093px #FFF, 1877px 1885px #FFF;
+    animation: animStar 100s linear infinite;
+  }
+
+  #stars2:after {
+    content: " ";
+    position: absolute;
+    top: 2000px;
+    width: 2px;
+    height: 2px;
+    background: transparent;
+    box-shadow: 679px 1506px #FFF, 1717px 776px #FFF, 1963px 1235px #FFF, 1285px 1827px #FFF, 1944px 1754px #FFF, 1178px 1364px #FFF, 1802px 1582px #FFF, 1141px 1190px #FFF, 155px 1880px #FFF, 1967px 1848px #FFF, 166px 1738px #FFF, 1795px 1191px #FFF, 1072px 1714px #FFF, 1963px 1093px #FFF, 1687px 1355px #FFF, 1353px 1473px #FFF, 1026px 1821px #FFF, 1434px 1570px #FFF, 1877px 1734px #FFF, 1681px 1521px #FFF, 1808px 1080px #FFF, 1024px 1833px #FFF, 1620px 1040px #FFF, 1761px 1314px #FFF, 1296px 1175px #FFF, 1647px 1649px #FFF, 1893px 1451px #FFF, 1270px 1319px #FFF, 1877px 1158px #FFF, 1354px 1726px #FFF, 1303px 1093px #FFF, 1877px 1885px #FFF, 1895px 1453px #FFF, 1270px 1080px #FFF, 1877px 1833px #FFF, 1895px 1755px #FFF, 1270px 1314px #FFF, 1877px 1521px #FFF, 1354px 1040px #FFF, 1303px 1649px #FFF, 1647px 1451px #FFF, 1893px 1319px #FFF, 1270px 1158px #FFF, 1877px 1726px #FFF, 1354px 1093px #FFF, 1303px 1885px #FFF, 1647px 1453px #FFF, 1893px 1080px #FFF, 1270px 1833px #FFF, 1877px 1755px #FFF, 1354px 1314px #FFF, 1303px 1521px #FFF, 1647px 1040px #FFF, 1893px 1649px #FFF, 1270px 1451px #FFF, 1877px 1319px #FFF, 1354px 1158px #FFF, 1303px 1726px #FFF, 1647px 1093px #FFF, 1893px 1885px #FFF, 1270px 1453px #FFF, 1877px 1080px #FFF, 1354px 1833px #FFF, 1303px 1755px #FFF, 1647px 1314px #FFF, 1893px 1521px #FFF, 1270px 1040px #FFF, 1877px 1649px #FFF, 1354px 1451px #FFF, 1303px 1319px #FFF, 1647px 1158px #FFF, 1893px 1726px #FFF, 1270px 1093px #FFF, 1877px 1885px #FFF;
+    animation: animStar 150s linear infinite;
+  }
+
+  #stars3 {
+    width: 3px;
+    height: 3px;
+    background: transparent;
+    box-shadow: 1446px 320px #FFF, 512px 1867px #FFF, 1055px 1477px #FFF, 1379px 1177px #FFF, 1893px 1139px #FFF, 1378px 1304px #FFF, 1451px 910px #FFF, 1034px 1279px #FFF, 1433px 1929px #FFF, 1289px 1755px #FFF, 1756px 1104px #FFF, 1795px 1129px #FFF, 1297px 1057px #FFF, 1888px 1050px #FFF, 1893px 1139px #FFF, 1378px 1304px #FFF, 1451px 910px #FFF, 1034px 1279px #FFF, 1433px 1929px #FFF, 1289px 1755px #FFF, 1756px 1104px #FFF, 1795px 1129px #FFF, 1297px 1057px #FFF, 1888px 1050px #FFF, 1893px 1139px #FFF, 1378px 1304px #FFF, 1451px 910px #FFF, 1034px 1279px #FFF, 1433px 1929px #FFF, 1289px 1755px #FFF, 1756px 1104px #FFF, 1795px 1129px #FFF, 1297px 1057px #FFF, 1888px 1050px #FFF, 1893px 1139px #FFF, 1378px 1304px #FFF, 1451px 910px #FFF, 1034px 1279px #FFF, 1433px 1929px #FFF, 1289px 1755px #FFF, 1756px 1104px #FFF, 1795px 1129px #FFF, 1297px 1057px #FFF, 1888px 1050px #FFF, 1893px 1139px #FFF, 1378px 1304px #FFF, 1451px 910px #FFF, 1034px 1279px #FFF, 1433px 1929px #FFF, 1289px 1755px #FFF, 1756px 1104px #FFF, 1795px 1129px #FFF, 1297px 1057px #FFF, 1888px 1050px #FFF;
+    animation: animStar 150s linear infinite;
+  }
+
+  #stars3:after {
+    content: " ";
+    position: absolute;
+    top: 2000px;
+    width: 3px;
+    height: 3px;
+    background: transparent;
+    box-shadow: 1446px 320px #FFF, 512px 1867px #FFF, 1055px 1477px #FFF, 1379px 1177px #FFF, 1893px 1139px #FFF, 1378px 1304px #FFF, 1451px 910px #FFF, 1034px 1279px #FFF, 1433px 1929px #FFF, 1289px 1755px #FFF, 1756px 1104px #FFF, 1795px 1129px #FFF, 1297px 1057px #FFF, 1888px 1050px #FFF, 1893px 1139px #FFF, 1378px 1304px #FFF, 1451px 910px #FFF, 1034px 1279px #FFF, 1433px 1929px #FFF, 1289px 1755px #FFF, 1756px 1104px #FFF, 1795px 1129px #FFF, 1297px 1057px #FFF, 1888px 1050px #FFF, 1893px 1139px #FFF, 1378px 1304px #FFF, 1451px 910px #FFF, 1034px 1279px #FFF, 1433px 1929px #FFF, 1289px 1755px #FFF, 1756px 1104px #FFF, 1795px 1129px #FFF, 1297px 1057px #FFF, 1888px 1050px #FFF;
+    animation: animStar 150s linear infinite;
+  }
+
+  @keyframes animStar {
+    from {
+      transform: translateY(0px);
+    }
+
+    to {
+      transform: translateY(-2000px);
+    }
+  }
+
+  /* Wavy background */
+  .wavy-bg {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z' fill='%23F59E0B' fill-opacity='0.1'%3E%3C/path%3E%3C/svg%3E");
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  /* Soft shadow utilities */
+  .shadow-soft {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  }
+
+  .dark .shadow-soft {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .shadow-soft-sm {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .dark .shadow-soft-sm {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Soft pastel color utilities */
+  .bg-soft-lavender {
+    background-color: theme('colors.soft-lavender');
+  }
+
+  .bg-pastel-blue {
+    background-color: theme('colors.pastel-blue');
+  }
+
+  .bg-pastel-pink {
+    background-color: theme('colors.pastel-pink');
+  }
+
+  .bg-pastel-green {
+    background-color: theme('colors.pastel-green');
+  }
+
+  .bg-warm-gray {
+    background-color: theme('colors.warm-gray');
+  }
+
+  .text-warm-gray {
+    color: theme('colors.warm-gray');
+  }
+
+  .border-warm-gray {
+    border-color: theme('colors.warm-gray');
+  }
+
+  /* Animation utilities */
+  .fab-pulse {
+    animation: fab-pulse 2s infinite;
+  }
+
+  .streak-pulse {
+    animation: streak-pulse 2s infinite;
+  }
+}
+
+@keyframes fab-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes streak-pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Swipe animations */
+.swipe-right {
+  transform: translateX(100px);
+  opacity: 0.7;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.swipe-left {
+  transform: translateX(-100px);
+  opacity: 0.7;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.swipe-down {
+  transform: translateY(80px);
+  opacity: 0.7;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.swipe-up {
+  transform: translateY(-80px);
+  opacity: 0.7;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.swipe-indicator-right.show {
+  opacity: 1;
+  transform: translateX(10px);
+  transition: all 0.2s ease-out;
+}
+
+.swipe-indicator-left.show {
+  opacity: 1;
+  transform: translateX(-10px);
+  transition: all 0.2s ease-out;
+}
+
+.swipe-indicator-down.show {
+  opacity: 1;
+  transform: translateY(10px);
+  transition: all 0.2s ease-out;
+}
+
+.swipe-feedback {
+  transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+}
+
+.swipe-feedback.right {
+  transform: translateX(20px);
+  opacity: 0.8;
+}
+
+.swipe-feedback.left {
+  transform: translateX(-20px);
+  opacity: 0.8;
+}
+
+.swipe-feedback.down {
+  transform: translateY(20px);
+  opacity: 0.8;
+}
+
+.card-swiping {
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Remove tap highlights on charts */
+.recharts-wrapper, .recharts-surface, .recharts-bar, .recharts-sector {
+  -webkit-tap-highlight-color: transparent !important;
+  user-select: none;
+}
+
+.recharts-bar-rectangle, .recharts-pie-sector {
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Touch-friendly mobile optimizations */
+@media (max-width: 768px) {
+  .touch-pan-y {
+    touch-action: pan-y;
+  }
+
+  .select-none {
+    user-select: none;
+  }
+}
+
+/* Custom border width utilities */
+.border-3 {
+  border-width: 3px;
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

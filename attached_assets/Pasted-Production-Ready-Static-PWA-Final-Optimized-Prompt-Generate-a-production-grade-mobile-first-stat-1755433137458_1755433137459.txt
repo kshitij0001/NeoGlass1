@@ -1,0 +1,701 @@
+Production-Ready Static PWA (Final Optimized Prompt)
+Generate a production-grade, mobile-first static PWA exactly as specified.
+________________________________________
+🥇 Primary Requirements (Non-Negotiable)
+1. Mobile-First UX
+•	Designed primarily for mobile screens (responsive up to desktop).
+•	Bottom navigation:
+o	Primary routes only → Dashboard + Calendar.
+o	Disappears on scroll down, reappears on scroll up.
+o	Hamburger button: expands upward to reveal secondary routes (/plan, /tests, /progress, /settings).
+•	Thumb-zone optimization: critical actions (Add, Review, Test) always within reach.
+•	Swipe gestures:
+o	Left/right → switch between Dashboard & Calendar.
+o	Swipe review cards → Done / Snooze.
+•	Sticky top bar: Daily motivation quote always visible while scrolling..
+•	SVG icons only (Heroicons/lucide).
+2. Calendar (must be fully functional)
+•	Views: Month, Week, Day.
+•	Interactions:
+o	Tap/click date → modal/drawer with reviews + manual events.
+o	Add/edit/delete manual events (exams, mocks, holidays).
+o	Drag review task within ±3 days → preserves future intervals.
+o	Colored subject dots + tooltips.
+o	Swipe left/right → change week/month/day view.
+•	Must be bug-free, intuitive, and tested.
+3. Spaced Repetition System (SRS, flawless execution)
+•	OFFSETS = [4,7,14,28,40].
+•	Create reviews at local midnight ISO.
+•	Overdue → always shown first; completing late does not shift future dates.
+•	Snooze = 1–3 days (warn if overload).
+•	Drag reschedule → keep future intervals intact.
+•	Queue ordering: Overdue (oldest first) → Due today (Hard→Easy) → Optional upcoming.
+•	Unit tests for:
+o	Local-midnight date generation
+o	Overdue detection
+o	Snooze bounds
+o	Drag-reschedule interval integrity
+________________________________________
+🎨 Visual & UX Design
+•	Theme: Retro-futurist minimal (mustard + pastel, soft shadows, white space).
+•	Rounded UI, subtle wavy SVG backgrounds.
+•	Light/Dark toggle, AA contrast compliance.
+•	Large touch targets, thumb-friendly zones.
+________________________________________
+📅 Routes & Features
+/Dashboard (priority route)
+•	Sticky Motivation Quote
+o	Always visible at top while scrolling.
+o	Rotates daily from a predefined list.
+•	NEET 2026 Countdown Tile
+o	Prominent, simple countdown (days:hours:minutes).
+o	Motivational but non-intrusive.
+•	Streak Indicator + Micro-Rewards
+o	Shows current streak.
+o	Tiny confetti or icon pulse on milestone streaks (10, 20, 30, 40, 50 days…).
+o	No clutter; subtle, mobile-friendly animation.
+•	Today’s SRS Queue
+o	Core of the Dashboard.
+o	Ordered: Overdue → Due today (Hard→Easy) → Optional upcoming.
+o	Swipe cards → Done / Snooze.
+o	Thumb-zone optimized for one-handed use.
+•	Quick Add
+o	Subject → Chapter → Topic → Difficulty → Notes (optional).
+o	Ability to +Add Chapter or +Add Topic inline when creating.
+o	FAB (Floating Action Button) for easy access on mobile.
+•	7-Day Overview
+o	Mini chart / bar strip → “Reviews due next 7 days.”
+o	Lets user anticipate workload spikes.
+•	Coverage % by Subject
+o	Simple progress rings/bars (Physics / Chemistry / Biology).
+o	Color-coded with warm pastel accents.
+•	Review Health Tile
+o	One key metric: “97% caught up”.
+o	Red/green indicator depending on overdue load.
+o	Taps through to /progress for details.
+/calendar (priority route)
+•	Month/Week/Day views.
+•	Colored subject dots; tooltips.
+•	Tap date → modal/drawer showing reviews + manual events.
+•	Add/edit/delete events.
+•	Drag reschedule reviews (±3 days).
+•	Swipe navigation between views.
+/plan (syllabus)
+•	Preloaded NEET 2026 syllabus 
+•	Structure: Subject → Chapter → Topic.
+•	Difficulty is user-set only (seed difficulty non-binding).
+•	Bulk add topics, CSV import.
+•	Coverage states: Not started / In progress / Done.
+/tests
+•	Log test sessions (date, duration, syllabus, scores).
+•	Charts: trend (line), subject split (bars), difficulty accuracy (pie).
+•	Rolling averages, best/worst chapters.
+/progress
+•	Coverage heatmaps, mastery by difficulty.
+•	SRS health: on-time vs late.
+•	14-day forecast.
+•	Export: ZIP, CSV, JSON.
+/settings
+•	NEET target date/time.
+•	Theme toggle.
+•	Import/export/reset.
+________________________________________
+🗂️ State & Persistence
+•	Zustand slices: syllabus, sessions, reviews, files, tests, settings.
+•	Persist via IndexedDB (hydrate on app start; skeletons while loading).
+•	Export ZIP: JSON slices + blobs.
+•	Import with merge/replace confirmation.
+________________________________________
+📦 Build & Deployment
+•	npm scripts + Makefile (dev, build, preview, test, lint, format, typecheck, pwa, gh:deploy).
+•	GitHub Pages: base config + workflow..
+•	README: setup, deploy, SRS rules, data model, screenshots.
+________________________________________
+✅ Acceptance Criteria
+•	Mobile-first UX: responsive, thumb-zone, swipe gestures, sticky top bar, FAB, disappearing bottom nav.
+•	Calendar: functional (tap date → list, add/edit/delete events, drag-reschedule, multi-view, swipe nav).
+•	SRS flawless: strict rule compliance, tested, reliable queue ordering.
+•	Dashboard: queue, streaks, countdown, sticky motivation.
+•	Data persists + export/import works.
+•	Offline-first PWA deployable anywhere.
+•	Unit tests pass.
+•	Accessibility & performance audits pass.
+
+
+
+// src/data/neet_syllabus.ts
+
+export type Difficulty = 'Easy' | 'Medium' | 'Hard';
+
+export interface Chapter {
+  id: string;
+  name: string;
+  difficulty: Difficulty;
+  topics: Array<{ id: string; name: string; difficulty: Difficulty }>;
+}
+
+export interface Syllabus {
+  subject: 'Physics' | 'Chemistry' | 'Biology';
+  chapters: Chapter[];
+}
+
+export const SYLLABUS: Syllabus[] = [
+  {
+    subject: 'Physics',
+    chapters: [
+      {
+        id: 'phy-mechanics',
+        name: 'Laws of Motion & Mechanics',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'units', name: 'Units & Dimensions', difficulty: 'Medium' },
+          { id: 'motion-1d', name: 'Motion in a Straight Line', difficulty: 'Medium' },
+          { id: 'motion-2d', name: 'Motion in a Plane (Projectile, Circular)', difficulty: 'Medium' },
+          { id: 'laws-newton', name: 'Newton’s Laws of Motion & Applications', difficulty: 'Medium' },
+          { id: 'friction', name: 'Friction & Dynamics of Motion', difficulty: 'Medium' },
+          { id: 'work-energy', name: 'Work, Energy & Power', difficulty: 'Medium' },
+          { id: 'rotational', name: 'Rotational Motion & Moment of Inertia', difficulty: 'Medium' },
+          { id: 'gravitation', name: 'Gravitation & Satellite Motion', difficulty: 'Medium' }
+        ]
+      },
+      {
+        id: 'phy-thermo',
+        name: 'Thermal Physics',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'thermal-props', name: 'Thermal Properties of Matter', difficulty: 'Medium' },
+          { id: 'thermodynamics', name: 'Laws of Thermodynamics', difficulty: 'Medium' },
+          { id: 'heat-engines', name: 'Heat Engines & Carnot Cycle', difficulty: 'Medium' },
+          { id: 'kinetic-theory', name: 'Kinetic Theory of Gases', difficulty: 'Medium' }
+        ]
+      },
+      {
+        id: 'phy-waves',
+        name: 'Oscillations & Waves',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'shm', name: 'Simple Harmonic Motion', difficulty: 'Medium' },
+          { id: 'damped-forced', name: 'Damped & Forced Oscillations, Resonance', difficulty: 'Medium' },
+          { id: 'sound', name: 'Waves on String & Sound Waves', difficulty: 'Medium' },
+          { id: 'doppler', name: 'Doppler Effect', difficulty: 'Medium' }
+        ]
+      },
+      {
+        id: 'phy-optics',
+        name: 'Optics',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'ray-optics', name: 'Ray Optics & Optical Instruments', difficulty: 'Medium' },
+          { id: 'wave-optics', name: 'Wave Optics – Interference, Diffraction, Polarisation', difficulty: 'Medium' }
+        ]
+      },
+      {
+        id: 'phy-elec-magnet',
+        name: 'Electricity & Magnetism',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'electrostatics', name: 'Electrostatics: Charges, Fields & Potential', difficulty: 'Medium' },
+          { id: 'capacitors', name: 'Capacitors & Dielectrics', difficulty: 'Medium' },
+          { id: 'current-electricity', name: 'Current Electricity & Ohm’s Law', difficulty: 'Medium' },
+          { id: 'circuits', name: 'Circuits, Kirchhoff’s Laws, Instruments', difficulty: 'Medium' },
+          { id: 'magnetism', name: 'Magnetism & Matter', difficulty: 'Medium' },
+          { id: 'emi', name: 'Electromagnetic Induction & AC', difficulty: 'Medium' },
+          { id: 'em-waves', name: 'Electromagnetic Waves', difficulty: 'Medium' }
+        ]
+      },
+      {
+        id: 'phy-modern',
+        name: 'Modern Physics',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'dual-nature', name: 'Dual Nature of Radiation & Matter', difficulty: 'Medium' },
+          { id: 'atoms', name: 'Atoms & Nuclei', difficulty: 'Medium' },
+          { id: 'semiconductors', name: 'Semiconductors & Electronics', difficulty: 'Medium' },
+          { id: 'communication', name: 'Communication Systems', difficulty: 'Medium' }
+        ]
+      }
+    ]
+  },
+  {
+    subject: 'Chemistry',
+    chapters: [
+      {
+        id: 'chem-basic',
+        name: 'Basic Concepts of Chemistry',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'mole', name: 'Mole Concept & Stoichiometry', difficulty: 'Medium' },
+          { id: 'atomic-structure', name: 'Atomic Structure & Quantum Numbers', difficulty: 'Medium' },
+          { id: 'periodic-table', name: 'Periodic Table & Periodicity', difficulty: 'Medium' },
+          { id: 'chemical-bonding', name: 'Chemical Bonding & Molecular Structure', difficulty: 'Medium' }
+        ]
+      },
+      {
+        id: 'chem-states',
+        name: 'States of Matter & Solutions',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'gaseous-state', name: 'Gaseous State', difficulty: 'Medium' },
+          { id: 'liquid-state', name: 'Liquid State & Properties', difficulty: 'Medium' },
+          { id: 'solid-state', name: 'Solid State & Crystals', difficulty: 'Medium' },
+          { id: 'solutions', name: 'Solutions & Colligative Properties', difficulty: 'Medium' }
+        ]
+      },
+      {
+        id: 'chem-thermo-kinetics',
+        name: 'Thermodynamics & Kinetics',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'thermodynamics', name: 'Thermodynamics – First & Second Law', difficulty: 'Medium' },
+          { id: 'equilibrium', name: 'Chemical Equilibrium & Ionic Equilibria', difficulty: 'Medium' },
+          { id: 'kinetics', name: 'Chemical Kinetics', difficulty: 'Medium' },
+          { id: 'redox', name: 'Redox Reactions & Electrochemistry', difficulty: 'Medium' }
+        ]
+      },
+      {
+        id: 'chem-inorganic',
+        name: 'Inorganic Chemistry',
+        difficulty: 'Medium',
+        topics: [
+          { id: 's-block', name: 's-Block Element (Alkali & Alkaline Earth)', difficulty: 'Medium' },
+          { id: 'p-block-1', name: 'p-Block Element: Group 13 & 14', difficulty: 'Medium' },
+          { id: 'p-block-2', name: 'p-Block Element: Group 15, 16, 17, 18', difficulty: 'Medium' },
+          { id: 'd-block', name: 'd-Block (Transition) Elements', difficulty: 'Medium' },
+          { id: 'f-block', name: 'f-Block (Lanthanides & Actinides)', difficulty: 'Medium' },
+          { id: 'coordination', name: 'Coordination Compounds', difficulty: 'Medium' }
+        ]
+      },
+      {
+        id: 'chem-organic',
+        name: 'Organic Chemistry',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'basic-organic', name: 'Basics: Hybridization, Nomenclature, Isomerism', difficulty: 'Medium' },
+          { id: 'hydrocarbons', name: 'Hydrocarbons: Alkanes, Alkenes, Alkynes, Aromatics', difficulty: 'Medium' },
+          { id: 'halo', name: 'Haloalkanes & Haloarenes', difficulty: 'Medium' },
+          { id: 'alcohols', name: 'Alcohols, Phenols & Ethers', difficulty: 'Medium' },
+          { id: 'aldehydes', name: 'Aldehydes, Ketones & Carboxylic Acids', difficulty: 'Medium' },
+          { id: 'amines', name: 'Amines', difficulty: 'Medium' },
+          { id: 'biomolecules', name: 'Biomolecules (Proteins, Carbohydrates, Nucleic Acids)', difficulty: 'Medium' },
+          { id: 'polymers', name: 'Polymers', difficulty: 'Medium' },
+          { id: 'everyday', name: 'Chemistry in Everyday Life', difficulty: 'Medium' }
+        ]
+      }
+    ]
+  },
+  {
+    subject: 'Biology',
+    chapters: [
+      {
+        id: 'bio-diversity',
+        name: 'Diversity of Living World',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'classification', name: 'Biological Classification', difficulty: 'Medium' },
+          { id: 'plant-kingdom', name: 'Plant Kingdom Overview', difficulty: 'Medium' },
+          { id: 'animal-kingdom', name: 'Animal Kingdom Overview', difficulty: 'Medium' }
+        ]
+      },
+      {
+        id: 'bio-cell',
+        name: 'Cell Structure & Function',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'cell-structure', name: 'Cell Structure & Organelles', difficulty: 'Medium' },
+          { id: 'cell-cycle', name: 'Cell Cycle & Division', difficulty: 'Medium' },
+          { id: 'biomolecules', name: 'Biomolecules', difficulty: 'Medium' }
+        ]
+      },
+      {
+        id: 'bio-plants',
+        name: 'Plant Physiology',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'transport', name: 'Transport in Plants', difficulty: 'Medium' },
+          { id: 'photosynthesis', name: 'Photosynthesis', difficulty: 'Medium' },
+          { id: 'respiration', name: 'Respiration in Plants', difficulty: 'Medium' },
+          { id: 'plant-growth', name: 'Plant Growth & Hormones', difficulty: 'Medium' }
+        ]
+      },
+      {
+        id: 'bio-human-physio',
+        name: 'Human Physiology',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'digestion', name: 'Digestion & Absorption', difficulty: 'Medium' },
+          { id: 'respiration', name: 'Breathing & Respiration', difficulty: 'Medium' },
+          { id: 'circulation', name: 'Body Fluids & Circulation', difficulty: 'Medium' },
+          { id: 'excretion', name: 'Excretory Products & Elimination', difficulty: 'Medium' },
+          { id: 'locomotion', name: 'Locomotion & Movement', difficulty: 'Medium' },
+          { id: 'neural', name: 'Neural Control & Coordination', difficulty: 'Medium' },
+          { id: 'endo', name: 'Chemical Coordination & Integration', difficulty: 'Medium' }
+        ]
+      },
+      {
+        id: 'bio-reproduction',
+        name: 'Reproduction',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'repro-organisms', name: 'Reproduction in Organisms', difficulty: 'Medium' },
+          { id: 'flowers', name: 'Sexual Reproduction in Flowering Plants', difficulty: 'Medium' },
+          { id: 'human-repro', name: 'Human Reproduction', difficulty: 'Medium' },
+          { id: 'repro-health', name: 'Reproductive Health', difficulty: 'Medium' }
+        ]
+      },
+      {
+        id: 'bio-genetics',
+        name: 'Genetics & Evolution',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'principles', name: 'Principles of Inheritance & Variation', difficulty: 'Medium' },
+          { id: 'molecular', name: 'Molecular Basis of Inheritance', difficulty: 'Medium' },
+          { id: 'evolution', name: 'Evolution', difficulty: 'Medium' }
+        ]
+      },
+      {
+        id: 'bio-eco',
+        name: 'Ecology & Environment',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'ecosystem', name: 'Ecosystem', difficulty: 'Medium' },
+          { id: 'biodiversity', name: 'Biodiversity & Conservation', difficulty: 'Medium' },
+          { id: 'environment', name: 'Environmental Issues', difficulty: 'Medium' },
+          { id: 'organisms', name: 'Organisms & Populations', difficulty: 'Medium' }
+        ]
+      },
+      {
+        id: 'bio-applied',
+        name: 'Applied Biology',
+        difficulty: 'Medium',
+        topics: [
+          { id: 'biotech-principles', name: 'Biotechnology: Principles & Processes', difficulty: 'Medium' },
+          { id: 'biotech-applications', name: 'Biotechnology: Applications', difficulty: 'Medium' },
+          { id: 'human-health', name: 'Human Health & Disease', difficulty: 'Medium' },
+          { id: 'microbes', name: 'Microbes in Human Welfare', difficulty: 'Medium' },
+          { id: 'food-production', name: 'Strategies for Food Production & Improvement', difficulty: 'Medium' }
+        ]
+      }
+    ]
+  }
+];
+
+
+
+Brutal motivation quotes 
+  "No excuses. Open the book.",
+  "Less scrolling, more studying.",
+  "Hard now, easy exams later.",
+  "Win the study hour.",
+  "Be undeniable in your results.",
+  "Your future self is watching.",
+  "Excellence is a daily habit.",
+  "Discomfort now, freedom later.",
+  "Champions revise when they don’t feel like it.",
+  "Success is earned in silence.",
+  "Discipline beats motivation.",
+  "One more page, no matter what.",
+  "Suffer through the boring chapters.",
+  "Comfort is the enemy of grades.",
+  "Consistency creates mastery.",
+  "Excuses don’t write essays.",
+  "Nobody cares, study harder.",
+  "Be relentless with revision.",
+  "Work until answers flow naturally.",
+  "Sacrifice distraction or stay the same.",
+  "Earn your rest by studying first.",
+  "Get sharper or get left behind.",
+  "Outwork your past self.",
+  "Grind now, brag later.",
+  "Mental pain builds intellectual strength.",
+  "Your competition is revising.",
+  "Excuses are for the weak-minded.",
+  "Focus is your weapon.",
+  "Be the hardest worker in the library.",
+  "Your feelings don’t matter to deadlines.",
+  "Every page counts.",
+  "Don’t stop until you’re proud.",
+  "Comfort kills progress.",
+  "Push limits or stay average.",
+  "Quit complaining, start reading.",
+  "Weakness leaves when effort enters.",
+  "Get comfortable being uncomfortable.",
+  "Masters are built, not born.",
+  "Dominate your study session.",
+  "Outlearn everyone.",
+  "Results demand sacrifice.",
+  "Hustle in silence.",
+  "Struggle makes scholars.",
+  "Stop wishing, start working.",
+  "The grind knows no excuses.",
+  "Discomfort is growth.",
+  "Outlast the mental fatigue.",
+  "One day or day one. You choose.",
+  "Study now, shine forever.",
+  "Excuses are lies.",
+  "Dreams demand discipline.",
+  "If you’re tired, revise tired.",
+  "Champions don’t quit revising.",
+  "Grind until they can’t ignore your grades.",
+  "Effort is free.",
+  "Sacrifice comfort for mastery.",
+  "Earn every grade.",
+  "Push past your mental limits.",
+  "Focus harder.",
+  "Your brain won’t quit. Your will does.",
+  "Dominate the moment.",
+  "Show up every day.",
+  "The pain is the point.",
+  "Grind, learn, repeat.",
+  "Excuses change nothing.",
+  "Hard work beats talent.",
+  "Do it now or regret later.",
+  "Study is success in progress.",
+  "Be stronger than your excuses.",
+  "Stop stopping.",
+  "Work until your idols are rivals.",
+  "Don’t wait. Revise.",
+  "Excuses don’t pass exams.",
+  "Stay hungry, stay ruthless.",
+  "Winners don’t skip study sessions.",
+  "Sacrifice today, dominate tomorrow.",
+  "Your grind defines your grades.",
+  "No pain, no progress.",
+  "Study insane or remain the same.",
+  "Be addicted to improvement.",
+  "Mental pain is growth.",
+  "Effort never lies.",
+  "Weakness isn’t welcome here.",
+  "Do it for future you.",
+  "One page at a time.",
+  "The grind is the reward.",
+  "Shut up and study.",
+  "Success is hidden in late nights.",
+  "Rise and grind.",
+  "Sacrifice equals success.",
+  "Outwork yesterday’s version of you.",
+  "Excuses are useless.",
+  "Push or be pushed aside.",
+  "Commit or quit.",
+  "Work beats whining.",
+  "Results require suffering.",
+  "Prove them wrong with grades.",
+  "Grind without mercy.",
+  "Discipline equals freedom.",
+  "Every day counts.",
+  "Failure is fuel.",
+  "No retreat, no surrender.",
+  "Make boredom your ally.",
+  "Do the work.",
+  "Sacrifice beats shortcuts.",
+  "Effort over excuses.",
+  "Build knowledge, don’t beg for it.",
+  "No one cares. Work harder.",
+  "Wisdom is earned.",
+  "Outwork the doubt.",
+  "Consistency wins exams.",
+  "Fatigue reveals strength.",
+  "Work now, shine later.",
+  "Do hard readings.",
+  "Results require repetition.",
+  "Grind with purpose.",
+  "The desk is the battlefield.",
+  "Don’t skip the struggle.",
+  "Pay your dues in focus.",
+  "Sacrifice is strength.",
+  "Push until you learn.",
+  "Excuses are for losers.",
+  "Be obsessed or be average.",
+  "Earn respect with results.",
+  "Dominate distractions.",
+  "Knowledge comes from struggle.",
+  "Grind in silence.",
+  "Excuses won’t answer the test.",
+  "Stop talking, start reading.",
+  "Every day is exam prep.",
+  "Work beats talent.",
+  "Excuses won’t transform you.",
+  "Make discipline your superpower.",
+  "Hustle until you’re remembered.",
+  "Excuses change nothing.",
+  "Push the brain barrier.",
+  "Be addicted to the grind.",
+  "The exam doesn’t care.",
+  "Sacrifice sleep if you must.",
+  "Hard work is undefeated.",
+  "Stay ruthless.",
+  "Results demand resilience.",
+  "No one owes you a pass.",
+  "The grind tests your character.",
+  "Suffer with purpose.",
+  "Excuses destroy progress.",
+  "Push when it’s boring.",
+  "Your grind, your glory.",
+  "No grind, no greatness.",
+  "Don’t cheat the grind.",
+  "Excuses are wasted energy.",
+  "Work until you know it.",
+  "Discipline is destiny.",
+  "Fight for every answer.",
+  "Focus is sacrifice.",
+  "Grind harder than yesterday.",
+  "Quitters don’t graduate.",
+  "Excuses build nothing.",
+  "Pain is proof of effort.",
+  "Respect the grind.",
+  "Excuses make you weak.",
+  "Dominate or disappear.",
+  "Your grind is your weapon.",
+  "Sacrifice excuses.",
+  "Stay on the grind.",
+  "Hard work creates masters.",
+  "Excuses won’t save you.",
+  "Grind through the boredom.",
+  "Discipline never fails.",
+  "Sacrifice mediocrity.",
+  "Every page is progress.",
+  "Excuses kill dreams.",
+  "Effort earns results.",
+  "Focus builds strength.",
+  "Work until it hurts.",
+  "Grind over comfort.",
+  "Excuses are poison.",
+  "Hustle until you drop.",
+  "Sacrifice is the shortcut.",
+  "Every second counts.",
+  "Grind until you break limits.",
+  "Excuses delay greatness.",
+  "No study, no success.",
+  "Excuses won’t get results.",
+  "Work through the fatigue.",
+  "Sacrifice excuses for excellence.",
+  "The grind builds greatness.",
+  "Excuses equal weakness.",
+  "Push past excuses.",
+  "Excuses steal progress.",
+  "Grind is forever.",
+  "Be ruthless with excuses.",
+  "Effort or nothing.",
+  "Excuses won’t change grades.",
+  "Sacrifice your comfort zone.",
+  "Grind makes scholars.",
+  "Excuses never win.",
+  "Struggle proves persistence.",
+  "Grind creates growth.",
+  "Excuses bury ambition.",
+  "Grind past limits.",
+  "Sacrifice excuses daily.",
+  "Excuses break discipline.",
+  "Knowledge is victory.",
+  "Excuses waste time.",
+  "Sacrifice makes champions.",
+  "Excuses are weakness in disguise.",
+  "Grind like it’s your last chance.",
+  "No excuses, just results.",
+  "Sacrifice excuses for progress.",
+  "Grind demands sacrifice.",
+  "Excuses sabotage strength.",
+  "Hard work wins exams.",
+  "Excuses won’t move you forward.",
+  "Grind is everything.",
+  "Sacrifice builds legacy.",
+  "Excuses lose battles.",
+  "Push past weakness.",
+  "Excuses fade, results stay.",
+  "Effort never lies.",
+  "Grind breaks excuses.",
+  "Sacrifice excuses for focus.",
+  "Excuses are comfort.",
+  "Grind destroys comfort.",
+  "Sacrifice excuses for growth.",
+  "Excuses erase progress.",
+  "No grind, no glory.",
+  "Excuses weaken minds.",
+  "Sacrifice your limits.",
+  "Grind cures excuses.",
+  "Excuses break progress.",
+  "Study or surrender.",
+  "Grind kills weakness.",
+  "Sacrifice mediocrity daily.",
+  "Excuses slow success.",
+  "Boredom is progress.",
+  "Grind crushes excuses.",
+  "Sacrifice excuses relentlessly.",
+  "Excuses are for tomorrow.",
+  "Grind today, shine tomorrow.",
+  "Sacrifice excuses to win.",
+  "Excuses don’t define you.",
+  "Grind reveals greatness.",
+  "Sacrifice excuses brutally.",
+  "Excuses weaken discipline.",
+  "Grind destroys doubt.",
+  "Sacrifice or stay weak.",
+  "Excuses delay destiny.",
+  "Focus is the truth.",
+  "Grind fuels greatness.",
+  "Sacrifice excuses consistently.",
+  "Excuses stop growth.",
+  "Grind turns pain to power.",
+  "Sacrifice excuses ruthlessly.",
+  "Excuses breed failure.",
+  "Grind until you conquer.",
+  "Sacrifice excuses permanently.",
+  "Excuses block progress.",
+  "Grind or give up.",
+  "Sacrifice excuses forever.",
+  "Excuses weaken the strong.",
+  "Grind exposes excuses.",
+  "Sacrifice excuses endlessly.",
+  "Excuses make you ordinary.",
+  "Grind turns effort to excellence.",
+  "Sacrifice excuses without mercy.",
+  "Excuses never built scholars.",
+  "Grind harder, excuses die.",
+  "Sacrifice excuses entirely.",
+  "Excuses can’t pass exams.",
+  "Grind shapes destiny.",
+  "Sacrifice excuses always.",
+  "Excuses feed weakness.",
+  "Grind sharpens discipline.",
+  "Sacrifice excuses at all costs.",
+  "Excuses keep you soft.",
+  "Grind until excuses vanish.",
+  "Sacrifice excuses first.",
+  "Excuses protect mediocrity.",
+  "Grind builds minds.",
+  "Sacrifice excuses mercilessly.",
+  "Excuses starve success.",
+  "Grind for greatness.",
+  "Sacrifice excuses daily and nightly.",
+  "Excuses fuel failure.",
+  "Grind beyond limits.",
+  "Sacrifice excuses endlessly.",
+  "Excuses betray effort.",
+  "Grind endlessly.",
+  "Sacrifice excuses immediately.",
+  "Excuses ruin results.",
+  "Grind breaks boundaries.",
+  "Sacrifice excuses constantly.",
+  "Excuses destroy focus.",
+  "Grind wins always.",
+  "Sacrifice excuses continuously.",
+  "Excuses end dreams.",
+  "Grind doesn’t quit.",
+  "Sacrifice excuses completely.",
+  "Excuses stop warriors.",
+  "Grind conquers excuses.",
+  "Sacrifice excuses ruthlessly.",
+  "Excuses fear effort.",
+  "Grind builds kings.",
+  "Sacrifice excuses automatically.",
+  "Excuses paralyze progress.",
+  "Grind or die trying.",
+  "Sacrifice excuses systematically.",
+  "Excuses lose the game.",
+  "Grind burns excuses.",
+  "Sacrifice excuses absolutely.",
+  "Excuses belong to the weak.",
+  "Grind defines greatness.",
+  "Sacrifice excuses without hesitation.",
+  "Excuses waste potential.",
+  "Grind relentlessly.",
+  "Sacrifice excuses permanently."
