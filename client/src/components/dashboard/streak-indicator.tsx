@@ -5,10 +5,13 @@ import { useStore } from "@/store";
 import { useToast } from "@/hooks/use-toast";
 
 export function StreakIndicator() {
-  const { getCurrentStreak, useStreakRestore, getStreakRestoresRemaining } = useStore();
+  const { getCurrentStreak, useStreakRestore, getStreakRestoresRemaining, reviews } = useStore();
   const { toast } = useToast();
   const currentStreak = getCurrentStreak();
   const restoresRemaining = getStreakRestoresRemaining();
+  
+  // Check if user has had any previous activity (completed reviews or used streak restore)
+  const hasHadPreviousActivity = reviews.some(r => r.lastReviewed) || localStorage.getItem('lastStreakRestore');
   
   const nextMilestone = Math.ceil((currentStreak + 1) / 10) * 10;
   const daysToMilestone = nextMilestone - currentStreak;
@@ -54,7 +57,7 @@ export function StreakIndicator() {
               {daysToMilestone} Days
             </div>
           </div>
-          {currentStreak === 0 && restoresRemaining > 0 && (
+          {currentStreak === 0 && restoresRemaining > 0 && hasHadPreviousActivity && (
             <Button
               onClick={handleStreakRestore}
               size="sm"
