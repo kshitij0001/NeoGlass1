@@ -1,24 +1,15 @@
-
 {
   "name": "NEET SRS Study Companion",
   "short_name": "NEET SRS",
   "description": "Spaced repetition study app for NEET 2026 preparation with neobrutalist design",
-  "id": "/",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F59E0B",
   "theme_color": "#F59E0B",
   "orientation": "portrait",
   "scope": "/",
-  "scope_extensions": [
-    {
-      "origin": "https://neetcompanion.vercel.app"
-    }
-  ],
   "lang": "en",
-  "dir": "ltr",
   "categories": ["education", "productivity"],
-  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
   "icons": [
     {
       "src": "/favicon.svg",
@@ -27,22 +18,10 @@
       "purpose": "any"
     },
     {
-      "src": "/favicon.svg", 
-      "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    },
-    {
-      "src": "/favicon.svg",
-      "sizes": "192x192", 
-      "type": "image/svg+xml",
-      "purpose": "maskable"
-    },
-    {
       "src": "/favicon.svg",
       "sizes": "512x512",
-      "type": "image/svg+xml", 
-      "purpose": "maskable"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ],
   "shortcuts": [
@@ -53,7 +32,7 @@
       "url": "/",
       "icons": [
         {
-          "src": "/favicon.svg",
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F59E0B'%3E%3Cpath d='M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z'/%3E%3C/svg%3E",
           "sizes": "96x96",
           "type": "image/svg+xml"
         }
@@ -61,12 +40,12 @@
     },
     {
       "name": "Add Review",
-      "short_name": "Add Review", 
+      "short_name": "Add Review",
       "description": "Quickly add a new review",
       "url": "/?quick-add=true",
       "icons": [
         {
-          "src": "/favicon.svg",
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F59E0B'%3E%3Cpath d='M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z'/%3E%3C/svg%3E",
           "sizes": "96x96",
           "type": "image/svg+xml"
         }
@@ -75,11 +54,11 @@
     {
       "name": "Calendar",
       "short_name": "Calendar",
-      "description": "View schedule and calendar", 
+      "description": "View schedule and calendar",
       "url": "/calendar",
       "icons": [
         {
-          "src": "/favicon.svg",
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F59E0B'%3E%3Cpath d='M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z'/%3E%3C/svg%3E",
           "sizes": "96x96",
           "type": "image/svg+xml"
         }
@@ -99,11 +78,8 @@
   "related_applications": [],
   "features": [
     "offline-support",
-    "spaced-repetition", 
+    "spaced-repetition",
     "progress-tracking",
     "study-analytics"
-  ],
-  "launch_handler": {
-    "client_mode": "navigate-existing"
-  }
+  ]
 }
