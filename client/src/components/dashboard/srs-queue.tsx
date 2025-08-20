@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { getSubjectColor, getDifficultyColor, getSubjectContrastColor, getDifficultyContrastColor } from "@/lib/colors";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { triggerAllClearConfetti } from "@/lib/confetti";
 
 
 
@@ -100,7 +101,12 @@ export function SRSQueue() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-black text-brutal-black dark:text-white">Today's Reviews</h3>
-          <Badge className="text-brutal-black dark:text-black border-2 border-brutal-black dark:border-white" style={{ backgroundColor: '#fce7a5' }}>
+          <Badge 
+            className="text-brutal-black dark:text-black border-2 border-brutal-black dark:border-white cursor-pointer hover:scale-105 transition-transform duration-200 select-none" 
+            style={{ backgroundColor: '#fce7a5' }}
+            onClick={triggerAllClearConfetti}
+            title="Click for celebration! 🎉"
+          >
             All caught up! 🎉
           </Badge>
         </div>
