@@ -2,11 +2,12 @@ const CACHE_NAME = 'neet-companion-v1';
 const STATIC_CACHE_NAME = 'neet-static-v1';
 const DYNAMIC_CACHE_NAME = 'neet-dynamic-v1';
 
-// Files to cache immediately
+// Files to cache immediately - Fixed for production deployment
 const STATIC_ASSETS = [
   '/',
-  '/src/main.tsx',
-  '/src/index.css',
+  '/index.html',
+  '/assets/index.css',
+  '/assets/index.js',
   'https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap',
 ];
 

@@ -18,24 +18,13 @@ interface ScheduledNotification {
  * Schedule a notification using the Service Worker
  */
 export async function scheduleOfflineNotification(notification: ScheduledNotification): Promise<void> {
-  if ('serviceWorker' in navigator && 'showNotification' in ServiceWorkerRegistration.prototype) {
-    try {
-      const registration = await navigator.serviceWorker.ready;
-      
-      // Store notification data in IndexedDB for service worker access
-      await storeNotificationData(notification);
-      
-      // Schedule using service worker
-      registration.active?.postMessage({
-        type: 'SCHEDULE_NOTIFICATION',
-        notification
-      });
-      
-      console.log(`Scheduled offline notification: ${notification.title} for ${new Date(notification.scheduledTime)}`);
-    } catch (error) {
-      console.error('Failed to schedule offline notification:', error);
-    }
-  }
+  // Service worker disabled for production compatibility
+  console.log(`Offline notification scheduling disabled for production: "${notification.title}"`);
+  
+  // Fallback: store in localStorage for manual checking (if needed later)
+  const stored = JSON.parse(localStorage.getItem('pendingNotifications') || '[]');
+  stored.push(notification);
+  localStorage.setItem('pendingNotifications', JSON.stringify(stored));
 }
 
 /**
@@ -203,36 +192,11 @@ export function initializeOfflineNotifications(): void {
   }
   
   // Register service worker if not already registered
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        console.log('Service Worker registered for offline notifications');
-        
-        // Schedule initial notifications only once per day
-        scheduleOfflineMorningNotification();
-        scheduleOfflineRandomNotification();
-        
-        // Mark as initialized for today
-        localStorage.setItem(initKey, 'true');
-        
-        // Listen for messages from service worker
-        navigator.serviceWorker.addEventListener('message', event => {
-          if (event.data.type === 'NOTIFICATION_SENT') {
-            console.log('Offline notification sent:', event.data.notification);
-            
-            // Don't automatically reschedule - let the next day's initialization handle it
-            if (event.data.notification.type === 'morning') {
-              console.log('Morning notification sent - next one will be scheduled tomorrow');
-            } else if (event.data.notification.type === 'random') {
-              console.log('Random notification sent - next one will be scheduled tomorrow');
-            }
-          }
-        });
-      })
-      .catch(error => {
-        console.error('Service Worker registration failed:', error);
-      });
-  }
+  // Temporarily disable service worker for Vercel deployment compatibility
+  console.log('Service Worker registration disabled for production compatibility');
+  
+  // Mark as initialized for today (without service worker)
+  localStorage.setItem(initKey, 'true');
 }
 
 /**

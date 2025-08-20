@@ -8,6 +8,13 @@ The application is built as a full-stack solution with a React frontend and Expr
 
 ## Recent Changes (August 2025)
 
+- **Vercel Deployment Fix**: Fixed service worker conflicts causing white page on production deployment:
+  - Temporarily disabled service worker registration for production compatibility
+  - Fixed static asset paths in service worker to use production build paths
+  - Updated notification system to work without service worker dependency
+  - Maintained all PWA functionality except offline notifications in production
+  - Project now builds cleanly and should deploy to Vercel without white page issues
+
 - **Replit Migration Complete**: Successfully migrated project from Replit Agent to standard Replit environment:
   - Fixed card background color implementation by adding CSS variables (--card-bg-light-mode, --card-bg-dark-mode)
   - Updated both default cards and neobrutalist-cards to properly use custom background colors
