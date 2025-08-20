@@ -31,7 +31,7 @@ const CustomDot = (props: any) => {
 };
 
 export default function Tests() {
-  const { tests, addTest, deleteTest, getAverageScore, getSubjectAverages, getTrendData } = useStore();
+  const { tests, addTest, deleteTest, getAverageScore, getSubjectAverages, getTrendData, customColors } = useStore();
   const [isAddTestOpen, setIsAddTestOpen] = useState(false);
   const [newTest, setNewTest] = useState<Partial<TestSession>>({
     date: format(new Date(), 'yyyy-MM-dd'),
@@ -200,7 +200,7 @@ export default function Tests() {
             <Card 
               className="border text-card-foreground shadow-sm neobrutalist-card p-4 rounded-xl"
               style={{ 
-                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card-averagescore-color') || '#e4c1f9',
+                backgroundColor: customColors.cards.averageScore,
                 color: getComputedStyle(document.documentElement).getPropertyValue('--card-averagescore-contrast') || '#334153'
               }}
             >
@@ -230,7 +230,7 @@ export default function Tests() {
             <Card 
               className="border text-card-foreground shadow-sm neobrutalist-card p-4 rounded-xl"
               style={{ 
-                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card-totaltests-color') || '#cdb4db',
+                backgroundColor: customColors.cards.totalTests,
                 color: getComputedStyle(document.documentElement).getPropertyValue('--card-totaltests-contrast') || '#334153'
               }}
             >

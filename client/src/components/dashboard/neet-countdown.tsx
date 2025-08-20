@@ -3,7 +3,6 @@ import { Card } from "@/components/ui/card";
 import { useStore } from "@/store";
 import { parseISO, differenceInDays, differenceInHours, differenceInMinutes } from "date-fns";
 import { Calendar, Clock, Target } from "lucide-react";
-import { getCardColor } from "@/lib/colors";
 
 interface CountdownData {
   days: number;
@@ -12,7 +11,7 @@ interface CountdownData {
 }
 
 export function NeetCountdown() {
-  const { settings } = useStore();
+  const { settings, customColors } = useStore();
   const [countdown, setCountdown] = useState<CountdownData>({ days: 0, hours: 0, minutes: 0 });
 
   useEffect(() => {
@@ -36,7 +35,7 @@ export function NeetCountdown() {
   return (
     <Card
       className="neobrutalist-card p-4 rounded-xl relative overflow-hidden group hover:scale-105 transition-transform duration-200"
-      style={{ backgroundColor: getCardColor('countdown') }}
+      style={{ backgroundColor: customColors.cards.countdown }}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-red-400/30 to-orange-400/30"></div>
       <div className="text-center relative z-10">

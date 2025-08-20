@@ -3,10 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Flame, RotateCcw } from "lucide-react";
 import { useStore } from "@/store";
 import { useToast } from "@/hooks/use-toast";
-import { getCardColor } from "@/lib/colors";
 
 export function StreakIndicator() {
-  const { getCurrentStreak, useStreakRestore, getStreakRestoresRemaining, reviews } = useStore();
+  const { getCurrentStreak, useStreakRestore, getStreakRestoresRemaining, reviews, customColors } = useStore();
   const { toast } = useToast();
   const currentStreak = getCurrentStreak();
   const restoresRemaining = getStreakRestoresRemaining();
@@ -40,7 +39,7 @@ export function StreakIndicator() {
   return (
     <Card
       className="neobrutalist-card p-4 rounded-xl text-white relative overflow-hidden group hover:scale-105 transition-all duration-200"
-      style={{ backgroundColor: getCardColor('streak') }}
+      style={{ backgroundColor: customColors.cards.streak }}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 to-orange-400/20"></div>
       <div className="flex items-center justify-between">
