@@ -26,8 +26,6 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
   const [isCreatingTopic, setIsCreatingTopic] = useState(false);
   const [newChapterName, setNewChapterName] = useState("");
   const [newTopicName, setNewTopicName] = useState("");
-  const [reviewDate, setReviewDate] = useState(format(new Date(), 'yyyy-MM-dd'));
-  const [startImmediately, setStartImmediately] = useState(false);
 
   const selectedSubjectData = syllabus.find(s => s.id === selectedSubject);
   const selectedChapterData = selectedSubjectData?.chapters.find(c => c.id === selectedChapter);
@@ -106,25 +104,8 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
 
     if (!chapterId || !topicId) return;
 
-    // Use reviewDate if it's different from today, or if starting immediately
-    const today = format(new Date(), 'yyyy-MM-dd');
-    let customDate: string | undefined;
-    
-    if (startImmediately) {
-      customDate = today; // Set to today for immediate review
-    } else if (reviewDate !== today) {
-      customDate = reviewDate; // Use selected date
-    }
-    // Otherwise undefined = use default SRS scheduling (4 days from now)
-    
-    // Create initial review (SRS system will handle subsequent reviews on completion)
-    if (!customDate) {
-      // Normal SRS scheduling - create first review with 4-day interval
-      addReview(topicId, subject, chapterName, topicName, difficulty, undefined, 4);
-    } else {
-      // Custom date - create single review
-      addReview(topicId, subject, chapterName, topicName, difficulty, customDate);
-    }
+    // Create initial review with default SRS scheduling (4 days from now)
+    addReview(topicId, subject, chapterName, topicName, difficulty, undefined, 4);
 
     // Reset form
     resetForm();
@@ -140,8 +121,6 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
     setIsCreatingTopic(false);
     setNewChapterName("");
     setNewTopicName("");
-    setReviewDate(format(new Date(), 'yyyy-MM-dd'));
-    setStartImmediately(false);
   };
 
   const handleClose = () => {
@@ -340,34 +319,6 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
                 />
               </div>
             )}
-          </div>
-
-          <div>
-            <Label className="block text-sm font-bold text-brutal-black dark:text-white mb-2">
-              Review Date (Optional)
-            </Label>
-            <Input
-              type="date"
-              value={reviewDate}
-              onChange={(e) => setReviewDate(e.target.value)}
-              className="w-full border-3 border-brutal-black dark:border-white bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm font-bold"
-              data-testid="review-date-input"
-            />
-            <div className="flex items-center space-x-2 mt-2">
-              <input 
-                type="checkbox"
-                id="start-immediately"
-                checked={startImmediately}
-                onChange={(e) => setStartImmediately(e.target.checked)}
-                className="w-4 h-4 text-electric-blue border-2 border-brutal-black dark:border-white rounded focus:ring-2 focus:ring-electric-blue"
-              />
-              <label htmlFor="start-immediately" className="text-sm font-bold text-brutal-black dark:text-white">
-                Start review today (due immediately)
-              </label>
-            </div>
-            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 font-medium">
-              {startImmediately ? "Review will be available immediately" : "Review will follow normal SRS scheduling"}
-            </p>
           </div>
 
           <div>
