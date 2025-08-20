@@ -27,6 +27,13 @@ The application is built as a full-stack solution with a React frontend and Expr
   - Maintained all PWA functionality except offline notifications in production
   - Project now builds cleanly and should deploy to Vercel without white page issues
 
+- **APK Build Issue Resolution**: Fixed critical Java version compatibility issue preventing APK generation:
+  - Updated android/capacitor-cordova-android-plugins/build.gradle from Java 21 to Java 17
+  - Updated android/app/capacitor.build.gradle from Java 21 to Java 17  
+  - Created comprehensive APK build documentation with multiple build methods
+  - Verified web app builds and Android sync work perfectly
+  - Project now ready for APK generation with Android SDK
+
 - **Replit Migration Complete**: Successfully migrated project from Replit Agent to standard Replit environment:
   - Fixed card background color implementation by adding CSS variables (--card-bg-light-mode, --card-bg-dark-mode)
   - Updated both default cards and neobrutalist-cards to properly use custom background colors
