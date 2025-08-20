@@ -326,12 +326,49 @@ export const generateTestSettings = (): Settings => {
   };
 };
 
+// Generate syllabus with realistic progress
+export const generateTestSyllabus = async () => {
+  const { NEET_SYLLABUS } = await import('@/data/syllabus');
+  
+  // Clone the syllabus and mark some topics as completed/in-progress
+  const updatedSyllabus = NEET_SYLLABUS.map(subject => ({
+    ...subject,
+    chapters: subject.chapters.map(chapter => ({
+      ...chapter,
+      topics: chapter.topics.map((topic, index) => {
+        // Mark approximately 40% as Done, 25% as In Progress, 35% as Not Started
+        const rand = Math.random();
+        let coverageState = topic.coverageState;
+        
+        if (rand < 0.4) {
+          coverageState = "Done";
+        } else if (rand < 0.65) {
+          coverageState = "In progress";
+        } else {
+          coverageState = "Not started";
+        }
+        
+        return {
+          ...topic,
+          coverageState
+        };
+      })
+    }))
+  }));
+  
+  return updatedSyllabus;
+};
+
 // Function to populate all test data
 export const populateTestData = async () => {
   const { storage } = await import('./storage');
   
   try {
     console.log('📸 Populating beautiful test data for screenshots...');
+    
+    // Populate syllabus with progress
+    const syllabusWithProgress = await generateTestSyllabus();
+    await storage.saveSyllabus(syllabusWithProgress);
     
     // Populate reviews
     const reviews = generateTestReviews();
@@ -357,6 +394,7 @@ export const populateTestData = async () => {
     
     console.log('✨ Test data populated successfully! Perfect for screenshots.');
     console.log(`📊 Added ${reviews.length} reviews, ${tests.length} test sessions, ${events.length} events`);
+    console.log('📚 Updated syllabus with realistic progress (~40% completed, ~25% in progress)');
     console.log('🔄 Reload the page to see the beautiful test data');
     
     return true;
