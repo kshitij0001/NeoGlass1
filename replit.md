@@ -13,6 +13,8 @@ The application is built as a full-stack solution with a React frontend and Expr
   - Updated both default cards and neobrutalist-cards to properly use custom background colors
   - Removed Text Colors section from settings interface
   - Added specific color presets for card backgrounds (light theme: warm creams, dark theme: deep blues)
+  - Updated card background color picker with custom preset colors for light and dark themes
+  - Streamlined color reset button by removing text, keeping only the rotate icon
   - Fixed PWA icon configuration by moving all icon files to proper public directory
   - Updated manifest.json with complete icon set including maskable icon support
   - Verified all dependencies and build processes work correctly in Replit environment

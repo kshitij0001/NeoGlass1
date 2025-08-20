@@ -314,8 +314,7 @@ export default function Settings() {
                   className="border-2 border-brutal-black dark:border-white"
                   data-testid="reset-colors-btn"
                 >
-                  <RotateCcw className="h-4 w-4 mr-1" />
-                  Reset
+                  <RotateCcw className="h-4 w-4" />
                 </Button>
               )}
             </div>
