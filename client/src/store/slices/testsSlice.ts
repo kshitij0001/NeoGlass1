@@ -40,19 +40,19 @@ export const testsSlice = (set: any, get: any): TestsSlice => ({
   
   deleteTest: (testId) => {
     const { tests } = get();
-    const updatedTests = tests.filter(t => t.id !== testId);
+    const updatedTests = tests.filter((t: TestSession) => t.id !== testId);
     set({ tests: updatedTests });
   },
   
   getTestsBySubject: (subject) => {
     const { tests } = get();
-    return tests.filter(t => t.subject === subject);
+    return tests.filter((t: TestSession) => t.subject === subject);
   },
   
   getAverageScore: () => {
     const { tests } = get();
     if (tests.length === 0) return 0;
-    const totalScore = tests.reduce((sum, test) => sum + test.score, 0);
+    const totalScore = tests.reduce((sum: number, test: TestSession) => sum + test.score, 0);
     return Math.round(totalScore / tests.length);
   },
   
@@ -60,7 +60,7 @@ export const testsSlice = (set: any, get: any): TestsSlice => ({
     const { tests } = get();
     const subjectScores: Record<string, number[]> = {};
     
-    tests.forEach(test => {
+    tests.forEach((test: TestSession) => {
       if (test.subject) {
         if (!subjectScores[test.subject]) {
           subjectScores[test.subject] = [];
@@ -80,8 +80,8 @@ export const testsSlice = (set: any, get: any): TestsSlice => ({
   getTrendData: () => {
     const { tests } = get();
     return tests
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-      .map(test => ({
+      .sort((a: TestSession, b: TestSession) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .map((test: TestSession) => ({
         date: test.date,
         score: test.score,
       }));
