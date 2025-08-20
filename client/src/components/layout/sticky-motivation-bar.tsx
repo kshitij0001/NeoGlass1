@@ -12,6 +12,7 @@ export function StickyMotivationBar() {
             <p className="text-sm font-bold text-dark-text dark:text-white line-clamp-2" data-testid="motivation-quote">
               {quote}
             </p>
+            <span className="text-cream-6 text-lg font-bold">"</span>
           </div>
         </div>
       </div>
