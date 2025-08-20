@@ -155,3 +155,28 @@ export const DEFAULT_NOTIFICATION_CONFIG: NotificationConfig = {
   reviewReminder: true,
   streakReminder: true,
 };
+
+// Helper function to create notification manager with user settings
+export async function createNotificationManagerFromSettings(): Promise<NotificationManager | null> {
+  try {
+    const { storage } = await import('./storage');
+    const settings = await storage.getSettings();
+    
+    if (!settings?.notifications) {
+      return null;
+    }
+
+    const config: NotificationConfig = {
+      enabled: settings.notifications,
+      reminderTime: settings.notificationTime || '19:00',
+      dailyReminder: true,
+      reviewReminder: true,
+      streakReminder: true,
+    };
+
+    return new NotificationManager(config);
+  } catch (error) {
+    console.error('Failed to create notification manager:', error);
+    return null;
+  }
+}

@@ -18,6 +18,7 @@ import { useLocation } from "wouter";
 import { checkAndTriggerStreakMilestone, testConfetti, testAllClearConfetti } from "@/lib/confetti";
 import { populateTestData, clearTestData } from "@/lib/test-data";
 import { testNotifications, notificationDebugging } from "@/lib/test-notifications";
+import { notificationScheduler } from "@/lib/notification-scheduler";
 
 function AppContent() {
   const { initialize, isInitialized, isLoading, settings, getCurrentStreak } = useStore();
@@ -72,6 +73,13 @@ function AppContent() {
       document.documentElement.classList.add('dark');
     }
   }, []);
+
+  // Update notification scheduler when settings change
+  useEffect(() => {
+    if (isInitialized && settings.notifications) {
+      notificationScheduler.updateSchedule();
+    }
+  }, [isInitialized, settings.notifications, settings.notificationTime]);
 
   const handleNavigate = (path: string) => {
     setLocation(path);

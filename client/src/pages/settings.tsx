@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Settings as SettingsIcon, Upload, Download, Trash2, Calendar, Bell, Volume2, Target, Palette, RotateCcw } from "lucide-react";
+import { Settings as SettingsIcon, Upload, Download, Trash2, Calendar, Bell, Volume2, Target, Palette, RotateCcw, Clock } from "lucide-react";
 import { useStore } from "@/store";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
@@ -21,6 +21,7 @@ export default function Settings() {
     updateTheme,
     updateNeetDate,
     updateNotifications,
+    updateNotificationTime,
     updateSoundEnabled,
     updateDailyGoal,
     updateAutoSnooze,
@@ -182,6 +183,23 @@ export default function Settings() {
                   data-testid="notifications-switch"
                 />
               </div>
+
+              {settings.notifications && (
+                <div>
+                  <Label className="font-bold text-brutal-black dark:text-white flex items-center">
+                    <Clock className="h-4 w-4 mr-1" />
+                    Reminder Time
+                  </Label>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">When to send daily notifications</p>
+                  <Input
+                    type="time"
+                    value={settings.notificationTime || '19:00'}
+                    onChange={(e) => updateNotificationTime(e.target.value)}
+                    className="border-3 border-brutal-black dark:border-white"
+                    data-testid="notification-time-input"
+                  />
+                </div>
+              )}
 
               <div className="flex items-center justify-between">
                 <div>

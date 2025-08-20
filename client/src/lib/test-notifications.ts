@@ -122,7 +122,10 @@ export const testNotifications = {
       const config = {
         ...DEFAULT_NOTIFICATION_CONFIG,
         enabled: settings.notifications,
+        reminderTime: settings.notificationTime || '19:00',
       };
+
+      console.log(`📅 Using user-configured notification time: ${config.reminderTime}`);
 
       const notificationManager = new NotificationManager(config);
       await notificationManager.scheduleReviewReminder(reviews || []);
@@ -130,6 +133,34 @@ export const testNotifications = {
       console.log('✅ Tested with actual app data');
     } catch (error) {
       console.error('❌ Error testing with actual data:', error);
+    }
+  },
+
+  async testUserConfiguredTime() {
+    console.log('🧪 Testing user-configured reminder time...');
+    
+    try {
+      const settings = await storage.getSettings();
+      const reminderTime = settings?.notificationTime || '19:00';
+      
+      console.log(`⏰ Current user reminder time: ${reminderTime}`);
+      
+      const hasPermission = await this.requestPermission();
+      if (!hasPermission) {
+        console.error('❌ Notification permission denied');
+        return;
+      }
+
+      new Notification('Scheduled Study Reminder', {
+        body: `This would normally be sent at ${reminderTime} daily. Time for your NEET study session!`,
+        icon: '/android-launchericon-192-192.png',
+        tag: 'scheduled-reminder',
+        requireInteraction: false,
+      });
+
+      console.log(`✅ Test notification sent for time: ${reminderTime}`);
+    } catch (error) {
+      console.error('❌ Error testing user-configured time:', error);
     }
   },
 
