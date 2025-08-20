@@ -14,6 +14,10 @@ export function NeetCountdown() {
   const { settings, customColors } = useStore();
   const [countdown, setCountdown] = useState<CountdownData>({ days: 0, hours: 0, minutes: 0 });
 
+  // Debug: Log current color value
+  console.log('🟡 Countdown card color from store:', customColors.cards.countdown);
+  console.log('🟡 Full customColors object:', customColors);
+
   useEffect(() => {
     const updateCountdown = () => {
       const now = new Date();
