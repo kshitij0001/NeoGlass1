@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronDown, ChevronRight, Plus, BookOpen, Search } from "lucide-react";
 import { useStore } from "@/store";
@@ -370,13 +371,13 @@ export default function Plan() {
                                         value={topic.difficulty}
                                         onValueChange={(value) => handleTopicDifficultyChange(topic.id, value as Difficulty)}
                                       >
-                                        <SelectTrigger className="w-20 h-6 text-xs font-bold border-none">
+                                        <SelectTrigger className="w-20 h-6 text-xs font-bold border-none" style={{ color: getDifficultyColor(topic.difficulty) }}>
                                           <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
-                                          <SelectItem value="Easy">Easy</SelectItem>
-                                          <SelectItem value="Medium">Medium</SelectItem>
-                                          <SelectItem value="Hard">Hard</SelectItem>
+                                          <SelectItem value="Easy" className="text-xs" style={{ color: getDifficultyColor('Easy') }}>Easy</SelectItem>
+                                          <SelectItem value="Medium" className="text-xs" style={{ color: getDifficultyColor('Medium') }}>Medium</SelectItem>
+                                          <SelectItem value="Hard" className="text-xs" style={{ color: getDifficultyColor('Hard') }}>Hard</SelectItem>
                                         </SelectContent>
                                       </Select>
                                       <div
@@ -392,16 +393,8 @@ export default function Plan() {
                                     <Button
                                       size="sm"
                                       variant="outline"
-                                      className="neobrutalist-btn bg-gray-400 hover:bg-gray-500 text-white px-2 py-1 text-xs"
-                                      onClick={() => handleTopicCoverageChange(topic.id, "Not started")}
-                                      data-testid={`reset-${topic.id}`}
-                                    >
-                                      Reset
-                                    </Button>
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      className="neobrutalist-btn bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 text-xs"
+                                      className="neobrutalist-btn text-white px-2 py-1 text-xs"
+                                      style={{ backgroundColor: '#90ab98', borderColor: '#90ab98' }}
                                       onClick={() => {
                                         handleTopicCoverageChange(topic.id, "In progress");
                                         handleAddToReviews(topic.id);
@@ -413,12 +406,46 @@ export default function Plan() {
                                     <Button
                                       size="sm"
                                       variant="outline"
-                                      className="neobrutalist-btn bg-green-500 hover:bg-green-600 text-white px-2 py-1 text-xs"
+                                      className="neobrutalist-btn text-white px-2 py-1 text-xs"
+                                      style={{ backgroundColor: '#caffbf', borderColor: '#caffbf', color: '#334155' }}
                                       onClick={() => handleTopicCoverageChange(topic.id, "Done")}
                                       data-testid={`complete-${topic.id}`}
                                     >
                                       Done
                                     </Button>
+                                    <AlertDialog>
+                                      <AlertDialogTrigger asChild>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          className="neobrutalist-btn bg-red-500 hover:bg-red-600 text-white px-2 py-1 text-xs"
+                                          data-testid={`reset-${topic.id}`}
+                                        >
+                                          Reset
+                                        </Button>
+                                      </AlertDialogTrigger>
+                                      <AlertDialogContent className="glass-morphism border-4 border-brutal-black dark:border-white rounded-3xl max-w-sm mx-4">
+                                        <AlertDialogHeader>
+                                          <AlertDialogTitle className="text-xl font-black text-brutal-black dark:text-white">
+                                            Reset Topic Progress
+                                          </AlertDialogTitle>
+                                          <AlertDialogDescription className="text-brutal-black dark:text-white">
+                                            This will reset "{topic.name}" back to "Not started" and remove any review progress. Are you sure you want to continue?
+                                          </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                          <AlertDialogCancel className="neobrutalist-btn border-brutal-black dark:border-white">
+                                            Cancel
+                                          </AlertDialogCancel>
+                                          <AlertDialogAction
+                                            onClick={() => handleTopicCoverageChange(topic.id, "Not started")}
+                                            className="neobrutalist-btn bg-red-500 hover:bg-red-600 text-white"
+                                          >
+                                            Reset
+                                          </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                      </AlertDialogContent>
+                                    </AlertDialog>
                                   </div>
                                 </div>
                               ))}
