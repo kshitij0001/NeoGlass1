@@ -15,12 +15,6 @@ buildscript {
     }
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
 apply from: "variables.gradle"
 
 allprojects {
