@@ -99,12 +99,12 @@ export default function Settings() {
     }
   };
 
-  // Suggestive colors based on the provided palettes
+  // Suggestive colors based on the provided palettes (fixed duplicates)
   const suggestiveColors = [
     ["#fbf8cc", "#fde4cf", "#ffcfd2", "#f1c0e8", "#cfbaf0", "#a3c4f3", "#90dbf4", "#8eecf5", "#98f5e1", "#b9fbc0"],
     ["#ffadad", "#ffd6a5", "#fdffb6", "#caffbf", "#9bf6ff", "#a0c4ff", "#bdb2ff", "#ffc6ff", "#fffffc"],
-    ["#e4dde3", "#ffd1ad", "#fbc5c8", "#f5a3c0", "#dae7e3", "#99ced6", "#ffd4b0", "#f6d6ff", "#8b9ed4", "#c1baea"],
-    ["#e4dde3", "#f9c8da", "#fbdadc", "#fff1e6", "#dae7e3", "#bee1e6", "#edece8", "#e3e7f2", "#f6cbcb", "#cddafd"],
+    ["#e4dde3", "#ffd1ad", "#fbc5c8", "#f5a3c0", "#99ced6", "#ffd4b0", "#f6d6ff", "#8b9ed4", "#c1baea"],
+    ["#f9c8da", "#fbdadc", "#fff1e6", "#bee1e6", "#edece8", "#e3e7f2", "#f6cbcb", "#cddafd"],
     ["#ffe09e", "#fff394", "#fbff94", "#eeff8f", "#e1ff94", "#cfff91", "#c0ff8c", "#9dff8a", "#94ffaf", "#a6fff2"]
   ];
 

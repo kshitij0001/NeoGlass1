@@ -175,10 +175,20 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
         };
         set({ customColors: mergedColors });
         applyCustomColors(mergedColors);
+        
+        // Force reapplication after a short delay to ensure DOM is ready
+        setTimeout(() => {
+          applyCustomColors(mergedColors);
+        }, 300);
       } else {
         // Set default colors and apply them
         set({ customColors: defaultColors });
         applyCustomColors(defaultColors);
+        
+        // Force reapplication for default colors too
+        setTimeout(() => {
+          applyCustomColors(defaultColors);
+        }, 300);
       }
     } catch (error) {
       console.error('Failed to load settings:', error);
@@ -237,8 +247,10 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
     };
     set({ customColors: updatedColors });
 
-    // Apply to CSS custom properties
+    // Apply to CSS custom properties with contrast
+    const contrastColor = getContrastColor(color);
     document.documentElement.style.setProperty(`--${subject.toLowerCase()}-color`, color);
+    document.documentElement.style.setProperty(`--${subject.toLowerCase()}-contrast`, contrastColor);
     localStorage.setItem('customColors', JSON.stringify(updatedColors));
   },
 
@@ -253,8 +265,10 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
     };
     set({ customColors: updatedColors });
 
-    // Apply to CSS custom properties
+    // Apply to CSS custom properties with contrast
+    const contrastColor = getContrastColor(color);
     document.documentElement.style.setProperty(`--difficulty-${difficulty.toLowerCase()}-color`, color);
+    document.documentElement.style.setProperty(`--difficulty-${difficulty.toLowerCase()}-contrast`, contrastColor);
     localStorage.setItem('customColors', JSON.stringify(updatedColors));
   },
 
@@ -269,8 +283,10 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
     };
     set({ customColors: updatedColors });
 
-    // Apply to CSS custom properties
+    // Apply to CSS custom properties with contrast
+    const contrastColor = getContrastColor(color);
     document.documentElement.style.setProperty(`--card-${card.toLowerCase()}-color`, color);
+    document.documentElement.style.setProperty(`--card-${card.toLowerCase()}-contrast`, contrastColor);
     localStorage.setItem('customColors', JSON.stringify(updatedColors));
   },
 
@@ -285,16 +301,23 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
     };
     set({ customColors: updatedColors });
 
-    // Apply to CSS custom properties
-    document.documentElement.style.setProperty(`--eventtype-${eventType.toLowerCase()}-color`, color);
+    // Apply to CSS custom properties with contrast
+    const contrastColor = getContrastColor(color);
+    document.documentElement.style.setProperty(`--event-${eventType.toLowerCase()}-color`, color);
+    document.documentElement.style.setProperty(`--event-${eventType.toLowerCase()}-contrast`, contrastColor);
     localStorage.setItem('customColors', JSON.stringify(updatedColors));
   },
 
   resetColorsToDefault: () => {
     set({ customColors: defaultColors });
 
-    // Reset CSS custom properties
+    // Reset CSS custom properties and force reapplication
     applyCustomColors(defaultColors);
+    
+    // Force a re-render by triggering a state change
+    setTimeout(() => {
+      applyCustomColors(defaultColors);
+    }, 100);
 
     localStorage.setItem('customColors', JSON.stringify(defaultColors));
   },
