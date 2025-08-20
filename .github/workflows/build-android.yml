@@ -1,0 +1,77 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, App ]
+  pull_request:
+    branches: [ main, App ]
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Build web application
+      run: npm run build
+      
+    - name: Copy web assets to Android
+      run: npx cap copy android
+      
+    - name: Sync Capacitor with Android
+      run: npx cap sync android
+      
+    - name: Make gradlew executable
+      run: chmod +x android/gradlew
+      
+    - name: Build Android APK (Debug)
+      run: |
+        cd android
+        ./gradlew assembleDebug
+        
+    - name: Build Android APK (Release)
+      run: |
+        cd android
+        ./gradlew assembleRelease
+        
+    - name: Upload Debug APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: neet-companion-debug-apk
+        path: android/app/build/outputs/apk/debug/app-debug.apk
+        
+    - name: Upload Release APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: neet-companion-release-apk
+        path: android/app/build/outputs/apk/release/app-release-unsigned.apk
+        
+    - name: Show APK info
+      run: |
+        echo "✅ Android APK Build Complete!"
+        echo "📱 Debug APK: android/app/build/outputs/apk/debug/app-debug.apk"
+        echo "📱 Release APK: android/app/build/outputs/apk/release/app-release-unsigned.apk"
+        echo "💾 APK files are available in the Actions artifacts"
+        ls -la android/app/build/outputs/apk/debug/
+        ls -la android/app/build/outputs/apk/release/
