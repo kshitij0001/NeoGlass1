@@ -162,8 +162,8 @@ function showSpecialPopup(): void {
           Special Day Alert!
         </h2>
         <div class="text-lg text-black dark:text-white mb-6" id="special-message">
-          <!-- User will write their own message here -->
-          Something special is happening today! 🎊
+          Happy Birthday, Rachel! 🎉💖<br><br>
+          Today is all about celebrating the wonderful, vibrant, and inspiring person you are. Thank you for letting me be a part of your wild and beautiful journey — it's been nothing short of magical. 🌟 May this year bring you endless laughter, love, and all the dreams you've been waiting to chase. Keep shining the way only you can. ✨💐
         </div>
         <button 
           onclick="this.closest('.fixed').remove()" 
@@ -177,12 +177,12 @@ function showSpecialPopup(): void {
   
   document.body.appendChild(popup);
   
-  // Auto-remove after 10 seconds if user doesn't click
+  // Auto-remove after 10 minutes if user doesn't click
   setTimeout(() => {
     if (popup.parentNode) {
       popup.remove();
     }
-  }, 10000);
+  }, 600000);
 }
 
 /**
