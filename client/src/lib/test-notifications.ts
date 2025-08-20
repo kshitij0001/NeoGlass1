@@ -197,6 +197,41 @@ export const testNotifications = {
     }
   },
 
+  async testEventTime() {
+    console.log('🧪 Testing event-specific time notification...');
+    
+    try {
+      const settings = await storage.getSettings();
+      
+      if (!settings?.eventNotifications) {
+        console.warn('⚠️ Event notifications are disabled in settings. Enable them first in Settings page.');
+        return;
+      }
+      
+      const hasPermission = await this.requestPermission();
+      if (!hasPermission) {
+        console.error('❌ Notification permission denied');
+        return;
+      }
+
+      // Test with current time + 5 seconds
+      const testTime = new Date();
+      testTime.setSeconds(testTime.getSeconds() + 5);
+      const timeStr = testTime.toTimeString().slice(0, 5);
+
+      new Notification('Event Time Test', {
+        body: `This notification simulates an event scheduled for ${timeStr}. In the real app, this would be sent at the exact time you set for each event.`,
+        icon: '/android-launchericon-192-192.png',
+        tag: 'event-time-test',
+        requireInteraction: false,
+      });
+
+      console.log(`✅ Event time test notification sent - this demonstrates how events will notify at their specific times`);
+    } catch (error) {
+      console.error('❌ Error testing event time notification:', error);
+    }
+  },
+
   showStatus() {
     console.log('📱 Notification System Status:');
     console.log(`• Browser support: ${'Notification' in window ? '✅' : '❌'}`);

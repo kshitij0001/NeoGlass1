@@ -305,7 +305,7 @@ export function CalendarView() {
                             key={event.id}
                             className="w-1.5 h-1.5 rounded-full"
                             style={{ backgroundColor: eventColor }}
-                            title={`${event.title} (${event.type})`}
+                            title={`${event.title} (${event.type})${event.time ? ` at ${event.time}` : ''}`}
                           />
                         );
                       })}

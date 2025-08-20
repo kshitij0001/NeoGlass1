@@ -105,6 +105,7 @@ export const manualEventSchema = z.object({
   id: z.string(),
   title: z.string(),
   date: z.string(),
+  time: z.string().default('09:00'), // HH:mm format
   type: z.enum(['exam', 'mock', 'holiday', 'other']),
   description: z.string().optional(),
   createdAt: z.string(),

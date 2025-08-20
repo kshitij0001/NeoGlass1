@@ -21,6 +21,7 @@ export function AddEventModal({ isOpen, onClose, selectedDate }: AddEventModalPr
   const [type, setType] = useState<"exam" | "mock" | "holiday" | "other">("other");
   const [description, setDescription] = useState("");
   const [eventDate, setEventDate] = useState(selectedDate ? format(selectedDate, 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd'));
+  const [eventTime, setEventTime] = useState("09:00");
 
   // Update eventDate when selectedDate changes
   useEffect(() => {
@@ -39,6 +40,7 @@ export function AddEventModal({ isOpen, onClose, selectedDate }: AddEventModalPr
       date: eventDate,
       type,
       description: description.trim() || undefined,
+      time: eventTime,
     });
 
     // Reset form
@@ -46,6 +48,7 @@ export function AddEventModal({ isOpen, onClose, selectedDate }: AddEventModalPr
     setType("other");
     setDescription("");
     setEventDate(format(new Date(), 'yyyy-MM-dd'));
+    setEventTime("09:00");
     onClose();
   };
 
@@ -54,6 +57,7 @@ export function AddEventModal({ isOpen, onClose, selectedDate }: AddEventModalPr
     setType("other");
     setDescription("");
     setEventDate(format(new Date(), 'yyyy-MM-dd'));
+    setEventTime("09:00");
     onClose();
   };
 
@@ -94,6 +98,19 @@ export function AddEventModal({ isOpen, onClose, selectedDate }: AddEventModalPr
               onChange={(e) => setEventDate(e.target.value)}
               className="w-full border-3 border-brutal-black dark:border-white bg-white dark:bg-gray-800 font-bold"
               data-testid="event-date-input"
+            />
+          </div>
+
+          <div>
+            <Label className="block text-sm font-bold text-brutal-black dark:text-white mb-2">
+              Time
+            </Label>
+            <Input
+              type="time"
+              value={eventTime}
+              onChange={(e) => setEventTime(e.target.value)}
+              className="w-full border-3 border-brutal-black dark:border-white bg-white dark:bg-gray-800 font-bold"
+              data-testid="event-time-input"
             />
           </div>
 

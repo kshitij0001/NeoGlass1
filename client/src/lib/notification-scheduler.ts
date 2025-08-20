@@ -3,6 +3,7 @@ import { storage } from './storage';
 
 class NotificationScheduler {
   private dailyReminderTimeout: NodeJS.Timeout | null = null;
+  private eventTimeouts: NodeJS.Timeout[] = [];
 
   async initializeScheduler() {
     try {
@@ -17,6 +18,9 @@ class NotificationScheduler {
       
       // Schedule daily reminders
       await this.scheduleDailyReminders(settings.notificationTime || '19:00');
+      
+      // Schedule event notifications
+      await this.scheduleEventNotifications();
       
       // Schedule immediate review reminder if there are pending reviews
       await this.scheduleImmediateReviewCheck();
@@ -107,11 +111,94 @@ class NotificationScheduler {
     await this.initializeScheduler();
   }
 
+  async scheduleEventNotifications() {
+    try {
+      const settings = await storage.getSettings();
+      if (!settings?.eventNotifications) {
+        console.log('📅 Event notifications disabled in settings');
+        return;
+      }
+
+      // Clear existing event timeouts
+      this.eventTimeouts.forEach(timeout => clearTimeout(timeout));
+      this.eventTimeouts = [];
+
+      const events = await storage.getEvents();
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Find events for today
+      const todaysEvents = events.filter(event => event.date === today);
+      
+      if (todaysEvents.length === 0) {
+        console.log('📅 No events scheduled for today');
+        return;
+      }
+
+      console.log(`📅 Found ${todaysEvents.length} events for today, scheduling notifications`);
+
+      // Schedule notifications for each event at its specific time
+      for (const event of todaysEvents) {
+        const eventTime = event.time || '09:00';
+        const [hours, minutes] = eventTime.split(':').map(Number);
+        
+        const eventDate = new Date();
+        eventDate.setHours(hours, minutes, 0, 0);
+        
+        const timeUntilEvent = eventDate.getTime() - Date.now();
+        
+        if (timeUntilEvent > 0) {
+          console.log(`📅 Scheduling notification for "${event.title}" at ${eventTime}`);
+          
+          const timeoutId = setTimeout(async () => {
+            await this.sendEventNotification(event);
+          }, timeUntilEvent);
+          
+          this.eventTimeouts.push(timeoutId);
+        } else {
+          console.log(`📅 Event "${event.title}" time has already passed today`);
+        }
+      }
+      
+    } catch (error) {
+      console.error('❌ Error scheduling event notifications:', error);
+    }
+  }
+
+  async sendEventNotification(event: any) {
+    try {
+      console.log(`📅 Sending notification for event: ${event.title}`);
+      
+      if (!('Notification' in window)) {
+        console.warn('This browser does not support notifications');
+        return;
+      }
+
+      if (Notification.permission !== 'granted') {
+        console.warn('Notification permission not granted');
+        return;
+      }
+
+      new Notification(`Event Reminder: ${event.title}`, {
+        body: `${event.type.charAt(0).toUpperCase() + event.type.slice(1)} scheduled for ${event.time}${event.description ? `: ${event.description}` : ''}`,
+        icon: '/android-launchericon-192-192.png',
+        tag: `event-${event.id}`,
+        requireInteraction: false,
+      });
+
+    } catch (error) {
+      console.error('❌ Error sending event notification:', error);
+    }
+  }
+
   destroy() {
     if (this.dailyReminderTimeout) {
       clearTimeout(this.dailyReminderTimeout);
       this.dailyReminderTimeout = null;
     }
+    
+    // Clear event timeouts
+    this.eventTimeouts.forEach(timeout => clearTimeout(timeout));
+    this.eventTimeouts = [];
   }
 }
 
