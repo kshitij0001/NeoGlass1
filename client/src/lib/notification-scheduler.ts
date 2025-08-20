@@ -1,4 +1,5 @@
 import { createNotificationManagerFromSettings } from './notifications';
+import { nativeNotificationManager } from './native-notifications';
 import { storage } from './storage';
 
 class NotificationScheduler {
@@ -59,9 +60,6 @@ class NotificationScheduler {
 
   async sendDailyReminder() {
     try {
-      const notificationManager = await createNotificationManagerFromSettings();
-      if (!notificationManager) return;
-
       const reviews = await storage.getReviews();
       
       // Check if there are pending reviews
@@ -78,15 +76,30 @@ class NotificationScheduler {
         return dueDate.toDateString() === today.toDateString() && !r.isCompleted;
       }).length || 0;
 
-      // Send appropriate notification
+      // Send native notification
+      let title = 'NEET Study Time!';
+      let body = 'Time for your daily study session. Keep your streak going!';
+
       if (overdueCount > 0 || todayCount > 0) {
-        await notificationManager.scheduleReviewReminder(reviews || []);
-      } else {
-        // Send general daily reminder
-        await notificationManager.scheduleDailyReminder();
+        title = 'Study Reviews Due!';
+        let reviewText = '';
+        
+        if (overdueCount > 0) {
+          reviewText += `${overdueCount} overdue review${overdueCount > 1 ? 's' : ''}`;
+        }
+        
+        if (todayCount > 0) {
+          if (reviewText) reviewText += ' and ';
+          reviewText += `${todayCount} review${todayCount > 1 ? 's' : ''} due today`;
+        }
+
+        body = `You have ${reviewText}. Don't break your streak!`;
       }
 
-      console.log('📬 Daily reminder sent successfully');
+      // Use native notifications if available, fallback to web
+      await nativeNotificationManager.scheduleReviewReminder(title, body, new Date());
+
+      console.log('Daily reminder sent successfully');
     } catch (error) {
       console.error('Failed to send daily reminder:', error);
     }
