@@ -1,8 +1,0 @@
-
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="ic_launcher_background">#F59E0B</color>
-    <color name="capacitor_statusbar_color">#F59E0B</color>
-    <color name="capacitor_toolbar_color">#F59E0B</color>
-    <color name="capacitor_navbar_color">#000000</color>
-</resources>
