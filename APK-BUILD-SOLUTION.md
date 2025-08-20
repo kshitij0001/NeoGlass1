@@ -22,7 +22,7 @@ I completely resolved the Java compatibility issue by updating ALL Android confi
 
 5. **`android/gradle.properties`**
    - Added explicit Java 17 compatibility settings
-   - Configured JAVA_HOME path
+   - Removed invalid JAVA_HOME path to use system default
 
 **✅ Status**: Java 21 compatibility error completely eliminated. Build now only requires Android SDK setup.
 
