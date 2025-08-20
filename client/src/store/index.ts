@@ -104,13 +104,8 @@ useStore.subscribe(
 useStore.subscribe(
   (state) => state.customColors,
   (customColors) => {
-    console.log('🔔 Store subscription fired - customColors changed:', customColors);
     if (useStore.getState().isInitialized) {
-      console.log('🔔 Saving to localStorage...');
       localStorage.setItem('customColors', JSON.stringify(customColors));
-      console.log('🔔 Saved to localStorage successfully');
-    } else {
-      console.log('🔔 Store not initialized yet, skipping localStorage save');
     }
   }
 );

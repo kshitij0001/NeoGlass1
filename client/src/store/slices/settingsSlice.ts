@@ -271,10 +271,7 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
   },
 
   updateCardColor: (card, color) => {
-    console.log('🔥 updateCardColor called with:', card, color);
     const { customColors } = get();
-    console.log('🔥 Current customColors before update:', customColors);
-    
     const updatedColors = {
       ...customColors,
       cards: {
@@ -282,10 +279,7 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
         [card]: color,
       },
     };
-    console.log('🔥 Updated colors object:', updatedColors);
-    
     set({ customColors: updatedColors });
-    console.log('🔥 Store updated, new state:', get().customColors);
 
     // Apply to CSS custom properties with contrast
     const contrastColor = getContrastColor(color);

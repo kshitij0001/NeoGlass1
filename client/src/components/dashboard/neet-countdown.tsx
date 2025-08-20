@@ -14,10 +14,6 @@ export function NeetCountdown() {
   const { settings, customColors } = useStore();
   const [countdown, setCountdown] = useState<CountdownData>({ days: 0, hours: 0, minutes: 0 });
 
-  // Debug: Log current color value
-  console.log('🟡 Countdown card color from store:', customColors.cards.countdown);
-  console.log('🟡 Full customColors object:', customColors);
-
   useEffect(() => {
     const updateCountdown = () => {
       const now = new Date();
@@ -41,8 +37,7 @@ export function NeetCountdown() {
       className="neobrutalist-card p-4 rounded-xl relative overflow-hidden group hover:scale-105 transition-transform duration-200"
       style={{ backgroundColor: customColors.cards.countdown }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-red-400/30 to-orange-400/30"></div>
-      <div className="text-center relative z-10">
+      <div className="text-center">
         <h2 className="text-2xl font-black mb-2" data-testid="countdown-title">
           NEET 2026
         </h2>
