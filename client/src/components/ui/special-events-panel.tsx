@@ -3,27 +3,28 @@ import { Card } from "@/components/ui/card";
 import { 
   testPersonalizedNotification, 
   showSpecialPopup, 
-  getRandomMessage,
-  getContextualMessage 
+  sendPersonalizedNotificationNow,
+  getRandomMorningMessage,
+  getRandomDaytimeMessage 
 } from "@/lib/special-events";
 
 export function SpecialEventsPanel() {
   const handleTestNotification = () => {
-    testPersonalizedNotification();
+    sendPersonalizedNotificationNow();
   };
 
   const handleTestPopup = () => {
     showSpecialPopup();
   };
 
-  const handleTestContextualMessage = () => {
-    const message = getContextualMessage();
-    alert(`Contextual message: ${message}`);
+  const handleTestMorningMessage = () => {
+    const message = getRandomMorningMessage();
+    alert(`Morning message: ${message}`);
   };
 
   const handleTestRandomMessage = () => {
-    const message = getRandomMessage('morning');
-    alert(`Random morning message: ${message}`);
+    const message = getRandomDaytimeMessage();
+    alert(`Random daytime message: ${message}`);
   };
 
   return (
@@ -47,17 +48,17 @@ export function SpecialEventsPanel() {
         </Button>
 
         <Button
-          onClick={handleTestContextualMessage}
+          onClick={handleTestMorningMessage}
           className="w-full neobrutalist-btn bg-[#caffbf] hover:bg-[#caffbf]/90 text-brutal-black justify-start"
         >
-          💬 Test Contextual Message
+          🌅 Test Morning Message
         </Button>
 
         <Button
           onClick={handleTestRandomMessage}
           className="w-full neobrutalist-btn bg-[#fdffb6] hover:bg-[#fdffb6]/90 text-brutal-black justify-start"
         >
-          🌅 Test Morning Message
+          💬 Test Random Message
         </Button>
       </div>
 
