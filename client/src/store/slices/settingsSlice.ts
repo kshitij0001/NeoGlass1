@@ -24,6 +24,10 @@ export interface CustomColors {
   eventTypes: {
     [key: string]: string; // Allow for dynamic event types
   };
+  textColors: {
+    lightMode: string;
+    darkMode: string;
+  };
 }
 
 export interface SettingsSlice {
@@ -44,6 +48,7 @@ export interface SettingsSlice {
   updateDifficultyColor: (difficulty: keyof CustomColors['difficulties'], color: string) => void;
   updateCardColor: (card: keyof CustomColors['cards'], color: string) => void;
   updateEventTypeColor: (eventType: string, color: string) => void;
+  updateTextColor: (mode: 'lightMode' | 'darkMode', color: string) => void;
   resetColorsToDefault: () => void;
   exportData: () => Promise<Blob>;
   importData: (file: File) => Promise<void>;
@@ -95,6 +100,10 @@ const defaultColors: CustomColors = {
     holiday: suggestiveColors[2][7], // #f6d6ff
     other: suggestiveColors[3][6], // #edece8
   },
+  textColors: {
+    lightMode: '#ffffff',
+    darkMode: '#1f2937',
+  },
 };
 
 // Helper function to apply custom colors to CSS variables
@@ -132,6 +141,12 @@ const applyCustomColors = (customColors: CustomColors) => {
     document.documentElement.style.setProperty(`--event-${eventTypeKey}-color`, color);
     document.documentElement.style.setProperty(`--event-${eventTypeKey}-contrast`, contrastColor);
   });
+  
+  // Apply text colors
+  if (customColors.textColors) {
+    document.documentElement.style.setProperty('--text-light-mode', customColors.textColors.lightMode);
+    document.documentElement.style.setProperty('--text-dark-mode', customColors.textColors.darkMode);
+  }
 };
 
 // Helper function to calculate contrast color
@@ -178,6 +193,7 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
           difficulties: { ...defaultColors.difficulties, ...parsedColors.difficulties },
           cards: { ...defaultColors.cards, ...parsedColors.cards },
           eventTypes: { ...defaultColors.eventTypes, ...parsedColors.eventTypes },
+          textColors: { ...defaultColors.textColors, ...parsedColors.textColors },
         };
         set({ customColors: mergedColors });
         applyCustomColors(mergedColors);
@@ -323,6 +339,21 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
     const contrastColor = getContrastColor(color);
     document.documentElement.style.setProperty(`--event-${eventType.toLowerCase()}-color`, color);
     document.documentElement.style.setProperty(`--event-${eventType.toLowerCase()}-contrast`, contrastColor);
+  },
+
+  updateTextColor: (mode, color) => {
+    const { customColors } = get();
+    const updatedColors = {
+      ...customColors,
+      textColors: {
+        ...customColors.textColors,
+        [mode]: color,
+      },
+    };
+    set({ customColors: updatedColors });
+
+    // Apply to CSS custom properties
+    document.documentElement.style.setProperty(`--text-${mode.toLowerCase().replace('mode', '-mode')}`, color);
   },
 
   resetColorsToDefault: () => {

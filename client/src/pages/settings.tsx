@@ -31,6 +31,7 @@ export default function Settings() {
     updateDifficultyColor,
     updateCardColor,
     updateEventTypeColor,
+    updateTextColor,
     resetColorsToDefault,
     exportData,
     importData,
@@ -400,9 +401,34 @@ export default function Settings() {
                 </div>
               </div>
 
+              {/* Text Colors */}
+              <div>
+                <h4 className="font-bold text-brutal-black dark:text-white mb-3">Text Colors</h4>
+                <div className="space-y-3">
+                  <ColorPicker
+                    label="Light Mode Text"
+                    value={customColors.textColors.lightMode}
+                    onChange={(newColor) => updateTextColor('lightMode', newColor)}
+                    presetColors={[
+                      '#ffffff', '#f9fafb', '#f3f4f6', '#e5e7eb', '#d1d5db', '#9ca3af',
+                      '#6b7280', '#4b5563', '#374151', '#1f2937', '#111827', '#000000'
+                    ]}
+                  />
+                  <ColorPicker
+                    label="Dark Mode Text"
+                    value={customColors.textColors.darkMode}
+                    onChange={(newColor) => updateTextColor('darkMode', newColor)}
+                    presetColors={[
+                      '#000000', '#111827', '#1f2937', '#374151', '#4b5563', '#6b7280',
+                      '#9ca3af', '#d1d5db', '#e5e7eb', '#f3f4f6', '#f9fafb', '#ffffff'
+                    ]}
+                  />
+                </div>
+              </div>
+
               <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
                 <p className="text-sm text-blue-800 dark:text-blue-200">
-                  💡 These colors will be applied throughout the app for subjects, difficulty indicators, and various cards and event types.
+                  💡 These colors will be applied throughout the app for subjects, difficulty indicators, various cards, event types, and text colors.
                 </p>
               </div>
               </div>
