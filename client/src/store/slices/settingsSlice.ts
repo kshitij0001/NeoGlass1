@@ -18,6 +18,8 @@ export interface CustomColors {
     streak: string;
     averageScore: string;
     totalTests: string;
+    overallProgress: string;
+    dayStreak: string;
   };
   eventTypes: {
     [key: string]: string; // Allow for dynamic event types
@@ -78,11 +80,13 @@ const defaultColors: CustomColors = {
     streak: suggestiveColors[0][8], // #98f5e1
     averageScore: suggestiveColors[0][3], // #f1c0e8
     totalTests: suggestiveColors[0][4], // #cfbaf0
+    overallProgress: suggestiveColors[1][5], // #a0c4ff
+    dayStreak: suggestiveColors[0][9], // #b9fbc0
   },
   eventTypes: {
     exam: suggestiveColors[1][1], // #ffd6a5
-    revision: suggestiveColors[1][3], // #caffbf
-    break: suggestiveColors[2][7], // #f6d6ff
+    mock: suggestiveColors[1][3], // #caffbf
+    holiday: suggestiveColors[2][7], // #f6d6ff
     other: suggestiveColors[3][6], // #edece8
   },
 };

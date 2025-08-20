@@ -297,15 +297,22 @@ export default function Settings() {
               <div>
                 <h4 className="font-bold text-brutal-black dark:text-white mb-3">Card Colors</h4>
                 <div className="space-y-3">
-                  {Object.entries(customColors.cards).map(([cardName, color]) => (
-                    <ColorPicker
-                      key={cardName}
-                      label={cardName.charAt(0).toUpperCase() + cardName.slice(1)} // Capitalize first letter
-                      value={color}
-                      onChange={(newColor) => updateCardColor(cardName as keyof typeof customColors.cards, newColor)}
-                      presetColors={allSuggestiveColors}
-                    />
-                  ))}
+                  {Object.entries(customColors.cards).map(([cardName, color]) => {
+                    const displayName = cardName === 'averageScore' ? 'Average Score' :
+                                       cardName === 'totalTests' ? 'Total Tests' :
+                                       cardName === 'overallProgress' ? 'Overall Progress' :
+                                       cardName === 'dayStreak' ? 'Day Streak' :
+                                       cardName.charAt(0).toUpperCase() + cardName.slice(1);
+                    return (
+                      <ColorPicker
+                        key={cardName}
+                        label={displayName}
+                        value={color}
+                        onChange={(newColor) => updateCardColor(cardName as keyof typeof customColors.cards, newColor)}
+                        presetColors={allSuggestiveColors}
+                      />
+                    );
+                  })}
                 </div>
               </div>
 
@@ -313,15 +320,18 @@ export default function Settings() {
               <div>
                 <h4 className="font-bold text-brutal-black dark:text-white mb-3">Event Type Colors</h4>
                 <div className="space-y-3">
-                  {Object.entries(customColors.eventTypes).map(([eventType, color]) => (
-                    <ColorPicker
-                      key={eventType}
-                      label={eventType}
-                      value={color}
-                      onChange={(newColor) => updateEventTypeColor(eventType as keyof typeof customColors.eventTypes, newColor)}
-                      presetColors={allSuggestiveColors}
-                    />
-                  ))}
+                  {Object.entries(customColors.eventTypes).map(([eventType, color]) => {
+                    const displayName = eventType.charAt(0).toUpperCase() + eventType.slice(1);
+                    return (
+                      <ColorPicker
+                        key={eventType}
+                        label={displayName}
+                        value={color}
+                        onChange={(newColor) => updateEventTypeColor(eventType, newColor)}
+                        presetColors={allSuggestiveColors}
+                      />
+                    );
+                  })}
                 </div>
               </div>
 
