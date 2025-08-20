@@ -109,11 +109,46 @@
   ],
   "screenshots": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 568' fill='%23FFF'%3E%3Crect width='320' height='568' fill='%23FFF'/%3E%3Crect x='20' y='80' width='280' height='60' rx='12' fill='%23F59E0B'/%3E%3Crect x='20' y='160' width='280' height='80' rx='12' fill='%23F472B6'/%3E%3Crect x='20' y='260' width='280' height='120' rx='12' fill='%2334D399'/%3E%3Crect x='20' y='400' width='280' height='140' rx='12' fill='%233B82F6'/%3E%3C/svg%3E",
-      "sizes": "320x568",
-      "type": "image/svg+xml",
+      "src": "/screenshot-dashboard.png",
+      "sizes": "375x812",
+      "type": "image/png",
       "form_factor": "narrow",
-      "label": "NEET Study Dashboard"
+      "label": "NEET Study Dashboard - Track your progress and daily goals"
+    },
+    {
+      "src": "/screenshot-reviews.png",
+      "sizes": "375x812",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Today's Reviews - Spaced repetition system in action"
+    },
+    {
+      "src": "/screenshot-calendar.png",
+      "sizes": "375x812",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Calendar View - Schedule your study sessions and track events"
+    },
+    {
+      "src": "/screenshot-tests.png",
+      "sizes": "375x812",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Test Performance - Monitor your mock test scores and improvement"
+    },
+    {
+      "src": "/screenshot-progress.png",
+      "sizes": "375x812",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Progress Dashboard - Comprehensive analytics and subject mastery"
+    },
+    {
+      "src": "/screenshot-analytics.png",
+      "sizes": "375x812",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Detailed Analytics - Score distribution and recent test history"
     }
   ],
   "prefer_related_applications": false,
