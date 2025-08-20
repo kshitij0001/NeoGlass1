@@ -79,6 +79,10 @@
 
   /* Update star animation for new background */
   --star-color: rgba(255, 255, 255, 0.8);
+
+  /* Card Background Colors - Default values, can be overridden by JavaScript */
+  --card-bg-light-mode: #ffffff;
+  --card-bg-dark-mode: #1f2937;
 }
 
 .dark {
@@ -121,6 +125,10 @@
   --difficulty-easy-contrast: #e8f4ed;
   --difficulty-medium-contrast: #faf5f7;
   --difficulty-hard-contrast: #f5e5e0;
+
+  /* Card Background Colors for Dark Mode - Default values, can be overridden by JavaScript */
+  --card-bg-light-mode: #f9fafb;
+  --card-bg-dark-mode: #1f2937;
 }
 
 @layer base {
@@ -142,17 +150,17 @@
     padding: 0;
   }
 
-  /* Default card backgrounds - allow inline styles to override */
+  /* Default card backgrounds - use CSS variables that can be customized */
   .card:not([style*="background"]),
   .bg-card:not([style*="background"]) {
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--card-bg-light-mode);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .dark .card:not([style*="background"]),
   .dark .bg-card:not([style*="background"]) {
-    background: rgba(20, 20, 20, 0.95);
+    background: var(--card-bg-dark-mode);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
@@ -168,6 +176,24 @@
   .dark .bg-card,
   .dark .neobrutalist-card {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Neobrutalist cards use custom background colors */
+  .neobrutalist-card.bg-white {
+    background: var(--card-bg-light-mode) !important;
+  }
+
+  .dark .neobrutalist-card.bg-gray-800 {
+    background: var(--card-bg-dark-mode) !important;
+  }
+
+  /* Neobrutalist cards use custom background colors */
+  .neobrutalist-card.bg-white {
+    background: var(--card-bg-light-mode) !important;
+  }
+
+  .dark .neobrutalist-card.bg-gray-800 {
+    background: var(--card-bg-dark-mode) !important;
   }
 
   /* Hover effect for interactive cards */
