@@ -455,7 +455,7 @@ export default function ProgressPage() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-bold text-brutal-black dark:text-white">Total Test Sessions</span>
-                <Badge className="bg-electric-blue text-white">
+                <Badge className="bg-electric-blue text-[#383f4b]">
                   {tests.length}
                 </Badge>
               </div>

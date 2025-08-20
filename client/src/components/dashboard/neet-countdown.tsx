@@ -37,7 +37,7 @@ export function NeetCountdown() {
       className="neobrutalist-card p-4 rounded-xl relative overflow-hidden group hover:scale-105 transition-transform duration-200"
       style={{ backgroundColor: customColors.cards.countdown }}
     >
-      <div className="text-center">
+      <div className="text-center text-[#363d49]">
         <h2 className="text-2xl font-black mb-2" data-testid="countdown-title">
           NEET 2026
         </h2>
