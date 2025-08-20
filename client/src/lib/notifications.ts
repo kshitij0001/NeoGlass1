@@ -1,5 +1,6 @@
 // Notification system for the NEET 2026 Study Companion
 import { Review } from '@shared/schema';
+import { nativeNotificationManager } from './native-notifications';
 
 export interface NotificationConfig {
   enabled: boolean;
@@ -17,21 +18,8 @@ export class NotificationManager {
   }
 
   async requestPermission(): Promise<boolean> {
-    if (!('Notification' in window)) {
-      console.warn('This browser does not support notifications');
-      return false;
-    }
-
-    if (Notification.permission === 'granted') {
-      return true;
-    }
-
-    if (Notification.permission === 'denied') {
-      return false;
-    }
-
-    const permission = await Notification.requestPermission();
-    return permission === 'granted';
+    // Use native notification system instead of browser API
+    return await nativeNotificationManager.requestPermissions();
   }
 
   async scheduleReviewReminder(reviews: Review[]): Promise<void> {
@@ -66,12 +54,12 @@ export class NotificationManager {
         body += `${todayCount} review${todayCount > 1 ? 's' : ''} due today`;
       }
 
-      new Notification(title, {
-        body: `You have ${body}. Keep your streak going!`,
-        icon: '/favicon.ico',
-        tag: 'review-reminder',
-        requireInteraction: false,
-      });
+      // Use native notification instead of browser API
+      await nativeNotificationManager.scheduleReviewReminder(
+        title,
+        `You have ${body}. Keep your streak going!`,
+        new Date()
+      );
     }
   }
 
@@ -94,13 +82,13 @@ export class NotificationManager {
 
     const timeToReminder = reminderTime.getTime() - now.getTime();
 
-    setTimeout(() => {
-      new Notification('NEET 2026 Study Time!', {
-        body: 'Time for your daily study session. Review some topics to maintain your streak!',
-        icon: '/favicon.ico',
-        tag: 'daily-reminder',
-        requireInteraction: false,
-      });
+    setTimeout(async () => {
+      // Use native notification instead of browser API
+      await nativeNotificationManager.scheduleReviewReminder(
+        'NEET 2026 Study Time!',
+        'Time for your daily study session. Review some topics to maintain your streak!',
+        new Date()
+      );
 
       // Schedule next day's reminder
       this.scheduleDailyReminder();
@@ -115,12 +103,12 @@ export class NotificationManager {
 
     // Remind about streak milestones
     if (currentStreak > 0 && currentStreak % 7 === 0) {
-      new Notification('Streak Milestone! 🔥', {
-        body: `Amazing! You've maintained a ${currentStreak}-day study streak. Keep it up!`,
-        icon: '/favicon.ico',
-        tag: 'streak-milestone',
-        requireInteraction: false,
-      });
+      // Use native notification instead of browser API
+      await nativeNotificationManager.scheduleReviewReminder(
+        'Streak Milestone! 🔥',
+        `Amazing! You've maintained a ${currentStreak}-day study streak. Keep it up!`,
+        new Date()
+      );
     }
   }
 
