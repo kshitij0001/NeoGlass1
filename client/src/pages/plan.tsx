@@ -424,12 +424,12 @@ export default function Plan() {
                                           Reset
                                         </Button>
                                       </AlertDialogTrigger>
-                                      <AlertDialogContent className="glass-morphism border-4 border-brutal-black dark:border-white rounded-3xl max-w-sm mx-4">
+                                      <AlertDialogContent className="glass-morphism border-4 border-brutal-black dark:border-white rounded-3xl max-w-sm mx-4 bg-white/95 dark:bg-gray-900/95">
                                         <AlertDialogHeader>
                                           <AlertDialogTitle className="text-xl font-black text-brutal-black dark:text-white">
                                             Reset Topic Progress
                                           </AlertDialogTitle>
-                                          <AlertDialogDescription className="text-brutal-black dark:text-white">
+                                          <AlertDialogDescription className="text-brutal-black dark:text-white font-medium">
                                             This will reset "{topic.name}" back to "Not started" and remove any review progress. Are you sure you want to continue?
                                           </AlertDialogDescription>
                                         </AlertDialogHeader>
