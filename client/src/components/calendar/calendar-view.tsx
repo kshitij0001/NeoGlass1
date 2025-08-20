@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { CalendarDays, ChevronLeft, ChevronRight, Clock, Plus, Target, Trash2, Check } from "lucide-react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday, isSameDay, addMonths, subMonths, startOfWeek, endOfWeek, subWeeks, addWeeks, subDays, addDays } from "date-fns";
 import { useStore } from "@/store";
@@ -555,11 +555,14 @@ export function CalendarView() {
 
       {/* Day Details Modal */}
       <Dialog open={isDayDetailsOpen} onOpenChange={setIsDayDetailsOpen}>
-        <DialogContent className="neobrutalist-modal max-w-md border-4 border-brutal-black dark:border-white rounded-3xl">
+        <DialogContent className="glass-morphism border-4 border-brutal-black dark:border-white rounded-3xl max-w-md mx-auto max-h-[85vh] overflow-y-auto text-[#211f1f]">
           <DialogHeader>
-            <DialogTitle className="font-black text-brutal-black dark:text-white">
+            <DialogTitle className="text-xl font-black text-brutal-black dark:text-white">
               {dayDetailsDate && format(dayDetailsDate, 'EEEE, MMMM d, yyyy')}
             </DialogTitle>
+            <DialogDescription className="text-sm dark:text-gray-400 text-[#080505] font-bold">
+              View reviews and events for this day
+            </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
