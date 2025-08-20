@@ -9,8 +9,24 @@ export const testNotifications = {
       return false;
     }
 
+    console.log(`🔔 Current permission status: ${Notification.permission}`);
+    
+    if (Notification.permission === 'denied') {
+      console.error('❌ Notifications are blocked. To reset:');
+      console.log('1. Click the lock icon in your address bar');
+      console.log('2. Change "Notifications" from "Block" to "Allow"');
+      console.log('3. Refresh the page and try again');
+      return false;
+    }
+
+    if (Notification.permission === 'granted') {
+      console.log('✅ Notifications already allowed');
+      return true;
+    }
+
+    console.log('🔔 Requesting notification permission...');
     const permission = await Notification.requestPermission();
-    console.log(`🔔 Notification permission: ${permission}`);
+    console.log(`🔔 New permission status: ${permission}`);
     return permission === 'granted';
   },
 
@@ -123,6 +139,14 @@ export const testNotifications = {
     console.log(`• Permission: ${Notification.permission}`);
     console.log(`• Service Worker: ${'serviceWorker' in navigator ? '✅' : '❌'}`);
     
+    if (Notification.permission === 'denied') {
+      console.log('');
+      console.log('🔧 To reset denied permissions:');
+      console.log('• Chrome/Edge: Click lock icon → Site settings → Notifications → Allow');
+      console.log('• Firefox: Click shield icon → Permissions → Notifications → Allow');
+      console.log('• Safari: Safari menu → Settings → Websites → Notifications → Allow');
+    }
+    
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistration().then(reg => {
         console.log(`• Service Worker registered: ${reg ? '✅' : '❌'}`);
@@ -164,6 +188,37 @@ export const notificationDebugging = {
     console.log(`• Notification API: ${'Notification' in window ? 'Available' : 'Not available'}`);
     console.log(`• Permission status: ${Notification.permission}`);
     console.log(`• Push Manager: ${'PushManager' in window ? 'Available' : 'Not available'}`);
+    
+    if (Notification.permission === 'denied') {
+      console.log('');
+      console.log('⚠️  PERMISSION DENIED - How to fix:');
+      console.log('1. Look for a crossed-out bell icon 🔕 in your address bar');
+      console.log('2. Click it and select "Always allow notifications"');
+      console.log('3. OR click the lock/info icon next to the URL');
+      console.log('4. Change Notifications from "Block" to "Allow"');
+      console.log('5. Refresh the page');
+      console.log('');
+      console.log('Alternative: Clear site data and try again:');
+      console.log('• Right-click → Inspect → Application tab → Storage → Clear site data');
+    }
+  },
+
+  resetPermissions() {
+    console.log('🔄 Instructions to reset notification permissions:');
+    console.log('');
+    console.log('Method 1 - Browser settings:');
+    console.log('• Chrome: Settings → Privacy → Site Settings → Notifications');
+    console.log('• Firefox: Settings → Privacy → Permissions → Notifications');
+    console.log('• Edge: Settings → Site permissions → Notifications');
+    console.log('');
+    console.log('Method 2 - Site-specific:');
+    console.log('• Click the lock/info icon in address bar');
+    console.log('• Change Notifications to "Allow"');
+    console.log('• Refresh the page');
+    console.log('');
+    console.log('Method 3 - Clear all site data:');
+    console.log('• F12 → Application → Storage → Clear site data');
+    console.log('• Refresh and try permission request again');
   },
 
   async checkServiceWorker() {
