@@ -19,45 +19,45 @@
       "purpose": "any"
     },
     {
-      "src": "/study-icon.jpg",
+      "src": "/android-launchericon-48-48.png",
       "sizes": "48x48",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/study-icon.jpg",
+      "src": "/android-launchericon-72-72.png",
       "sizes": "72x72",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/study-icon.jpg",
+      "src": "/android-launchericon-96-96.png",
       "sizes": "96x96",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/study-icon.jpg",
+      "src": "/android-launchericon-144-144.png",
       "sizes": "144x144",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/study-icon.jpg",
+      "src": "/android-launchericon-192-192.png",
       "sizes": "192x192",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/study-icon.jpg",
+      "src": "/android-launchericon-512-512.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/study-icon.jpg",
+      "src": "/maskable_icon.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ],
@@ -69,9 +69,9 @@
       "url": "/",
       "icons": [
         {
-          "src": "/study-icon.jpg",
+          "src": "/android-launchericon-96-96.png",
           "sizes": "96x96",
-          "type": "image/jpeg"
+          "type": "image/png"
         }
       ]
     },
@@ -82,9 +82,9 @@
       "url": "/?quick-add=true",
       "icons": [
         {
-          "src": "/study-icon.jpg",
+          "src": "/android-launchericon-96-96.png",
           "sizes": "96x96",
-          "type": "image/jpeg"
+          "type": "image/png"
         }
       ]
     },
@@ -95,9 +95,9 @@
       "url": "/calendar",
       "icons": [
         {
-          "src": "/study-icon.jpg",
+          "src": "/android-launchericon-96-96.png",
           "sizes": "96x96",
-          "type": "image/jpeg"
+          "type": "image/png"
         }
       ]
     }
