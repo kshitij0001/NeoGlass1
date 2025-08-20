@@ -316,6 +316,21 @@ class StorageManager {
       });
     }
   }
+
+  // Add method for batch saving tests
+  async saveTests(tests: TestSession[]): Promise<void> {
+    const store = await this.getStore('tests', 'readwrite');
+
+    return new Promise((resolve, reject) => {
+      const transaction = store.transaction;
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = () => reject(transaction.error);
+
+      tests.forEach(test => {
+        store.put(test);
+      });
+    });
+  }
 }
 
 export const storage = new StorageManager();

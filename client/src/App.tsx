@@ -16,6 +16,7 @@ import Progress from "@/pages/progress";
 import Settings from "@/pages/settings";
 import { useLocation } from "wouter";
 import { checkAndTriggerStreakMilestone, testConfetti, testAllClearConfetti } from "@/lib/confetti";
+import { populateTestData, clearTestData } from "@/lib/test-data";
 
 function AppContent() {
   const { initialize, isInitialized, isLoading, settings, getCurrentStreak } = useStore();
@@ -44,7 +45,10 @@ function AppContent() {
     if (typeof window !== 'undefined' && import.meta.env.DEV) {
       (window as any).testConfetti = testConfetti;
       (window as any).testAllClearConfetti = testAllClearConfetti;
+      (window as any).populateTestData = populateTestData;
+      (window as any).clearTestData = clearTestData;
       console.log('🧪 Test functions available: window.testConfetti(), window.testAllClearConfetti()');
+      console.log('📸 Screenshot data functions: window.populateTestData(), window.clearTestData()');
     }
   }, []);
 
