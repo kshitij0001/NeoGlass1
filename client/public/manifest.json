@@ -1,6 +1,6 @@
 {
-  "name": "NEET 2026 Study Companion",
-  "short_name": "NEET Companion",
+  "name": "NEET SRS Study Companion",
+  "short_name": "NEET SRS",
   "description": "Spaced repetition study app for NEET 2026 preparation with neobrutalist design",
   "start_url": "/",
   "display": "standalone",
