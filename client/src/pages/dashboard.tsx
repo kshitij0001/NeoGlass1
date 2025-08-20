@@ -8,10 +8,17 @@ import { SRSQueue } from "@/components/dashboard/srs-queue";
 import { FloatingActionButton } from "@/components/ui/floating-action-button";
 import { QuickAddModal } from "@/components/dashboard/quick-add-modal";
 import { DateTestingPanel } from "@/components/ui/date-testing-panel";
-import { useState } from "react";
+import { SpecialEventsPanel } from "@/components/ui/special-events-panel";
+import { useState, useEffect } from "react";
+import { initializeSpecialEvents } from "@/lib/special-events";
 
 export default function Dashboard() {
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
+
+  // Initialize special events when dashboard loads
+  useEffect(() => {
+    initializeSpecialEvents();
+  }, []);
 
   return (
     <div className="min-h-screen relative">
@@ -27,7 +34,12 @@ export default function Dashboard() {
           <SRSQueue />
           
           {/* Development Tools - Only show in development */}
-          {import.meta.env.DEV && <DateTestingPanel />}
+          {import.meta.env.DEV && (
+            <>
+              <DateTestingPanel />
+              <SpecialEventsPanel />
+            </>
+          )}
         </div>
       </div>
 
