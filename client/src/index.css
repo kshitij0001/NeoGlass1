@@ -157,6 +157,34 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
+  /* Enhanced shadow effects for all cards */
+  .card,
+  .bg-card,
+  .neobrutalist-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  }
+
+  .dark .card,
+  .dark .bg-card,
+  .dark .neobrutalist-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Hover effect for interactive cards */
+  .card:hover,
+  .bg-card:hover,
+  .neobrutalist-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+    transition: all 0.2s ease-in-out;
+  }
+
+  .dark .card:hover,
+  .dark .bg-card:hover,
+  .dark .neobrutalist-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
   /* Add main content background overlay for better readability */
   .main-content {
     background: rgba(255, 255, 255, 0.15);
