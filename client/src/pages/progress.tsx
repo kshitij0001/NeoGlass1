@@ -449,7 +449,7 @@ export default function ProgressPage() {
                   <BookOpen className="h-4 w-4 mr-2" />
                   Total Reviews Completed
                 </span>
-                <Badge className="bg-mustard text-brutal-black">
+                <Badge className="bg-mustard text-[#383f4b]">
                   {reviews.filter(r => r.lastReviewed).length}
                 </Badge>
               </div>
