@@ -8,6 +8,8 @@ The application is built as a full-stack solution with a React frontend and Expr
 
 ## Recent Changes (August 2025)
 
+- **Project Cleanup Complete**: Removed all unnecessary documentation files, keeping only essential README and APK build guide for a clean project structure
+
 - **Native Android APK Setup Complete**: Successfully configured Capacitor framework for native Android development:
   - Installed and configured Capacitor CLI with proper app ID (com.neetcompanion.app)
   - Created complete Android Studio project in `/android` folder with all web assets
