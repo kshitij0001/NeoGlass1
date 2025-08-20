@@ -4,6 +4,7 @@
  */
 
 import confetti from 'canvas-confetti';
+import { nativeNotificationManager } from './native-notifications';
 
 // Special date configurations
 export const SPECIAL_DATES = {
@@ -201,59 +202,47 @@ export function getRandomDaytimeMessage(): string {
 /**
  * Send morning notification (6 AM)
  */
-export function sendMorningNotification(): void {
-  if ('Notification' in window && Notification.permission === 'granted') {
-    const message = getRandomMorningMessage();
-    
-    new Notification('Good Morning! 🌅', {
-      body: message,
-      icon: '/android-launchericon-192-192.png',
-      badge: '/android-launchericon-96-96.png',
-      tag: 'morning-message',
-      requireInteraction: false,
-      silent: false
-    });
-  }
+export async function sendMorningNotification(): Promise<void> {
+  const message = getRandomMorningMessage();
+  await nativeNotificationManager.scheduleReviewReminder(
+    'Good Morning! 🌅',
+    message,
+    new Date()
+  );
 }
 
 /**
  * Send random daytime notification
  */
-export function sendRandomDaytimeNotification(): void {
-  if ('Notification' in window && Notification.permission === 'granted') {
-    const message = getRandomDaytimeMessage();
-    
-    new Notification('NEET Study Companion 🐰', {
-      body: message,
-      icon: '/android-launchericon-192-192.png',
-      badge: '/android-launchericon-96-96.png',
-      tag: 'random-message',
-      requireInteraction: false,
-      silent: false
-    });
-  }
+export async function sendRandomDaytimeNotification(): Promise<void> {
+  const message = getRandomDaytimeMessage();
+  await nativeNotificationManager.scheduleReviewReminder(
+    'NEET Study Companion 🐰',
+    message,
+    new Date()
+  );
 }
 
 /**
  * ✨ MANUAL NOTIFICATION TRIGGER (for editing/testing)
  * Call this function anytime to send a personalized notification
  */
-export function sendPersonalizedNotificationNow(): void {
+export async function sendPersonalizedNotificationNow(): Promise<void> {
   const hour = new Date().getHours();
   
   // Send morning message if it's morning hours (5 AM - 12 PM)
   if (hour >= 5 && hour < 12) {
-    sendMorningNotification();
+    await sendMorningNotification();
   } else {
     // Send random daytime message for other times
-    sendRandomDaytimeNotification();
+    await sendRandomDaytimeNotification();
   }
 }
 
 /**
  * Schedule both daily notifications (with proper daily limits and spam prevention)
  */
-export function setupPersonalizedNotifications(): void {
+export async function setupPersonalizedNotifications(): Promise<void> {
   // Check if notifications were already set up today
   const today = new Date().toDateString();
   const setupKey = `online-notifications-setup-${today}`;
@@ -264,9 +253,7 @@ export function setupPersonalizedNotifications(): void {
   }
   
   // Request permission if not already granted
-  if ('Notification' in window && Notification.permission === 'default') {
-    Notification.requestPermission();
-  }
+  await nativeNotificationManager.requestPermissions();
   
   // Schedule morning notification (6 AM daily) - only once per day
   const scheduleMorningNotification = () => {

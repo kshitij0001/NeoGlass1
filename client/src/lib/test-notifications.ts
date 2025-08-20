@@ -1,33 +1,14 @@
 import { NotificationManager, DEFAULT_NOTIFICATION_CONFIG } from './notifications';
+import { nativeNotificationManager } from './native-notifications';
 import { storage } from './storage';
 
 // Test notification functions for development
 export const testNotifications = {
   async requestPermission() {
-    if (!('Notification' in window)) {
-      console.error('❌ This browser does not support notifications');
-      return false;
-    }
-
-    console.log(`🔔 Current permission status: ${Notification.permission}`);
-    
-    if (Notification.permission === 'denied') {
-      console.error('❌ Notifications are blocked. To reset:');
-      console.log('1. Click the lock icon in your address bar');
-      console.log('2. Change "Notifications" from "Block" to "Allow"');
-      console.log('3. Refresh the page and try again');
-      return false;
-    }
-
-    if (Notification.permission === 'granted') {
-      console.log('✅ Notifications already allowed');
-      return true;
-    }
-
-    console.log('🔔 Requesting notification permission...');
-    const permission = await Notification.requestPermission();
-    console.log(`🔔 New permission status: ${permission}`);
-    return permission === 'granted';
+    console.log('🔔 Requesting native notification permission...');
+    const hasPermission = await nativeNotificationManager.requestPermissions();
+    console.log(`🔔 Native permission status: ${hasPermission ? 'granted' : 'denied'}`);
+    return hasPermission;
   },
 
   async testBasicNotification() {
@@ -39,12 +20,11 @@ export const testNotifications = {
       return;
     }
 
-    new Notification('NEET Study Companion Test', {
-      body: 'This is a test notification from your study app!',
-      icon: '/android-launchericon-192-192.png',
-      tag: 'test-notification',
-      requireInteraction: false,
-    });
+    await nativeNotificationManager.scheduleReviewReminder(
+      'NEET Study Companion Test',
+      'This is a test notification from your study app!',
+      new Date()
+    );
 
     console.log('✅ Basic notification sent');
   },
@@ -59,12 +39,11 @@ export const testNotifications = {
     }
 
     // Simulate reviews due today
-    new Notification('NEET Study Reminder', {
-      body: 'You have 3 overdue reviews and 2 reviews due today. Keep your streak going!',
-      icon: '/android-launchericon-192-192.png',
-      tag: 'review-reminder',
-      requireInteraction: false,
-    });
+    await nativeNotificationManager.scheduleReviewReminder(
+      'NEET Study Reminder',
+      'You have 3 overdue reviews and 2 reviews due today. Keep your streak going!',
+      new Date()
+    );
 
     console.log('✅ Review reminder notification sent');
   },
@@ -78,12 +57,11 @@ export const testNotifications = {
       return;
     }
 
-    new Notification('NEET 2026 Study Time!', {
-      body: 'Time for your daily study session. Review some topics to maintain your streak!',
-      icon: '/android-launchericon-192-192.png',
-      tag: 'daily-reminder',
-      requireInteraction: false,
-    });
+    await nativeNotificationManager.scheduleReviewReminder(
+      'NEET 2026 Study Time!',
+      'Time for your daily study session. Review some topics to maintain your streak!',
+      new Date()
+    );
 
     console.log('✅ Daily reminder notification sent');
   },
@@ -97,12 +75,11 @@ export const testNotifications = {
       return;
     }
 
-    new Notification('Streak Milestone! 🔥', {
-      body: 'Amazing! You\'ve maintained a 21-day study streak. Keep it up!',
-      icon: '/android-launchericon-192-192.png',
-      tag: 'streak-milestone',
-      requireInteraction: false,
-    });
+    await nativeNotificationManager.scheduleReviewReminder(
+      'Streak Milestone! 🔥',
+      'Amazing! You\'ve maintained a 21-day study streak. Keep it up!',
+      new Date()
+    );
 
     console.log('✅ Streak milestone notification sent');
   },
@@ -151,12 +128,11 @@ export const testNotifications = {
         return;
       }
 
-      new Notification('Scheduled Study Reminder', {
-        body: `This would normally be sent at ${reminderTime} daily. Time for your NEET study session!`,
-        icon: '/android-launchericon-192-192.png',
-        tag: 'scheduled-reminder',
-        requireInteraction: false,
-      });
+      await nativeNotificationManager.scheduleReviewReminder(
+        'Scheduled Study Reminder',
+        `This would normally be sent at ${reminderTime} daily. Time for your NEET study session!`,
+        new Date()
+      );
 
       console.log(`✅ Test notification sent for time: ${reminderTime}`);
     } catch (error) {
@@ -184,12 +160,11 @@ export const testNotifications = {
         return;
       }
 
-      new Notification('Upcoming Event Reminder', {
-        body: `Mock Test scheduled for today at ${eventTime}. This would normally be sent at your configured event notification time.`,
-        icon: '/android-launchericon-192-192.png',
-        tag: 'event-reminder',
-        requireInteraction: false,
-      });
+      await nativeNotificationManager.scheduleReviewReminder(
+        'Upcoming Event Reminder',
+        `Mock Test scheduled for today at ${eventTime}. This would normally be sent at your configured event notification time.`,
+        new Date()
+      );
 
       console.log(`✅ Event test notification sent for time: ${eventTime}`);
     } catch (error) {
@@ -219,12 +194,11 @@ export const testNotifications = {
       testTime.setSeconds(testTime.getSeconds() + 5);
       const timeStr = testTime.toTimeString().slice(0, 5);
 
-      new Notification('Event Time Test', {
-        body: `This notification simulates an event scheduled for ${timeStr}. In the real app, this would be sent at the exact time you set for each event.`,
-        icon: '/android-launchericon-192-192.png',
-        tag: 'event-time-test',
-        requireInteraction: false,
-      });
+      await nativeNotificationManager.scheduleReviewReminder(
+        'Event Time Test',
+        `This notification simulates an event scheduled for ${timeStr}. In the real app, this would be sent at the exact time you set for each event.`,
+        new Date()
+      );
 
       console.log(`✅ Event time test notification sent - this demonstrates how events will notify at their specific times`);
     } catch (error) {
@@ -235,7 +209,7 @@ export const testNotifications = {
   showStatus() {
     console.log('📱 Notification System Status:');
     console.log(`• Browser support: ${'Notification' in window ? '✅' : '❌'}`);
-    console.log(`• Permission: ${Notification.permission}`);
+    console.log(`• Permission: Native notification system`);
     console.log(`• Service Worker: ${'serviceWorker' in navigator ? '✅' : '❌'}`);
     
     if (Notification.permission === 'denied') {

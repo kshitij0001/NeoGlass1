@@ -191,12 +191,11 @@ class NotificationScheduler {
         return;
       }
 
-      new Notification(`Event Reminder: ${event.title}`, {
-        body: `${event.type.charAt(0).toUpperCase() + event.type.slice(1)} scheduled for ${event.time}${event.description ? `: ${event.description}` : ''}`,
-        icon: '/android-launchericon-192-192.png',
-        tag: `event-${event.id}`,
-        requireInteraction: false,
-      });
+      await nativeNotificationManager.scheduleReviewReminder(
+        `Event Reminder: ${event.title}`,
+        `${event.type.charAt(0).toUpperCase() + event.type.slice(1)} scheduled for ${event.time}${event.description ? `: ${event.description}` : ''}`,
+        new Date()
+      );
 
     } catch (error) {
       console.error('❌ Error sending event notification:', error);

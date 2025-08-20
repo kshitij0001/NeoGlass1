@@ -4,6 +4,7 @@
  */
 
 import { MORNING_MESSAGES, RANDOM_MESSAGES, NOTIFICATION_CONFIG } from './special-events';
+import { nativeNotificationManager } from './native-notifications';
 
 interface ScheduledNotification {
   id: string;
@@ -176,7 +177,7 @@ export function scheduleOfflineReviewNotification(reviewCount: number): void {
 /**
  * Initialize offline notification system
  */
-export function initializeOfflineNotifications(): void {
+export async function initializeOfflineNotifications(): Promise<void> {
   // Check if already initialized today to prevent spam
   const today = new Date().toDateString();
   const initKey = `offline-system-initialized-${today}`;
@@ -188,7 +189,7 @@ export function initializeOfflineNotifications(): void {
   
   // Request notification permission
   if ('Notification' in window && Notification.permission === 'default') {
-    Notification.requestPermission();
+    await nativeNotificationManager.requestPermissions();
   }
   
   // Register service worker if not already registered
