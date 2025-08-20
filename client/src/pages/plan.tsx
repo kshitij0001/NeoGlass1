@@ -429,7 +429,7 @@ export default function Plan() {
                                           <AlertDialogTitle className="text-xl font-black text-brutal-black dark:text-white">
                                             Reset Topic Progress
                                           </AlertDialogTitle>
-                                          <AlertDialogDescription className="text-brutal-black dark:text-white font-medium">
+                                          <AlertDialogDescription className="text-brutal-black dark:text-white font-medium !text-brutal-black dark:!text-white">
                                             This will reset "{topic.name}" back to "Not started" and remove any review progress. Are you sure you want to continue?
                                           </AlertDialogDescription>
                                         </AlertDialogHeader>
