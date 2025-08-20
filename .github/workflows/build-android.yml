@@ -42,6 +42,11 @@ jobs:
     - name: Sync Capacitor with Android
       run: npx cap sync android
       
+    - name: Copy custom app icon to Android
+      run: |
+        # Copy study icon to Android launcher icon locations
+        find android/app/src/main/res -name "ic_launcher*" -exec cp client/public/study-icon.jpg {} \;
+      
     - name: Make gradlew executable
       run: chmod +x android/gradlew
       
