@@ -99,3 +99,13 @@ useStore.subscribe(
     }
   }
 );
+
+// Subscribe to customColors changes
+useStore.subscribe(
+  (state) => state.customColors,
+  (customColors) => {
+    if (useStore.getState().isInitialized) {
+      localStorage.setItem('customColors', JSON.stringify(customColors));
+    }
+  }
+);

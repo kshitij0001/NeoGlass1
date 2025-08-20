@@ -251,7 +251,6 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
     const contrastColor = getContrastColor(color);
     document.documentElement.style.setProperty(`--${subject.toLowerCase()}-color`, color);
     document.documentElement.style.setProperty(`--${subject.toLowerCase()}-contrast`, contrastColor);
-    localStorage.setItem('customColors', JSON.stringify(updatedColors));
   },
 
   updateDifficultyColor: (difficulty, color) => {
@@ -269,7 +268,6 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
     const contrastColor = getContrastColor(color);
     document.documentElement.style.setProperty(`--difficulty-${difficulty.toLowerCase()}-color`, color);
     document.documentElement.style.setProperty(`--difficulty-${difficulty.toLowerCase()}-contrast`, contrastColor);
-    localStorage.setItem('customColors', JSON.stringify(updatedColors));
   },
 
   updateCardColor: (card, color) => {
@@ -287,7 +285,6 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
     const contrastColor = getContrastColor(color);
     document.documentElement.style.setProperty(`--card-${card.toLowerCase()}-color`, color);
     document.documentElement.style.setProperty(`--card-${card.toLowerCase()}-contrast`, contrastColor);
-    localStorage.setItem('customColors', JSON.stringify(updatedColors));
   },
 
   updateEventTypeColor: (eventType, color) => {
@@ -305,7 +302,6 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
     const contrastColor = getContrastColor(color);
     document.documentElement.style.setProperty(`--event-${eventType.toLowerCase()}-color`, color);
     document.documentElement.style.setProperty(`--event-${eventType.toLowerCase()}-contrast`, contrastColor);
-    localStorage.setItem('customColors', JSON.stringify(updatedColors));
   },
 
   resetColorsToDefault: () => {
