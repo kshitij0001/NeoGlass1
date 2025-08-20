@@ -80,29 +80,30 @@ export function scheduleOfflineMorningNotification(): void {
   }
   
   const targetDay = morningTime.toDateString();
-  const scheduledKey = `morning-notification-scheduled-${targetDay}`;
+  const scheduledKey = `offline-morning-scheduled-${targetDay}`;
   
   // Check if we already scheduled a morning notification for this day
   if (localStorage.getItem(scheduledKey)) {
-    console.log('Morning notification already scheduled for', targetDay);
+    console.log('Offline morning notification already scheduled for', targetDay);
     return;
   }
   
   const randomMessage = MORNING_MESSAGES[Math.floor(Math.random() * MORNING_MESSAGES.length)];
   
   const notification: ScheduledNotification = {
-    id: `morning_${morningTime.getTime()}`,
+    id: `offline_morning_${morningTime.getTime()}`,
     title: 'Good Morning! 🌅',
     body: randomMessage,
     scheduledTime: morningTime.getTime(),
     type: 'morning',
-    recurring: false // Changed to false to prevent infinite loops
+    recurring: false
   };
   
   // Mark as scheduled for this day
   localStorage.setItem(scheduledKey, 'true');
   
   scheduleOfflineNotification(notification);
+  console.log(`📅 Offline morning notification scheduled for ${morningTime.toLocaleString()}`);
 }
 
 /**
@@ -113,9 +114,11 @@ export function scheduleOfflineRandomNotification(): void {
   const today = now.toDateString();
   
   // Check if we already scheduled a random notification for today
-  const scheduledKey = `random-notification-scheduled-${today}`;
-  if (localStorage.getItem(scheduledKey)) {
-    console.log('Random notification already scheduled for today');
+  const scheduledKey = `offline-random-scheduled-${today}`;
+  const sentKey = `offline-random-sent-${today}`;
+  
+  if (localStorage.getItem(scheduledKey) || localStorage.getItem(sentKey)) {
+    console.log('Offline random notification already scheduled/sent for today');
     return;
   }
   
@@ -125,10 +128,15 @@ export function scheduleOfflineRandomNotification(): void {
   startTime.setHours(NOTIFICATION_CONFIG.RANDOM_TIME_RANGE.START.hours, NOTIFICATION_CONFIG.RANDOM_TIME_RANGE.START.minutes, 0, 0);
   endTime.setHours(NOTIFICATION_CONFIG.RANDOM_TIME_RANGE.END.hours, NOTIFICATION_CONFIG.RANDOM_TIME_RANGE.END.minutes, 0, 0);
   
-  // If end time has passed today, schedule for tomorrow
+  // If end time has passed today, don't schedule for today
   if (endTime <= now) {
-    startTime.setDate(startTime.getDate() + 1);
-    endTime.setDate(endTime.getDate() + 1);
+    console.log('Random notification time window has passed for today');
+    return;
+  }
+  
+  // If start time hasn't come yet, schedule from now
+  if (startTime <= now) {
+    startTime.setTime(now.getTime());
   }
   
   // Generate random time between start and end
@@ -136,18 +144,19 @@ export function scheduleOfflineRandomNotification(): void {
   const randomMessage = RANDOM_MESSAGES[Math.floor(Math.random() * RANDOM_MESSAGES.length)];
   
   const notification: ScheduledNotification = {
-    id: `random_${randomTime.getTime()}`,
+    id: `offline_random_${randomTime.getTime()}`,
     title: 'NEET Study Companion 🐰',
     body: randomMessage,
     scheduledTime: randomTime.getTime(),
     type: 'random',
-    recurring: false // Changed to false to prevent infinite loops
+    recurring: false
   };
   
   // Mark as scheduled for today
   localStorage.setItem(scheduledKey, 'true');
   
   scheduleOfflineNotification(notification);
+  console.log(`📅 Offline random notification scheduled for ${randomTime.toLocaleString()}`);
 }
 
 /**
@@ -179,6 +188,15 @@ export function scheduleOfflineReviewNotification(reviewCount: number): void {
  * Initialize offline notification system
  */
 export function initializeOfflineNotifications(): void {
+  // Check if already initialized today to prevent spam
+  const today = new Date().toDateString();
+  const initKey = `offline-system-initialized-${today}`;
+  
+  if (localStorage.getItem(initKey)) {
+    console.log('Offline notification system already initialized for today');
+    return;
+  }
+  
   // Request notification permission
   if ('Notification' in window && Notification.permission === 'default') {
     Notification.requestPermission();
@@ -190,31 +208,23 @@ export function initializeOfflineNotifications(): void {
       .then(registration => {
         console.log('Service Worker registered for offline notifications');
         
-        // Schedule initial notifications
+        // Schedule initial notifications only once per day
         scheduleOfflineMorningNotification();
         scheduleOfflineRandomNotification();
+        
+        // Mark as initialized for today
+        localStorage.setItem(initKey, 'true');
         
         // Listen for messages from service worker
         navigator.serviceWorker.addEventListener('message', event => {
           if (event.data.type === 'NOTIFICATION_SENT') {
             console.log('Offline notification sent:', event.data.notification);
             
-            // Schedule next day's notifications (only for morning and random)
+            // Don't automatically reschedule - let the next day's initialization handle it
             if (event.data.notification.type === 'morning') {
-              // Schedule tomorrow's morning notification
-              setTimeout(() => {
-                scheduleOfflineMorningNotification();
-              }, 60000); // Wait 1 minute before scheduling next
+              console.log('Morning notification sent - next one will be scheduled tomorrow');
             } else if (event.data.notification.type === 'random') {
-              // Schedule next random notification for next day
-              setTimeout(() => {
-                // Clear today's flag so we can schedule for tomorrow
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                const tomorrowKey = `random-notification-scheduled-${tomorrow.toDateString()}`;
-                localStorage.removeItem(tomorrowKey);
-                scheduleOfflineRandomNotification();
-              }, 60000); // Wait 1 minute before scheduling next
+              console.log('Random notification sent - next one will be scheduled tomorrow');
             }
           }
         });

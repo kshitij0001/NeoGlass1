@@ -71,11 +71,14 @@ export function SpecialEventsPanel() {
         <Button
           onClick={() => {
             (window as any).clearNotificationSpam?.();
-            alert('Cleared all notification spam! Refresh page to restart clean scheduling.');
+            // Also force refresh the page to restart clean
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
           }}
           className="w-full neobrutalist-btn bg-[#ff9770] hover:bg-[#ff9770]/90 text-brutal-black justify-start"
         >
-          🛑 Fix Notification Spam
+          🛑 STOP All Notifications & Refresh
         </Button>
       </div>
 
