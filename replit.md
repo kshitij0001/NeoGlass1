@@ -27,6 +27,13 @@ The application is built as a full-stack solution with a React frontend and Expr
   - Maintained all PWA functionality except offline notifications in production
   - Project now builds cleanly and should deploy to Vercel without white page issues
 
+- **APK Installation Issue Resolution**: Fixed "package appears to be invalid" error preventing APK installation:
+  - Added proper debug signing configuration with generated keystore
+  - Updated Android API levels for better compatibility (SDK 34, minSdk 24)
+  - Enhanced GitHub Actions workflow to generate signed APKs automatically
+  - Fixed version code and build configuration for successful installation
+  - Created comprehensive installation troubleshooting guide
+
 - **APK Build Issue Resolution**: Fixed critical Java version compatibility issue preventing APK generation:
   - Updated android/capacitor-cordova-android-plugins/build.gradle from Java 21 to Java 17
   - Updated android/app/capacitor.build.gradle from Java 21 to Java 17  
