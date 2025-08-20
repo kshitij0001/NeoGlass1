@@ -413,8 +413,7 @@ export default function Settings() {
                     value={customColors.cardBackgrounds.lightMode}
                     onChange={(newColor) => updateCardBackgroundColor('lightMode', newColor)}
                     presetColors={[
-                      '#ffffff', '#f9fafb', '#f3f4f6', '#e5e7eb', '#d1d5db', '#9ca3af',
-                      '#6b7280', '#4b5563', '#374151', '#1f2937', '#111827', '#000000'
+                      '#e5dfd2', '#e5e2da', '#ebe8e2', '#f1ede0', '#f7ebdd', '#f4f0e5', '#f4f3ea', '#f5f4ec', '#f8f9f3'
                     ]}
                   />
                   <ColorPicker
@@ -422,8 +421,7 @@ export default function Settings() {
                     value={customColors.cardBackgrounds.darkMode}
                     onChange={(newColor) => updateCardBackgroundColor('darkMode', newColor)}
                     presetColors={[
-                      '#000000', '#111827', '#1f2937', '#374151', '#4b5563', '#6b7280',
-                      '#9ca3af', '#d1d5db', '#e5e7eb', '#f3f4f6', '#f9fafb', '#ffffff'
+                      '#00111c', '#001523', '#001a2c', '#002137', '#00253e', '#002945', '#002e4e', '#003356', '#003a61', '#00406c'
                     ]}
                   />
                 </div>
