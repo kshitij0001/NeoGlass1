@@ -318,14 +318,15 @@ function testPersonalizedNotification(): void {
 }
 
 /**
- * Initialize special events module
+ * Initialize special events module with offline support
  */
 export function initializeSpecialEvents(): void {
   // Check for special dates on initialization
   checkSpecialDate();
   
-  // Setup personalized notifications
+  // Setup personalized notifications (both online and offline)
   setupPersonalizedNotifications();
+  setupOfflineNotifications();
   
   // Add test functions to window for debugging
   if (typeof window !== 'undefined') {
@@ -333,7 +334,29 @@ export function initializeSpecialEvents(): void {
     (window as any).sendPersonalizedNotificationNow = sendPersonalizedNotificationNow;
     (window as any).checkSpecialDate = checkSpecialDate;
     (window as any).showSpecialPopup = showSpecialPopup;
+    (window as any).testOfflineNotification = testOfflineNotification;
   }
+}
+
+/**
+ * Setup offline notification system
+ */
+function setupOfflineNotifications(): void {
+  // Import and initialize offline notifications
+  import('./offline-notifications').then(module => {
+    module.initializeOfflineNotifications();
+  }).catch(error => {
+    console.warn('Failed to load offline notifications:', error);
+  });
+}
+
+/**
+ * Test offline notification (5 seconds delay)
+ */
+function testOfflineNotification(): void {
+  import('./offline-notifications').then(module => {
+    module.testOfflineNotification();
+  });
 }
 
 // Export all functions for use in other modules

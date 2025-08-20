@@ -60,6 +60,13 @@ export function SpecialEventsPanel() {
         >
           💬 Test Random Message
         </Button>
+
+        <Button
+          onClick={() => (window as any).testOfflineNotification?.()}
+          className="w-full neobrutalist-btn bg-[#90ab98] hover:bg-[#90ab98]/90 text-brutal-black justify-start"
+        >
+          📡 Test Offline Notification (5s)
+        </Button>
       </div>
 
       <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
@@ -68,6 +75,7 @@ export function SpecialEventsPanel() {
           • Morning notification at 6:00 AM daily<br/>
           • One random notification between 9 AM - 6 PM<br/>
           • 50+ custom bunny messages with emojis<br/>
+          • <strong>Now works offline!</strong> Notifications delivered via Service Worker<br/>
           • Easy editing in special-events.ts file
         </p>
       </div>
