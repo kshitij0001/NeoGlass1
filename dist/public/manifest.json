@@ -4,6 +4,7 @@
   "description": "Spaced repetition study app for NEET 2026 preparation with neobrutalist design",
   "start_url": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "minimal-ui"],
   "background_color": "#F59E0B",
   "theme_color": "#F59E0B",
   "orientation": "portrait",
@@ -146,6 +147,9 @@
     }
   ],
   "prefer_related_applications": false,
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
   "related_applications": [],
   "features": [
     "offline-support",

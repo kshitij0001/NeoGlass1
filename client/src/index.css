@@ -383,6 +383,28 @@
 
   /* Ensure main content is readable over starfield */
   
+  /* PWA App-like styling */
+  @media all and (display-mode: standalone) {
+    body {
+      -webkit-user-select: none !important;
+      -webkit-touch-callout: none !important;
+      -webkit-tap-highlight-color: transparent !important;
+    }
+    
+    /* Hide browser UI elements in standalone mode */
+    *::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  /* Android TWA/Chrome Custom Tab styling */
+  @media (display-mode: browser) {
+    body {
+      margin-top: env(safe-area-inset-top, 0px) !important;
+      padding-top: env(safe-area-inset-top, 0px) !important;
+    }
+  }
+
   /* Ensure confetti canvas is properly positioned */
   canvas {
     pointer-events: none !important;
