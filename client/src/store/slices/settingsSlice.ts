@@ -21,6 +21,10 @@ export interface CustomColors {
     overallProgress: string;
     dayStreak: string;
   };
+  cardBackgrounds: {
+    lightMode: string;
+    darkMode: string;
+  };
   eventTypes: {
     [key: string]: string; // Allow for dynamic event types
   };
@@ -49,6 +53,7 @@ export interface SettingsSlice {
   updateCardColor: (card: keyof CustomColors['cards'], color: string) => void;
   updateEventTypeColor: (eventType: string, color: string) => void;
   updateTextColor: (mode: 'lightMode' | 'darkMode', color: string) => void;
+  updateCardBackgroundColor: (mode: 'lightMode' | 'darkMode', color: string) => void;
   resetColorsToDefault: () => void;
   exportData: () => Promise<Blob>;
   importData: (file: File) => Promise<void>;
@@ -104,6 +109,10 @@ const defaultColors: CustomColors = {
     lightMode: '#ffffff',
     darkMode: '#1f2937',
   },
+  cardBackgrounds: {
+    lightMode: '#ffffff',
+    darkMode: '#1f2937',
+  },
 };
 
 // Helper function to apply custom colors to CSS variables
@@ -146,6 +155,12 @@ const applyCustomColors = (customColors: CustomColors) => {
   if (customColors.textColors) {
     document.documentElement.style.setProperty('--text-light-mode', customColors.textColors.lightMode);
     document.documentElement.style.setProperty('--text-dark-mode', customColors.textColors.darkMode);
+  }
+  
+  // Apply card background colors
+  if (customColors.cardBackgrounds) {
+    document.documentElement.style.setProperty('--card-bg-light-mode', customColors.cardBackgrounds.lightMode);
+    document.documentElement.style.setProperty('--card-bg-dark-mode', customColors.cardBackgrounds.darkMode);
   }
 };
 
@@ -194,6 +209,7 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
           cards: { ...defaultColors.cards, ...parsedColors.cards },
           eventTypes: { ...defaultColors.eventTypes, ...parsedColors.eventTypes },
           textColors: { ...defaultColors.textColors, ...parsedColors.textColors },
+          cardBackgrounds: { ...defaultColors.cardBackgrounds, ...parsedColors.cardBackgrounds },
         };
         set({ customColors: mergedColors });
         applyCustomColors(mergedColors);
@@ -354,6 +370,21 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
 
     // Apply to CSS custom properties
     document.documentElement.style.setProperty(`--text-${mode.toLowerCase().replace('mode', '-mode')}`, color);
+  },
+
+  updateCardBackgroundColor: (mode, color) => {
+    const { customColors } = get();
+    const updatedColors = {
+      ...customColors,
+      cardBackgrounds: {
+        ...customColors.cardBackgrounds,
+        [mode]: color,
+      },
+    };
+    set({ customColors: updatedColors });
+
+    // Apply to CSS custom properties
+    document.documentElement.style.setProperty(`--card-bg-${mode.toLowerCase().replace('mode', '-mode')}`, color);
   },
 
   resetColorsToDefault: () => {

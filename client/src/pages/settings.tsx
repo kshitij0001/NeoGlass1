@@ -32,6 +32,7 @@ export default function Settings() {
     updateCardColor,
     updateEventTypeColor,
     updateTextColor,
+    updateCardBackgroundColor,
     resetColorsToDefault,
     exportData,
     importData,
@@ -418,6 +419,31 @@ export default function Settings() {
                     label="Dark Mode Text"
                     value={customColors.textColors.darkMode}
                     onChange={(newColor) => updateTextColor('darkMode', newColor)}
+                    presetColors={[
+                      '#000000', '#111827', '#1f2937', '#374151', '#4b5563', '#6b7280',
+                      '#9ca3af', '#d1d5db', '#e5e7eb', '#f3f4f6', '#f9fafb', '#ffffff'
+                    ]}
+                  />
+                </div>
+              </div>
+
+              {/* Card Background Colors */}
+              <div>
+                <h4 className="font-bold text-brutal-black dark:text-white mb-3">Card Background Colors</h4>
+                <div className="space-y-3">
+                  <ColorPicker
+                    label="Light Mode Card Background"
+                    value={customColors.cardBackgrounds.lightMode}
+                    onChange={(newColor) => updateCardBackgroundColor('lightMode', newColor)}
+                    presetColors={[
+                      '#ffffff', '#f9fafb', '#f3f4f6', '#e5e7eb', '#d1d5db', '#9ca3af',
+                      '#6b7280', '#4b5563', '#374151', '#1f2937', '#111827', '#000000'
+                    ]}
+                  />
+                  <ColorPicker
+                    label="Dark Mode Card Background"
+                    value={customColors.cardBackgrounds.darkMode}
+                    onChange={(newColor) => updateCardBackgroundColor('darkMode', newColor)}
                     presetColors={[
                       '#000000', '#111827', '#1f2937', '#374151', '#4b5563', '#6b7280',
                       '#9ca3af', '#d1d5db', '#e5e7eb', '#f3f4f6', '#f9fafb', '#ffffff'
