@@ -251,7 +251,7 @@ export function sendPersonalizedNotificationNow(): void {
 }
 
 /**
- * Schedule both daily notifications
+ * Schedule both daily notifications (with proper daily limits)
  */
 export function setupPersonalizedNotifications(): void {
   // Request permission if not already granted
@@ -259,7 +259,7 @@ export function setupPersonalizedNotifications(): void {
     Notification.requestPermission();
   }
   
-  // Schedule morning notification (6 AM daily)
+  // Schedule morning notification (6 AM daily) - only once per day
   const scheduleMorningNotification = () => {
     const now = new Date();
     const morningTime = new Date();
@@ -270,18 +270,40 @@ export function setupPersonalizedNotifications(): void {
       morningTime.setDate(morningTime.getDate() + 1);
     }
     
+    const targetDay = morningTime.toDateString();
+    const scheduledKey = `online-morning-scheduled-${targetDay}`;
+    
+    // Check if already scheduled for this day
+    if (localStorage.getItem(scheduledKey)) {
+      console.log('Online morning notification already scheduled for', targetDay);
+      return;
+    }
+    
     const timeToMorning = morningTime.getTime() - now.getTime();
     
     setTimeout(() => {
       sendMorningNotification();
-      // Schedule next day's morning notification
-      scheduleMorningNotification();
+      // Clear the flag and schedule next day
+      localStorage.removeItem(scheduledKey);
+      setTimeout(() => scheduleMorningNotification(), 60000); // Wait 1 minute then schedule next
     }, timeToMorning);
+    
+    // Mark as scheduled
+    localStorage.setItem(scheduledKey, 'true');
   };
   
   // Schedule random daytime notification (once daily between 9 AM - 6 PM)
   const scheduleRandomNotification = () => {
     const now = new Date();
+    const today = now.toDateString();
+    const scheduledKey = `online-random-scheduled-${today}`;
+    
+    // Check if already scheduled for today
+    if (localStorage.getItem(scheduledKey)) {
+      console.log('Online random notification already scheduled for today');
+      return;
+    }
+    
     const startTime = new Date();
     const endTime = new Date();
     
@@ -300,9 +322,13 @@ export function setupPersonalizedNotifications(): void {
     
     setTimeout(() => {
       sendRandomDaytimeNotification();
-      // Schedule next day's random notification
-      scheduleRandomNotification();
+      // Clear today's flag and schedule for next day
+      localStorage.removeItem(scheduledKey);
+      setTimeout(() => scheduleRandomNotification(), 60000); // Wait 1 minute then schedule next
     }, timeToRandom);
+    
+    // Mark as scheduled for today
+    localStorage.setItem(scheduledKey, 'true');
   };
   
   // Start both scheduling processes
@@ -335,6 +361,7 @@ export function initializeSpecialEvents(): void {
     (window as any).checkSpecialDate = checkSpecialDate;
     (window as any).showSpecialPopup = showSpecialPopup;
     (window as any).testOfflineNotification = testOfflineNotification;
+    (window as any).clearNotificationSpam = clearNotificationSpam;
   }
 }
 
@@ -357,6 +384,25 @@ function testOfflineNotification(): void {
   import('./offline-notifications').then(module => {
     module.testOfflineNotification();
   });
+}
+
+/**
+ * Clear all notification spam (emergency fix)
+ */
+function clearNotificationSpam(): void {
+  import('./offline-notifications').then(module => {
+    module.clearAllNotificationSchedules();
+  });
+  
+  // Also clear localStorage for online notifications
+  const keys = Object.keys(localStorage);
+  keys.forEach(key => {
+    if (key.includes('notification-scheduled') || key.includes('morning-scheduled') || key.includes('random-scheduled')) {
+      localStorage.removeItem(key);
+    }
+  });
+  
+  console.log('Cleared all notification scheduling to stop spam');
 }
 
 // Export all functions for use in other modules

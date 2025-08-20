@@ -67,7 +67,7 @@ async function storeNotificationData(notification: ScheduledNotification): Promi
 }
 
 /**
- * Schedule daily morning notification (offline-capable)
+ * Schedule daily morning notification (offline-capable) - only once per day
  */
 export function scheduleOfflineMorningNotification(): void {
   const now = new Date();
@@ -79,6 +79,15 @@ export function scheduleOfflineMorningNotification(): void {
     morningTime.setDate(morningTime.getDate() + 1);
   }
   
+  const targetDay = morningTime.toDateString();
+  const scheduledKey = `morning-notification-scheduled-${targetDay}`;
+  
+  // Check if we already scheduled a morning notification for this day
+  if (localStorage.getItem(scheduledKey)) {
+    console.log('Morning notification already scheduled for', targetDay);
+    return;
+  }
+  
   const randomMessage = MORNING_MESSAGES[Math.floor(Math.random() * MORNING_MESSAGES.length)];
   
   const notification: ScheduledNotification = {
@@ -87,17 +96,29 @@ export function scheduleOfflineMorningNotification(): void {
     body: randomMessage,
     scheduledTime: morningTime.getTime(),
     type: 'morning',
-    recurring: true
+    recurring: false // Changed to false to prevent infinite loops
   };
+  
+  // Mark as scheduled for this day
+  localStorage.setItem(scheduledKey, 'true');
   
   scheduleOfflineNotification(notification);
 }
 
 /**
- * Schedule random daytime notification (offline-capable)
+ * Schedule random daytime notification (offline-capable) - only once per day
  */
 export function scheduleOfflineRandomNotification(): void {
   const now = new Date();
+  const today = now.toDateString();
+  
+  // Check if we already scheduled a random notification for today
+  const scheduledKey = `random-notification-scheduled-${today}`;
+  if (localStorage.getItem(scheduledKey)) {
+    console.log('Random notification already scheduled for today');
+    return;
+  }
+  
   const startTime = new Date();
   const endTime = new Date();
   
@@ -120,8 +141,11 @@ export function scheduleOfflineRandomNotification(): void {
     body: randomMessage,
     scheduledTime: randomTime.getTime(),
     type: 'random',
-    recurring: true
+    recurring: false // Changed to false to prevent infinite loops
   };
+  
+  // Mark as scheduled for today
+  localStorage.setItem(scheduledKey, 'true');
   
   scheduleOfflineNotification(notification);
 }
@@ -175,15 +199,22 @@ export function initializeOfflineNotifications(): void {
           if (event.data.type === 'NOTIFICATION_SENT') {
             console.log('Offline notification sent:', event.data.notification);
             
-            // Reschedule recurring notifications
-            if (event.data.notification.recurring) {
+            // Schedule next day's notifications (only for morning and random)
+            if (event.data.notification.type === 'morning') {
+              // Schedule tomorrow's morning notification
               setTimeout(() => {
-                if (event.data.notification.type === 'morning') {
-                  scheduleOfflineMorningNotification();
-                } else if (event.data.notification.type === 'random') {
-                  scheduleOfflineRandomNotification();
-                }
-              }, 1000);
+                scheduleOfflineMorningNotification();
+              }, 60000); // Wait 1 minute before scheduling next
+            } else if (event.data.notification.type === 'random') {
+              // Schedule next random notification for next day
+              setTimeout(() => {
+                // Clear today's flag so we can schedule for tomorrow
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const tomorrowKey = `random-notification-scheduled-${tomorrow.toDateString()}`;
+                localStorage.removeItem(tomorrowKey);
+                scheduleOfflineRandomNotification();
+              }, 60000); // Wait 1 minute before scheduling next
             }
           }
         });
@@ -192,6 +223,21 @@ export function initializeOfflineNotifications(): void {
         console.error('Service Worker registration failed:', error);
       });
   }
+}
+
+/**
+ * Clear all notification scheduling flags (stops spam)
+ */
+export function clearAllNotificationSchedules(): void {
+  // Clear all localStorage flags
+  const keys = Object.keys(localStorage);
+  keys.forEach(key => {
+    if (key.includes('notification-scheduled') || key.includes('morning-scheduled') || key.includes('random-scheduled')) {
+      localStorage.removeItem(key);
+    }
+  });
+  
+  console.log('Cleared all notification scheduling flags');
 }
 
 /**

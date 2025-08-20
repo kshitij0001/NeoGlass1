@@ -67,15 +67,26 @@ export function SpecialEventsPanel() {
         >
           📡 Test Offline Notification (5s)
         </Button>
+
+        <Button
+          onClick={() => {
+            (window as any).clearNotificationSpam?.();
+            alert('Cleared all notification spam! Refresh page to restart clean scheduling.');
+          }}
+          className="w-full neobrutalist-btn bg-[#ff9770] hover:bg-[#ff9770]/90 text-brutal-black justify-start"
+        >
+          🛑 Fix Notification Spam
+        </Button>
       </div>
 
       <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
         <p className="text-sm text-gray-600 dark:text-gray-400">
           • October 24th popup with confetti (appears only once per day)<br/>
-          • Morning notification at 6:00 AM daily<br/>
-          • One random notification between 9 AM - 6 PM<br/>
+          • Morning notification at 6:00 AM daily (max 1 per day)<br/>
+          • One random notification between 9 AM - 6 PM (max 1 per day)<br/>
           • 50+ custom bunny messages with emojis<br/>
           • <strong>Now works offline!</strong> Notifications delivered via Service Worker<br/>
+          • Fixed spam issue - use orange button if notifications get stuck<br/>
           • Easy editing in special-events.ts file
         </p>
       </div>
