@@ -57,6 +57,20 @@ export default function Plan() {
 
   const handleTopicCoverageChange = (topicId: string, coverageState: CoverageState) => {
     updateTopicCoverage(topicId, coverageState);
+    
+    // If resetting to "Not started", remove all associated reviews
+    if (coverageState === "Not started") {
+      const { reviews, setReviews } = useStore.getState();
+      const filteredReviews = reviews.filter(review => review.topicId !== topicId);
+      setReviews(filteredReviews);
+      
+      // Persist the updated reviews to storage
+      import('@/lib/storage').then(({ storage }) => {
+        storage.saveReviews(filteredReviews).catch(error => {
+          console.error('Failed to save reviews after reset:', error);
+        });
+      });
+    }
   };
 
   const handleTopicDifficultyChange = (topicId: string, difficulty: Difficulty) => {
