@@ -30,47 +30,51 @@ export const NOTIFICATION_MESSAGES = {
   ],
   
   morning: [
-    "Hey bunny, good morning! ☀️🐰",
-    "Good morning bunny! 🌅💕",
-    "Rise and shine bunny! ✨🌞",
-    "Morning sunshine bunny! 🌻☀️",
-    "Wake up and be awesome, bunny! 💪🌅",
-    "Good morning beautiful bunny! 🌸☀️",
-    "Start your day with a smile, bunny! 😊🌞",
-    "Morning motivation for my favorite bunny! 🚀☀️",
-    "Another day to shine, bunny! ✨🌅",
-    "Good morning study buddy bunny! 📚☀️"
-  ],
-  
-  evening: [
-    "Good evening bunny! 🌙🐰",
-    "Hope you had a great day, bunny! 🌟💕",
-    "Evening check-in with my bunny! 🌅🐰",
-    "Winding down, bunny? 🌙✨",
-    "Rest well tonight, bunny! 💤🌟",
-    "Proud of your efforts today, bunny! 🏆💕",
-    "Time to relax, bunny! 🛋️🌙",
-    "Sweet dreams ahead, bunny! 💭✨"
-  ],
-  
-  study: [
-    "Time for some focused study, bunny! 📚🐰",
-    "Let's tackle those reviews, bunny! 💪📖",
-    "Study session incoming, bunny! 🚀📚",
-    "Ready to learn something new, bunny? 🌟📝",
-    "Your brain is ready for action, bunny! 🧠✨",
-    "Study time = growth time, bunny! 📈📚",
-    "Let's make progress together, bunny! 🎯💕"
-  ],
-  
-  motivational: [
-    "Every step counts, bunny! 👣✨",
-    "You're closer to your goal, bunny! 🎯🐰",
-    "Consistency is key, bunny! 🔑💪",
-    "Small progress is still progress, bunny! 📈💕",
-    "Believe in yourself, bunny! 🌟🐰",
-    "You're building something amazing, bunny! 🏗️✨",
-    "Trust the process, bunny! 🔄💫"
+    "Good morning bunny time to hop into the day 🐇☀️",
+    "Rise and shine bunny let's make it a great one 🌞✨",
+    "Morning bunny may your coffee be strong and your day easy ☕😊",
+    "A brand new day is here bunny 🌅🐇",
+    "Wake up bunny the sun's waiting ☀️🌻",
+    "Here's to a productive day ahead bunny 🚀🌞",
+    "Good morning bunny time to get moving 🐇💨",
+    "Morning energy loading for you bunny ⚡☀️",
+    "Bunny the world says good morning 🌍🌸",
+    "Hop into success today bunny 🐰💪",
+    "Fresh start fresh vibes good morning bunny 🌼🌞",
+    "Rise up bunny today's your chance to shine ✨🐇",
+    "Morning bunny time to write another awesome story 📖☀️",
+    "Good morning bunny keep that positive energy alive ⚡🌈",
+    "Bunny a new day means new opportunities 🌟☀️",
+    "Wake up bunny adventure awaits 🌍🌞",
+    "Good morning bunny may your day flow smoothly 🌊🐇",
+    "The sun is up so is bunny's time to glow ☀️✨",
+    "Hop hop hooray morning's here bunny 🎉🐇",
+    "Bunny let's crush today's goals 💪🚀",
+    "Good morning bunny wishing you clear skies and good vibes 🌤️🌼",
+    "Rise strong bunny 🐇🔥",
+    "Morning bunny the best is yet to come today 🌟🌞",
+    "Bunny the day's canvas is blank paint it bright 🎨☀️",
+    "Good morning bunny sending fresh energy your way ⚡🐇",
+    "Let's hop into productivity bunny 📈☀️",
+    "Morning motivation just for you bunny 🚀🐰",
+    "Bunny may your morning be as bright as the sunrise 🌅✨",
+    "Good morning bunny let's make today count ⏳☀️",
+    "Fresh morning fresh energy go bunny go ⚡🐇",
+    "Morning bunny the sky's the limit 🌤️🚀",
+    "Wake up bunny opportunities don't wait ⏰🐇",
+    "Good morning bunny may your day be smooth sailing ⛵🌞",
+    "Hop forward into new wins today bunny 🐇🏆",
+    "Bunny the morning breeze says hello 🌬️☀️",
+    "Rise sharp bunny and own the day 💪🌞",
+    "Morning bunny time to shine like the sun ☀️✨",
+    "Good morning bunny new ideas await 💡🐇",
+    "Hop out of bed bunny it's go-time 🚀☀️",
+    "Morning bunny may the day treat you kindly 🌸🌞",
+    "Fuel up for the day bunny ☕⚡",
+    "Good morning bunny keep moving forward ➡️🐇",
+    "Bunny today's a fresh page write something good 📖☀️",
+    "Morning bunny keep your energy high and your worries low ✨🐇",
+    "Good morning bunny time to hop into greatness 🌟🐰"
   ]
 } as const;
 
@@ -168,17 +172,9 @@ export function getContextualMessage(): string {
   if (hour >= 5 && hour < 12) {
     // Morning messages
     return getRandomMessage('morning');
-  } else if (hour >= 18 && hour < 22) {
-    // Evening messages
-    return getRandomMessage('evening');
-  } else if (hour >= 14 && hour < 17) {
-    // Study time messages
-    return getRandomMessage('study');
   } else {
-    // General motivational messages
-    const categories = ['general', 'motivational'] as const;
-    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-    return getRandomMessage(randomCategory);
+    // General messages for all other times
+    return getRandomMessage('general');
   }
 }
 
