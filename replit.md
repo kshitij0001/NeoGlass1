@@ -8,6 +8,16 @@ The application is built as a full-stack solution with a React frontend and Expr
 
 ## Recent Changes (August 2025)
 
+- **Native Android APK Setup Complete**: Successfully configured Capacitor framework for native Android development:
+  - Installed and configured Capacitor CLI with proper app ID (com.neetcompanion.app)
+  - Created complete Android Studio project in `/android` folder with all web assets
+  - Implemented native notification system replacing web notifications for true native experience
+  - Set up proper Android permissions and manifest configuration
+  - Built and copied web app to Android assets folder (11MB total project size)
+  - Created comprehensive build documentation in BUILD-NATIVE-APK.md and SIMPLE-APK-BUILD.md
+  - Project ready for APK generation via Android Studio or cloud build services
+  - Native notifications will show app name instead of Chrome, work when app closed
+
 - **Vercel Deployment Fix**: Fixed service worker conflicts causing white page on production deployment:
   - Temporarily disabled service worker registration for production compatibility
   - Fixed static asset paths in service worker to use production build paths
