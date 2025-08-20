@@ -142,19 +142,19 @@
     padding: 0;
   }
 
-  /* Ensure all cards have solid backgrounds for readability over dark starfield */
-  .card,
-  .bg-card {
-    background: rgba(255, 255, 255, 0.95) !important;
-    backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  /* Default card backgrounds - allow inline styles to override */
+  .card:not([style*="background"]),
+  .bg-card:not([style*="background"]) {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
-  .dark .card,
-  .dark .bg-card {
-    background: rgba(20, 20, 20, 0.95) !important;
-    backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  .dark .card:not([style*="background"]),
+  .dark .bg-card:not([style*="background"]) {
+    background: rgba(20, 20, 20, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   /* Add main content background overlay for better readability */

@@ -41,7 +41,6 @@ export function StreakIndicator() {
       className="neobrutalist-card p-4 rounded-xl text-white relative overflow-hidden group hover:scale-105 transition-all duration-200"
       style={{ backgroundColor: customColors.cards.streak }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 to-orange-400/20"></div>
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className={currentStreak > 0 ? "animate-pulse" : ""}>

@@ -17,7 +17,8 @@ export default function ProgressPage() {
     getSevenDayOverview,
     reviews,
     tests,
-    exportData 
+    exportData,
+    customColors
   } = useStore();
 
   const subjectProgress = getSubjectProgress();
@@ -177,8 +178,8 @@ export default function ProgressPage() {
             <Card 
               className="border text-card-foreground shadow-sm neobrutalist-card p-4 rounded-xl"
               style={{ 
-                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card-averagescore-color') || '#e4c1f9',
-                color: getComputedStyle(document.documentElement).getPropertyValue('--card-averagescore-contrast') || '#334153'
+                backgroundColor: customColors.cards.overallProgress,
+                color: getComputedStyle(document.documentElement).getPropertyValue('--card-overallprogress-contrast') || '#334153'
               }}
             >
               <div className="flex items-center space-x-3">
@@ -207,8 +208,8 @@ export default function ProgressPage() {
             <Card 
               className="border text-card-foreground shadow-sm neobrutalist-card p-4 rounded-xl"
               style={{ 
-                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card-streak-color') || '#98f5e1',
-                color: getComputedStyle(document.documentElement).getPropertyValue('--card-streak-contrast') || '#1a3426'
+                backgroundColor: customColors.cards.dayStreak,
+                color: getComputedStyle(document.documentElement).getPropertyValue('--card-daystreak-contrast') || '#1a3426'
               }}
             >
               <div className="flex items-center space-x-3">
