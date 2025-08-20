@@ -1,4 +1,3 @@
-
 /**
  * Special Events and Personalized Notifications Module
  * Handles special date-based events and personalized push notifications
@@ -16,97 +15,64 @@ export const SPECIAL_DATES = {
   }
 } as const;
 
-// ========================================
-// 📝 EDIT YOUR PERSONALIZED MESSAGES HERE
-// ========================================
-
-// Morning messages (sent at 6:00 AM daily)
-export const MORNING_MESSAGES = [
-  "Good morning bunny time to hop into the day 🐇☀️",
-  "Morning bunny keep your energy high and your worries low ✨🐇",
-  "Good morning bunny time to hop into greatness 🌟🐰",
-  "Rise and shine bunny let's make it a great one 🌞✨",
-  "Morning bunny may your coffee be strong and your day easy ☕😊",
-  "A brand new day is here bunny 🌅🐇",
-  "Wake up bunny the sun's waiting ☀️🌻",
-  "Here's to a productive day ahead bunny 🚀🌞",
-  "Good morning bunny time to get moving 🐇💨",
-  "Morning energy loading for you bunny ⚡☀️",
-  "Bunny the world says good morning 🌍🌸",
-  "Hop into success today bunny 🐰💪",
-  "Fresh start fresh vibes good morning bunny 🌼🌞",
-  "Rise up bunny today's your chance to shine ✨🐇"
-];
-
-// Random daytime messages (sent once randomly between 9 AM - 6 PM)
-export const RANDOM_MESSAGES = [
-  "Stay positive bunny 🌟🐰",
-  "You're making progress bunny 🚀✨",
-  "Stay strong bunny 💪🌼",
-  "Keep pushing forward bunny ➡️🐇",
-  "You inspire me bunny 🌸⭐",
-  "Never give up bunny 🐰🔥",
-  "One step at a time bunny 👣☀️",
-  "You've got the strength bunny 💪🐇",
-  "Believe in yourself bunny ✨🌈",
-  "You're capable of great things bunny 🌟🐰",
-  "Stay focused bunny 🎯🌞",
-  "Small steps add up bunny 📈🐇",
-  "You've come so far bunny 🛤️🌟",
-  "Keep that energy up bunny ⚡🐰",
-  "Challenges make you stronger bunny 💪🔥",
-  "Stay determined bunny 🚀⭐",
-  "Your efforts matter bunny 🌼🐇",
-  "You're growing every day bunny 🌱☀️",
-  "Keep shining bunny ✨🌻",
-  "You're on the right track bunny 🛤️🐇",
-  "Stay motivated bunny 💡⭐",
-  "Your potential is endless bunny 🌌🐰",
-  "Keep moving forward bunny ➡️🌟",
-  "You're building something amazing bunny 🏗️🌞",
-  "Every effort counts bunny 📚🐇",
-  "Stay confident bunny 🌟💪",
-  "Your dedication is inspiring bunny 🏆🐰",
-  "You've got resilience bunny 💥🐇",
-  "Stay consistent bunny 🔄✨",
-  "Your hard work shows bunny 🌟📈",
-  "Never doubt yourself bunny 🌈🐇",
-  "Stay hopeful bunny 🌞🌱",
-  "Keep chasing goals bunny 🎯🚀",
-  "Your focus is powerful bunny 👀⚡",
-  "You've got what it takes bunny 🐇🔥",
-  "Keep learning bunny 📖✨",
-  "Stay strong through it all bunny 💪🐰",
-  "Your journey is inspiring bunny 🌍🌟",
-  "Keep building yourself bunny 🧩🌞",
-  "You're capable bunny 🐇⭐",
-  "Stay determined no matter what bunny 🚀🌻",
-  "Your effort makes a difference bunny 💡🐇",
-  "Keep your head high bunny 🌄✨",
-  "Stay patient bunny ⏳🐰",
-  "You're unstoppable bunny 🌟🔥",
-  "How you doing bunny? 🐰💕",
-  "I believe in you bunny! 💪✨",
-  "You're doing amazing, bunny! 🌟",
-  "Keep going, bunny! You've got this! 🚀",
-  "Thinking of you, bunny 💭💖",
-  "You're stronger than you think, bunny! 💪🐰",
-  "Don't forget to take breaks, bunny 😊🌸",
-  "Your hard work will pay off, bunny! 📚✨",
-  "Proud of your dedication, bunny! 🏆💕"
-];
-
-// ========================================
-// ⚠️ NOTIFICATION TIMING CONFIGURATION
-// ========================================
-
-export const NOTIFICATION_CONFIG = {
-  MORNING_TIME: { hours: 6, minutes: 0 }, // 6:00 AM
-  RANDOM_TIME_RANGE: {
-    START: { hours: 9, minutes: 0 },     // 9:00 AM
-    END: { hours: 18, minutes: 0 }       // 6:00 PM
-  }
-};
+// Personalized notification messages
+export const NOTIFICATION_MESSAGES = {
+  general: [
+    "How you doing bunny? 🐰💕",
+    "I believe in you bunny! 💪✨",
+    "You're doing amazing, bunny! 🌟",
+    "Keep going, bunny! You've got this! 🚀",
+    "Thinking of you, bunny 💭💖",
+    "You're stronger than you think, bunny! 💪🐰",
+    "Don't forget to take breaks, bunny 😊🌸",
+    "Your hard work will pay off, bunny! 📚✨",
+    "Proud of your dedication, bunny! 🏆💕"
+  ],
+  
+  morning: [
+    "Hey bunny, good morning! ☀️🐰",
+    "Good morning bunny! 🌅💕",
+    "Rise and shine bunny! ✨🌞",
+    "Morning sunshine bunny! 🌻☀️",
+    "Wake up and be awesome, bunny! 💪🌅",
+    "Good morning beautiful bunny! 🌸☀️",
+    "Start your day with a smile, bunny! 😊🌞",
+    "Morning motivation for my favorite bunny! 🚀☀️",
+    "Another day to shine, bunny! ✨🌅",
+    "Good morning study buddy bunny! 📚☀️"
+  ],
+  
+  evening: [
+    "Good evening bunny! 🌙🐰",
+    "Hope you had a great day, bunny! 🌟💕",
+    "Evening check-in with my bunny! 🌅🐰",
+    "Winding down, bunny? 🌙✨",
+    "Rest well tonight, bunny! 💤🌟",
+    "Proud of your efforts today, bunny! 🏆💕",
+    "Time to relax, bunny! 🛋️🌙",
+    "Sweet dreams ahead, bunny! 💭✨"
+  ],
+  
+  study: [
+    "Time for some focused study, bunny! 📚🐰",
+    "Let's tackle those reviews, bunny! 💪📖",
+    "Study session incoming, bunny! 🚀📚",
+    "Ready to learn something new, bunny? 🌟📝",
+    "Your brain is ready for action, bunny! 🧠✨",
+    "Study time = growth time, bunny! 📈📚",
+    "Let's make progress together, bunny! 🎯💕"
+  ],
+  
+  motivational: [
+    "Every step counts, bunny! 👣✨",
+    "You're closer to your goal, bunny! 🎯🐰",
+    "Consistency is key, bunny! 🔑💪",
+    "Small progress is still progress, bunny! 📈💕",
+    "Believe in yourself, bunny! 🌟🐰",
+    "You're building something amazing, bunny! 🏗️✨",
+    "Trust the process, bunny! 🔄💫"
+  ]
+} as const;
 
 /**
  * Check if today is a special date and show popup if needed
@@ -162,7 +128,6 @@ function showSpecialPopup(): void {
           Special Day Alert!
         </h2>
         <div class="text-lg text-black dark:text-white mb-6" id="special-message">
-          <!-- User will write their own message here -->
           Something special is happening today! 🎊
         </div>
         <button 
@@ -186,51 +151,48 @@ function showSpecialPopup(): void {
 }
 
 /**
- * Get a random message from morning messages
+ * Get a random message from a specific category
  */
-export function getRandomMorningMessage(): string {
-  return MORNING_MESSAGES[Math.floor(Math.random() * MORNING_MESSAGES.length)];
+function getRandomMessage(category: keyof typeof NOTIFICATION_MESSAGES): string {
+  const messages = NOTIFICATION_MESSAGES[category];
+  return messages[Math.floor(Math.random() * messages.length)];
 }
 
 /**
- * Get a random message from random daytime messages
+ * Get appropriate message based on time of day
  */
-export function getRandomDaytimeMessage(): string {
-  return RANDOM_MESSAGES[Math.floor(Math.random() * RANDOM_MESSAGES.length)];
-}
-
-/**
- * Send morning notification (6 AM)
- */
-export function sendMorningNotification(): void {
-  if ('Notification' in window && Notification.permission === 'granted') {
-    const message = getRandomMorningMessage();
-    
-    new Notification('Good Morning! 🌅', {
-      body: message,
-      icon: '/android-launchericon-192-192.png',
-      badge: '/android-launchericon-96-96.png',
-      tag: 'morning-message',
-      timestamp: Date.now(),
-      requireInteraction: false,
-      silent: false
-    });
+function getContextualMessage(): string {
+  const hour = new Date().getHours();
+  
+  if (hour >= 5 && hour < 12) {
+    // Morning messages
+    return getRandomMessage('morning');
+  } else if (hour >= 18 && hour < 22) {
+    // Evening messages
+    return getRandomMessage('evening');
+  } else if (hour >= 14 && hour < 17) {
+    // Study time messages
+    return getRandomMessage('study');
+  } else {
+    // General motivational messages
+    const categories = ['general', 'motivational'] as const;
+    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+    return getRandomMessage(randomCategory);
   }
 }
 
 /**
- * Send random daytime notification
+ * Schedule a random personalized notification
  */
-export function sendRandomDaytimeNotification(): void {
+function schedulePersonalizedNotification(): void {
   if ('Notification' in window && Notification.permission === 'granted') {
-    const message = getRandomDaytimeMessage();
+    const message = getContextualMessage();
     
     new Notification('NEET Study Companion 🐰', {
       body: message,
       icon: '/android-launchericon-192-192.png',
       badge: '/android-launchericon-96-96.png',
-      tag: 'random-message',
-      timestamp: Date.now(),
+      tag: 'personalized-message',
       requireInteraction: false,
       silent: false
     });
@@ -238,92 +200,42 @@ export function sendRandomDaytimeNotification(): void {
 }
 
 /**
- * ✨ MANUAL NOTIFICATION TRIGGER (for editing/testing)
- * Call this function anytime to send a personalized notification
+ * Setup random notification scheduling
  */
-export function sendPersonalizedNotificationNow(): void {
-  const hour = new Date().getHours();
-  
-  // Send morning message if it's morning hours (5 AM - 12 PM)
-  if (hour >= 5 && hour < 12) {
-    sendMorningNotification();
-  } else {
-    // Send random daytime message for other times
-    sendRandomDaytimeNotification();
-  }
-}
-
-/**
- * Schedule both daily notifications
- */
-export function setupPersonalizedNotifications(): void {
+function setupPersonalizedNotifications(): void {
   // Request permission if not already granted
   if ('Notification' in window && Notification.permission === 'default') {
     Notification.requestPermission();
   }
   
-  // Schedule morning notification (6 AM daily)
-  const scheduleMorningNotification = () => {
-    const now = new Date();
-    const morningTime = new Date();
-    morningTime.setHours(NOTIFICATION_CONFIG.MORNING_TIME.hours, NOTIFICATION_CONFIG.MORNING_TIME.minutes, 0, 0);
-    
-    // If morning time has passed today, schedule for tomorrow
-    if (morningTime <= now) {
-      morningTime.setDate(morningTime.getDate() + 1);
-    }
-    
-    const timeToMorning = morningTime.getTime() - now.getTime();
+  // Schedule notifications at random intervals between 2-6 hours
+  const scheduleNext = () => {
+    const minHours = 2;
+    const maxHours = 6;
+    const randomHours = Math.random() * (maxHours - minHours) + minHours;
+    const delay = randomHours * 60 * 60 * 1000; // Convert to milliseconds
     
     setTimeout(() => {
-      sendMorningNotification();
-      // Schedule next day's morning notification
-      scheduleMorningNotification();
-    }, timeToMorning);
+      schedulePersonalizedNotification();
+      scheduleNext(); // Schedule the next one
+    }, delay);
   };
   
-  // Schedule random daytime notification (once daily between 9 AM - 6 PM)
-  const scheduleRandomNotification = () => {
-    const now = new Date();
-    const startTime = new Date();
-    const endTime = new Date();
-    
-    startTime.setHours(NOTIFICATION_CONFIG.RANDOM_TIME_RANGE.START.hours, NOTIFICATION_CONFIG.RANDOM_TIME_RANGE.START.minutes, 0, 0);
-    endTime.setHours(NOTIFICATION_CONFIG.RANDOM_TIME_RANGE.END.hours, NOTIFICATION_CONFIG.RANDOM_TIME_RANGE.END.minutes, 0, 0);
-    
-    // If end time has passed today, schedule for tomorrow
-    if (endTime <= now) {
-      startTime.setDate(startTime.getDate() + 1);
-      endTime.setDate(endTime.getDate() + 1);
-    }
-    
-    // Generate random time between start and end
-    const randomTime = new Date(startTime.getTime() + Math.random() * (endTime.getTime() - startTime.getTime()));
-    const timeToRandom = randomTime.getTime() - now.getTime();
-    
-    setTimeout(() => {
-      sendRandomDaytimeNotification();
-      // Schedule next day's random notification
-      scheduleRandomNotification();
-    }, timeToRandom);
-  };
-  
-  // Start both scheduling processes
-  scheduleMorningNotification();
-  scheduleRandomNotification();
+  // Start the scheduling
+  scheduleNext();
 }
 
 /**
  * Manual trigger for testing notifications
  */
 function testPersonalizedNotification(): void {
-  sendPersonalizedNotificationNow();
+  schedulePersonalizedNotification();
 }
 
 /**
  * Initialize special events module
  */
-export function initializeSpecialEvents(): void {
+function initializeSpecialEvents(): void {
   // Check for special dates on initialization
   checkSpecialDate();
   
@@ -333,7 +245,6 @@ export function initializeSpecialEvents(): void {
   // Add test functions to window for debugging
   if (typeof window !== 'undefined') {
     (window as any).testPersonalizedNotification = testPersonalizedNotification;
-    (window as any).sendPersonalizedNotificationNow = sendPersonalizedNotificationNow;
     (window as any).checkSpecialDate = checkSpecialDate;
     (window as any).showSpecialPopup = showSpecialPopup;
   }
@@ -344,5 +255,8 @@ export {
   testPersonalizedNotification,
   showSpecialPopup,
   checkSpecialDate,
-  sendPersonalizedNotificationNow
+  initializeSpecialEvents,
+  getRandomMessage,
+  getContextualMessage,
+  setupPersonalizedNotifications
 };
