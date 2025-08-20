@@ -8,7 +8,7 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isTod
 import { useStore } from "@/store";
 import { AddEventModal } from "./add-event-modal";
 import { cn } from "@/lib/utils";
-import { getSubjectColor, getDifficultyColor } from "@/lib/colors";
+import { getSubjectColor, getDifficultyColor, getEventTypeColor } from "@/lib/colors";
 import { useSwipe } from "@/hooks/use-swipe";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
@@ -298,18 +298,13 @@ export function CalendarView() {
                   {eventsForDay.length > 0 && (
                     <div className="flex justify-center space-x-1 mt-1">
                       {eventsForDay.slice(0, 3).map((event) => {
-                        const eventColors = {
-                          exam: "bg-[#ff9999]", // Light coral
-                          mock: "bg-[#b3d9ff]", // Light blue
-                          holiday: "bg-[#ffeb9c]", // Light yellow
-                          other: "bg-[#d4a4eb]" // Light purple
-                        };
-                        const eventColor = eventColors[event.type as keyof typeof eventColors] || "bg-[#d4a4eb]";
+                        const eventColor = getEventTypeColor(event.type);
 
                         return (
                           <div
                             key={event.id}
-                            className={`w-1.5 h-1.5 ${eventColor} rounded-full`}
+                            className="w-1.5 h-1.5 rounded-full"
+                            style={{ backgroundColor: eventColor }}
                             title={`${event.title} (${event.type})`}
                           />
                         );

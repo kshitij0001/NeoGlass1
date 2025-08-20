@@ -164,6 +164,39 @@ export const testNotifications = {
     }
   },
 
+  async testEventNotification() {
+    console.log('🧪 Testing event notification...');
+    
+    try {
+      const settings = await storage.getSettings();
+      const eventTime = settings?.eventNotificationTime || '09:00';
+      
+      console.log(`📅 Current event notification time: ${eventTime}`);
+      
+      if (!settings?.eventNotifications) {
+        console.warn('⚠️ Event notifications are disabled in settings. Enable them first in Settings page.');
+        return;
+      }
+      
+      const hasPermission = await this.requestPermission();
+      if (!hasPermission) {
+        console.error('❌ Notification permission denied');
+        return;
+      }
+
+      new Notification('Upcoming Event Reminder', {
+        body: `Mock Test scheduled for today at ${eventTime}. This would normally be sent at your configured event notification time.`,
+        icon: '/android-launchericon-192-192.png',
+        tag: 'event-reminder',
+        requireInteraction: false,
+      });
+
+      console.log(`✅ Event test notification sent for time: ${eventTime}`);
+    } catch (error) {
+      console.error('❌ Error testing event notification:', error);
+    }
+  },
+
   showStatus() {
     console.log('📱 Notification System Status:');
     console.log(`• Browser support: ${'Notification' in window ? '✅' : '❌'}`);

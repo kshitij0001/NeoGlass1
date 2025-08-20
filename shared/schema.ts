@@ -76,6 +76,8 @@ export const settingsSchema = z.object({
   theme: z.enum(['light', 'dark']).default('light'),
   notifications: z.boolean().default(true),
   notificationTime: z.string().default('19:00'), // HH:mm format for daily reminder time
+  eventNotifications: z.boolean().default(true), // Enable notifications for calendar events
+  eventNotificationTime: z.string().default('09:00'), // HH:mm format for event reminders
   soundEnabled: z.boolean().default(true),
   dailyGoal: z.number().default(20), // reviews per day
   autoSnooze: z.boolean().default(false),

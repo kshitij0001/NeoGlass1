@@ -35,6 +35,8 @@ export interface SettingsSlice {
   updateNeetDate: (date: string) => void;
   updateNotifications: (enabled: boolean) => void;
   updateNotificationTime: (time: string) => void;
+  updateEventNotifications: (enabled: boolean) => void;
+  updateEventNotificationTime: (time: string) => void;
   updateSoundEnabled: (enabled: boolean) => void;
   updateDailyGoal: (goal: number) => void;
   updateAutoSnooze: (enabled: boolean) => void;
@@ -53,6 +55,8 @@ const defaultSettings: Settings = {
   theme: 'light',
   notifications: true,
   notificationTime: '19:00',
+  eventNotifications: true,
+  eventNotificationTime: '09:00',
   soundEnabled: true,
   dailyGoal: 20,
   autoSnooze: false,
@@ -226,6 +230,16 @@ export const settingsSlice = (set: any, get: any): SettingsSlice => ({
   updateNotificationTime: (notificationTime) => {
     const { settings } = get();
     set({ settings: { ...settings, notificationTime } });
+  },
+
+  updateEventNotifications: (eventNotifications) => {
+    const { settings } = get();
+    set({ settings: { ...settings, eventNotifications } });
+  },
+
+  updateEventNotificationTime: (eventNotificationTime) => {
+    const { settings } = get();
+    set({ settings: { ...settings, eventNotificationTime } });
   },
 
   updateSoundEnabled: (soundEnabled) => {

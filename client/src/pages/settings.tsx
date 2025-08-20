@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Settings as SettingsIcon, Upload, Download, Trash2, Calendar, Bell, Volume2, Target, Palette, RotateCcw, Clock } from "lucide-react";
+import { Settings as SettingsIcon, Upload, Download, Trash2, Calendar, Bell, Volume2, Target, Palette, RotateCcw, Clock, ChevronDown, ChevronUp } from "lucide-react";
 import { useStore } from "@/store";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
@@ -22,6 +22,8 @@ export default function Settings() {
     updateNeetDate,
     updateNotifications,
     updateNotificationTime,
+    updateEventNotifications,
+    updateEventNotificationTime,
     updateSoundEnabled,
     updateDailyGoal,
     updateAutoSnooze,
@@ -38,6 +40,7 @@ export default function Settings() {
   const { toast } = useToast();
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isColorCustomizationOpen, setIsColorCustomizationOpen] = useState(false);
 
   const handleExport = async () => {
     try {
@@ -188,15 +191,44 @@ export default function Settings() {
                 <div>
                   <Label className="font-bold text-brutal-black dark:text-white flex items-center">
                     <Clock className="h-4 w-4 mr-1" />
-                    Reminder Time
+                    Daily Reminder Time
                   </Label>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">When to send daily notifications</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">When to send daily study notifications</p>
                   <Input
                     type="time"
                     value={settings.notificationTime || '19:00'}
                     onChange={(e) => updateNotificationTime(e.target.value)}
                     className="border-3 border-brutal-black dark:border-white"
                     data-testid="notification-time-input"
+                  />
+                </div>
+              )}
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="font-bold text-brutal-black dark:text-white">Event Notifications</Label>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Get notified about calendar events</p>
+                </div>
+                <Switch
+                  checked={settings.eventNotifications}
+                  onCheckedChange={updateEventNotifications}
+                  data-testid="event-notifications-switch"
+                />
+              </div>
+
+              {settings.eventNotifications && (
+                <div>
+                  <Label className="font-bold text-brutal-black dark:text-white flex items-center">
+                    <Calendar className="h-4 w-4 mr-1" />
+                    Event Reminder Time
+                  </Label>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">When to send event notifications</p>
+                  <Input
+                    type="time"
+                    value={settings.eventNotificationTime || '09:00'}
+                    onChange={(e) => updateEventNotificationTime(e.target.value)}
+                    className="border-3 border-brutal-black dark:border-white"
+                    data-testid="event-notification-time-input"
                   />
                 </div>
               )}
@@ -256,23 +288,38 @@ export default function Settings() {
           {/* Color Customization */}
           <Card className="neobrutalist-card bg-white dark:bg-gray-800 p-4 rounded-xl mb-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-black text-brutal-black dark:text-white flex items-center">
-                <Palette className="h-5 w-5 mr-2" />
-                Color Customization
-              </h3>
               <Button
-                onClick={resetColorsToDefault}
-                variant="outline"
-                size="sm"
-                className="border-2 border-brutal-black dark:border-white"
-                data-testid="reset-colors-btn"
+                onClick={() => setIsColorCustomizationOpen(!isColorCustomizationOpen)}
+                variant="ghost"
+                className="p-0 h-auto font-black text-brutal-black dark:text-white hover:bg-transparent"
+                data-testid="color-customization-toggle"
               >
-                <RotateCcw className="h-4 w-4 mr-1" />
-                Reset
+                <h3 className="text-lg font-black flex items-center">
+                  <Palette className="h-5 w-5 mr-2" />
+                  Color Customization
+                  {isColorCustomizationOpen ? (
+                    <ChevronUp className="h-4 w-4 ml-2" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 ml-2" />
+                  )}
+                </h3>
               </Button>
+              {isColorCustomizationOpen && (
+                <Button
+                  onClick={resetColorsToDefault}
+                  variant="outline"
+                  size="sm"
+                  className="border-2 border-brutal-black dark:border-white"
+                  data-testid="reset-colors-btn"
+                >
+                  <RotateCcw className="h-4 w-4 mr-1" />
+                  Reset
+                </Button>
+              )}
             </div>
 
-            <div className="space-y-6">
+            {isColorCustomizationOpen && (
+              <div className="space-y-6">
               {/* Subject Colors */}
               <div>
                 <h4 className="font-bold text-brutal-black dark:text-white mb-3">Subject Colors</h4>
@@ -358,7 +405,8 @@ export default function Settings() {
                   💡 These colors will be applied throughout the app for subjects, difficulty indicators, and various cards and event types.
                 </p>
               </div>
-            </div>
+              </div>
+            )}
           </Card>
 
           {/* Data Management */}
