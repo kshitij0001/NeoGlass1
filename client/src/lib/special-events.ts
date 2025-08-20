@@ -1,3 +1,4 @@
+
 /**
  * Special Events and Personalized Notifications Module
  * Handles special date-based events and personalized push notifications
@@ -15,113 +16,97 @@ export const SPECIAL_DATES = {
   }
 } as const;
 
-// Personalized notification messages
-export const NOTIFICATION_MESSAGES = {
-  general: [
-    "How you doing bunny? 🐰💕",
-    "I believe in you bunny! 💪✨",
-    "You're doing amazing, bunny! 🌟",
-    "Keep going, bunny! You've got this! 🚀",
-    "Thinking of you, bunny 💭💖",
-    "You're stronger than you think, bunny! 💪🐰",
-    "Don't forget to take breaks, bunny 😊🌸",
-    "Your hard work will pay off, bunny! 📚✨",
-    "Proud of your dedication, bunny! 🏆💕",
-    "Stay positive bunny 🌟🐰",
-    "You're making progress bunny 🚀✨",
-    "Stay strong bunny 💪🌼",
-    "Keep pushing forward bunny ➡️🐇",
-    "You inspire me bunny 🌸⭐",
-    "Never give up bunny 🐰🔥",
-    "One step at a time bunny 👣☀️",
-    "You've got the strength bunny 💪🐇",
-    "Believe in yourself bunny ✨🌈",
-    "You're capable of great things bunny 🌟🐰",
-    "Stay focused bunny 🎯🌞",
-    "Small steps add up bunny 📈🐇",
-    "You've come so far bunny 🛤️🌟",
-    "Keep that energy up bunny ⚡🐰",
-    "Challenges make you stronger bunny 💪🔥",
-    "Stay determined bunny 🚀⭐",
-    "Your efforts matter bunny 🌼🐇",
-    "You're growing every day bunny 🌱☀️",
-    "Keep shining bunny ✨🌻",
-    "You're on the right track bunny 🛤️🐇",
-    "Stay motivated bunny 💡⭐",
-    "Your potential is endless bunny 🌌🐰",
-    "Keep moving forward bunny ➡️🌟",
-    "You're building something amazing bunny 🏗️🌞",
-    "Every effort counts bunny 📚🐇",
-    "Stay confident bunny 🌟💪",
-    "Your dedication is inspiring bunny 🏆🐰",
-    "You've got resilience bunny 💥🐇",
-    "Stay consistent bunny 🔄✨",
-    "Your hard work shows bunny 🌟📈",
-    "Never doubt yourself bunny 🌈🐇",
-    "Stay hopeful bunny 🌞🌱",
-    "Keep chasing goals bunny 🎯🚀",
-    "Your focus is powerful bunny 👀⚡",
-    "You've got what it takes bunny 🐇🔥",
-    "Keep learning bunny 📖✨",
-    "Stay strong through it all bunny 💪🐰",
-    "Your journey is inspiring bunny 🌍🌟",
-    "Keep building yourself bunny 🧩🌞",
-    "You're capable bunny 🐇⭐",
-    "Stay determined no matter what bunny 🚀🌻",
-    "Your effort makes a difference bunny 💡🐇",
-    "Keep your head high bunny 🌄✨",
-    "Stay patient bunny ⏳🐰",
-    "You're unstoppable bunny 🌟🔥"
-  ],
-  
-  morning: [
-    "Good morning bunny time to hop into the day 🐇☀️",
-    "Rise and shine bunny let's make it a great one 🌞✨",
-    "Morning bunny may your coffee be strong and your day easy ☕😊",
-    "A brand new day is here bunny 🌅🐇",
-    "Wake up bunny the sun's waiting ☀️🌻",
-    "Here's to a productive day ahead bunny 🚀🌞",
-    "Good morning bunny time to get moving 🐇💨",
-    "Morning energy loading for you bunny ⚡☀️",
-    "Bunny the world says good morning 🌍🌸",
-    "Hop into success today bunny 🐰💪",
-    "Fresh start fresh vibes good morning bunny 🌼🌞",
-    "Rise up bunny today's your chance to shine ✨🐇",
-    "Morning bunny time to write another awesome story 📖☀️",
-    "Good morning bunny keep that positive energy alive ⚡🌈",
-    "Bunny a new day means new opportunities 🌟☀️",
-    "Wake up bunny adventure awaits 🌍🌞",
-    "Good morning bunny may your day flow smoothly 🌊🐇",
-    "The sun is up so is bunny's time to glow ☀️✨",
-    "Hop hop hooray morning's here bunny 🎉🐇",
-    "Bunny let's crush today's goals 💪🚀",
-    "Good morning bunny wishing you clear skies and good vibes 🌤️🌼",
-    "Rise strong bunny 🐇🔥",
-    "Morning bunny the best is yet to come today 🌟🌞",
-    "Bunny the day's canvas is blank paint it bright 🎨☀️",
-    "Good morning bunny sending fresh energy your way ⚡🐇",
-    "Let's hop into productivity bunny 📈☀️",
-    "Morning motivation just for you bunny 🚀🐰",
-    "Bunny may your morning be as bright as the sunrise 🌅✨",
-    "Good morning bunny let's make today count ⏳☀️",
-    "Fresh morning fresh energy go bunny go ⚡🐇",
-    "Morning bunny the sky's the limit 🌤️🚀",
-    "Wake up bunny opportunities don't wait ⏰🐇",
-    "Good morning bunny may your day be smooth sailing ⛵🌞",
-    "Hop forward into new wins today bunny 🐇🏆",
-    "Bunny the morning breeze says hello 🌬️☀️",
-    "Rise sharp bunny and own the day 💪🌞",
-    "Morning bunny time to shine like the sun ☀️✨",
-    "Good morning bunny new ideas await 💡🐇",
-    "Hop out of bed bunny it's go-time 🚀☀️",
-    "Morning bunny may the day treat you kindly 🌸🌞",
-    "Fuel up for the day bunny ☕⚡",
-    "Good morning bunny keep moving forward ➡️🐇",
-    "Bunny today's a fresh page write something good 📖☀️",
-    "Morning bunny keep your energy high and your worries low ✨🐇",
-    "Good morning bunny time to hop into greatness 🌟🐰"
-  ]
-} as const;
+// ========================================
+// 📝 EDIT YOUR PERSONALIZED MESSAGES HERE
+// ========================================
+
+// Morning messages (sent at 6:00 AM daily)
+export const MORNING_MESSAGES = [
+  "Good morning bunny time to hop into the day 🐇☀️",
+  "Morning bunny keep your energy high and your worries low ✨🐇",
+  "Good morning bunny time to hop into greatness 🌟🐰",
+  "Rise and shine bunny let's make it a great one 🌞✨",
+  "Morning bunny may your coffee be strong and your day easy ☕😊",
+  "A brand new day is here bunny 🌅🐇",
+  "Wake up bunny the sun's waiting ☀️🌻",
+  "Here's to a productive day ahead bunny 🚀🌞",
+  "Good morning bunny time to get moving 🐇💨",
+  "Morning energy loading for you bunny ⚡☀️",
+  "Bunny the world says good morning 🌍🌸",
+  "Hop into success today bunny 🐰💪",
+  "Fresh start fresh vibes good morning bunny 🌼🌞",
+  "Rise up bunny today's your chance to shine ✨🐇"
+];
+
+// Random daytime messages (sent once randomly between 9 AM - 6 PM)
+export const RANDOM_MESSAGES = [
+  "Stay positive bunny 🌟🐰",
+  "You're making progress bunny 🚀✨",
+  "Stay strong bunny 💪🌼",
+  "Keep pushing forward bunny ➡️🐇",
+  "You inspire me bunny 🌸⭐",
+  "Never give up bunny 🐰🔥",
+  "One step at a time bunny 👣☀️",
+  "You've got the strength bunny 💪🐇",
+  "Believe in yourself bunny ✨🌈",
+  "You're capable of great things bunny 🌟🐰",
+  "Stay focused bunny 🎯🌞",
+  "Small steps add up bunny 📈🐇",
+  "You've come so far bunny 🛤️🌟",
+  "Keep that energy up bunny ⚡🐰",
+  "Challenges make you stronger bunny 💪🔥",
+  "Stay determined bunny 🚀⭐",
+  "Your efforts matter bunny 🌼🐇",
+  "You're growing every day bunny 🌱☀️",
+  "Keep shining bunny ✨🌻",
+  "You're on the right track bunny 🛤️🐇",
+  "Stay motivated bunny 💡⭐",
+  "Your potential is endless bunny 🌌🐰",
+  "Keep moving forward bunny ➡️🌟",
+  "You're building something amazing bunny 🏗️🌞",
+  "Every effort counts bunny 📚🐇",
+  "Stay confident bunny 🌟💪",
+  "Your dedication is inspiring bunny 🏆🐰",
+  "You've got resilience bunny 💥🐇",
+  "Stay consistent bunny 🔄✨",
+  "Your hard work shows bunny 🌟📈",
+  "Never doubt yourself bunny 🌈🐇",
+  "Stay hopeful bunny 🌞🌱",
+  "Keep chasing goals bunny 🎯🚀",
+  "Your focus is powerful bunny 👀⚡",
+  "You've got what it takes bunny 🐇🔥",
+  "Keep learning bunny 📖✨",
+  "Stay strong through it all bunny 💪🐰",
+  "Your journey is inspiring bunny 🌍🌟",
+  "Keep building yourself bunny 🧩🌞",
+  "You're capable bunny 🐇⭐",
+  "Stay determined no matter what bunny 🚀🌻",
+  "Your effort makes a difference bunny 💡🐇",
+  "Keep your head high bunny 🌄✨",
+  "Stay patient bunny ⏳🐰",
+  "You're unstoppable bunny 🌟🔥",
+  "How you doing bunny? 🐰💕",
+  "I believe in you bunny! 💪✨",
+  "You're doing amazing, bunny! 🌟",
+  "Keep going, bunny! You've got this! 🚀",
+  "Thinking of you, bunny 💭💖",
+  "You're stronger than you think, bunny! 💪🐰",
+  "Don't forget to take breaks, bunny 😊🌸",
+  "Your hard work will pay off, bunny! 📚✨",
+  "Proud of your dedication, bunny! 🏆💕"
+];
+
+// ========================================
+// ⚠️ NOTIFICATION TIMING CONFIGURATION
+// ========================================
+
+export const NOTIFICATION_CONFIG = {
+  MORNING_TIME: { hours: 6, minutes: 0 }, // 6:00 AM
+  RANDOM_TIME_RANGE: {
+    START: { hours: 9, minutes: 0 },     // 9:00 AM
+    END: { hours: 18, minutes: 0 }       // 6:00 PM
+  }
+};
 
 /**
  * Check if today is a special date and show popup if needed
@@ -201,41 +186,31 @@ function showSpecialPopup(): void {
 }
 
 /**
- * Get a random message from a specific category
+ * Get a random message from morning messages
  */
-export function getRandomMessage(category: keyof typeof NOTIFICATION_MESSAGES): string {
-  const messages = NOTIFICATION_MESSAGES[category];
-  return messages[Math.floor(Math.random() * messages.length)];
+export function getRandomMorningMessage(): string {
+  return MORNING_MESSAGES[Math.floor(Math.random() * MORNING_MESSAGES.length)];
 }
 
 /**
- * Get appropriate message based on time of day
+ * Get a random message from random daytime messages
  */
-export function getContextualMessage(): string {
-  const hour = new Date().getHours();
-  
-  if (hour >= 5 && hour < 12) {
-    // Morning messages
-    return getRandomMessage('morning');
-  } else {
-    // General messages for all other times
-    return getRandomMessage('general');
-  }
+export function getRandomDaytimeMessage(): string {
+  return RANDOM_MESSAGES[Math.floor(Math.random() * RANDOM_MESSAGES.length)];
 }
 
 /**
- * Schedule a random personalized notification
+ * Send morning notification (6 AM)
  */
-export function schedulePersonalizedNotification(): void {
+export function sendMorningNotification(): void {
   if ('Notification' in window && Notification.permission === 'granted') {
-    const message = getContextualMessage();
+    const message = getRandomMorningMessage();
     
-    new Notification('NEET Study Companion 🐰', {
+    new Notification('Good Morning! 🌅', {
       body: message,
       icon: '/android-launchericon-192-192.png',
       badge: '/android-launchericon-96-96.png',
-      tag: 'personalized-message',
-
+      tag: 'morning-message',
       timestamp: Date.now(),
       requireInteraction: false,
       silent: false
@@ -244,7 +219,42 @@ export function schedulePersonalizedNotification(): void {
 }
 
 /**
- * Setup random notification scheduling
+ * Send random daytime notification
+ */
+export function sendRandomDaytimeNotification(): void {
+  if ('Notification' in window && Notification.permission === 'granted') {
+    const message = getRandomDaytimeMessage();
+    
+    new Notification('NEET Study Companion 🐰', {
+      body: message,
+      icon: '/android-launchericon-192-192.png',
+      badge: '/android-launchericon-96-96.png',
+      tag: 'random-message',
+      timestamp: Date.now(),
+      requireInteraction: false,
+      silent: false
+    });
+  }
+}
+
+/**
+ * ✨ MANUAL NOTIFICATION TRIGGER (for editing/testing)
+ * Call this function anytime to send a personalized notification
+ */
+export function sendPersonalizedNotificationNow(): void {
+  const hour = new Date().getHours();
+  
+  // Send morning message if it's morning hours (5 AM - 12 PM)
+  if (hour >= 5 && hour < 12) {
+    sendMorningNotification();
+  } else {
+    // Send random daytime message for other times
+    sendRandomDaytimeNotification();
+  }
+}
+
+/**
+ * Schedule both daily notifications
  */
 export function setupPersonalizedNotifications(): void {
   // Request permission if not already granted
@@ -252,28 +262,62 @@ export function setupPersonalizedNotifications(): void {
     Notification.requestPermission();
   }
   
-  // Schedule notifications at random intervals between 2-6 hours
-  const scheduleNext = () => {
-    const minHours = 2;
-    const maxHours = 6;
-    const randomHours = Math.random() * (maxHours - minHours) + minHours;
-    const delay = randomHours * 60 * 60 * 1000; // Convert to milliseconds
+  // Schedule morning notification (6 AM daily)
+  const scheduleMorningNotification = () => {
+    const now = new Date();
+    const morningTime = new Date();
+    morningTime.setHours(NOTIFICATION_CONFIG.MORNING_TIME.hours, NOTIFICATION_CONFIG.MORNING_TIME.minutes, 0, 0);
+    
+    // If morning time has passed today, schedule for tomorrow
+    if (morningTime <= now) {
+      morningTime.setDate(morningTime.getDate() + 1);
+    }
+    
+    const timeToMorning = morningTime.getTime() - now.getTime();
     
     setTimeout(() => {
-      schedulePersonalizedNotification();
-      scheduleNext(); // Schedule the next one
-    }, delay);
+      sendMorningNotification();
+      // Schedule next day's morning notification
+      scheduleMorningNotification();
+    }, timeToMorning);
   };
   
-  // Start the scheduling
-  scheduleNext();
+  // Schedule random daytime notification (once daily between 9 AM - 6 PM)
+  const scheduleRandomNotification = () => {
+    const now = new Date();
+    const startTime = new Date();
+    const endTime = new Date();
+    
+    startTime.setHours(NOTIFICATION_CONFIG.RANDOM_TIME_RANGE.START.hours, NOTIFICATION_CONFIG.RANDOM_TIME_RANGE.START.minutes, 0, 0);
+    endTime.setHours(NOTIFICATION_CONFIG.RANDOM_TIME_RANGE.END.hours, NOTIFICATION_CONFIG.RANDOM_TIME_RANGE.END.minutes, 0, 0);
+    
+    // If end time has passed today, schedule for tomorrow
+    if (endTime <= now) {
+      startTime.setDate(startTime.getDate() + 1);
+      endTime.setDate(endTime.getDate() + 1);
+    }
+    
+    // Generate random time between start and end
+    const randomTime = new Date(startTime.getTime() + Math.random() * (endTime.getTime() - startTime.getTime()));
+    const timeToRandom = randomTime.getTime() - now.getTime();
+    
+    setTimeout(() => {
+      sendRandomDaytimeNotification();
+      // Schedule next day's random notification
+      scheduleRandomNotification();
+    }, timeToRandom);
+  };
+  
+  // Start both scheduling processes
+  scheduleMorningNotification();
+  scheduleRandomNotification();
 }
 
 /**
  * Manual trigger for testing notifications
  */
 function testPersonalizedNotification(): void {
-  schedulePersonalizedNotification();
+  sendPersonalizedNotificationNow();
 }
 
 /**
@@ -289,6 +333,7 @@ export function initializeSpecialEvents(): void {
   // Add test functions to window for debugging
   if (typeof window !== 'undefined') {
     (window as any).testPersonalizedNotification = testPersonalizedNotification;
+    (window as any).sendPersonalizedNotificationNow = sendPersonalizedNotificationNow;
     (window as any).checkSpecialDate = checkSpecialDate;
     (window as any).showSpecialPopup = showSpecialPopup;
   }
@@ -298,5 +343,6 @@ export function initializeSpecialEvents(): void {
 export {
   testPersonalizedNotification,
   showSpecialPopup,
-  checkSpecialDate
+  checkSpecialDate,
+  sendPersonalizedNotificationNow
 };

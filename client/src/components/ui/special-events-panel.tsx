@@ -38,21 +38,21 @@ export function SpecialEventsPanel() {
         >
           🔔 Test Personalized Notification
         </Button>
-        
+
         <Button
           onClick={handleTestPopup}
           className="w-full neobrutalist-btn bg-[#a0c4ff] hover:bg-[#a0c4ff]/90 text-brutal-black justify-start"
         >
           🎊 Test October 24th Popup
         </Button>
-        
+
         <Button
           onClick={handleTestContextualMessage}
           className="w-full neobrutalist-btn bg-[#caffbf] hover:bg-[#caffbf]/90 text-brutal-black justify-start"
         >
           💬 Test Contextual Message
         </Button>
-        
+
         <Button
           onClick={handleTestRandomMessage}
           className="w-full neobrutalist-btn bg-[#fdffb6] hover:bg-[#fdffb6]/90 text-brutal-black justify-start"
@@ -60,14 +60,14 @@ export function SpecialEventsPanel() {
           🌅 Test Morning Message
         </Button>
       </div>
-      
+
       <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-        <p className="text-sm text-blue-800 dark:text-blue-200">
-          <strong>Features:</strong><br/>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           • October 24th popup with confetti (appears only once per day)<br/>
-          • Personalized notifications every 2-6 hours<br/>
-          • Context-aware messages based on time of day<br/>
-          • 40+ custom bunny messages with emojis
+          • Morning notification at 6:00 AM daily<br/>
+          • One random notification between 9 AM - 6 PM<br/>
+          • 50+ custom bunny messages with emojis<br/>
+          • Easy editing in special-events.ts file
         </p>
       </div>
     </Card>
