@@ -64,8 +64,8 @@ export default {
         'cream-10': '#b9fbc0',
         
         // Palette 2: Bright pastels - Updated subject colors
-        'bright-1': '#ffadad',
-        'bright-2': '#f3d9df', // Updated chemistry color
+        'bright-1': '#ffadad', // Red for health below 75%
+        'bright-2': '#fbbf24', // Yellow/amber for health 75-89%
         'bright-3': '#fdffb6',
         'bright-4': '#95D2B3', // Updated biology color
         'bright-5': '#9bf6ff',
