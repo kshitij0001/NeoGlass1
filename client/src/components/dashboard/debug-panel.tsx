@@ -689,12 +689,16 @@ export function DebugPanel() {
                     const reviews = await storage.getReviews();
                     const newReview = {
                       id: 'test-' + Date.now(),
+                      topicId: 'test-topic-' + Date.now(),
                       topic: 'Test Topic',
                       chapter: 'Test Chapter', 
                       subject: 'Physics' as const,
+                      difficulty: 'Medium' as const,
                       dueDate: new Date().toISOString(),
                       interval: 0,
-                      isCompleted: false
+                      timesReviewed: 0,
+                      isCompleted: false,
+                      createdAt: new Date().toISOString()
                     };
                     
                     // Check if storage has addReview method
@@ -704,8 +708,8 @@ export function DebugPanel() {
                     } else {
                       // Try alternative approach - add to existing reviews
                       const updatedReviews = [...reviews, newReview];
-                      await storage.setReviews(updatedReviews);
-                      addResult('Test review added via setReviews', 'success');
+                      await storage.saveReviews(updatedReviews);
+                      addResult('Test review added via saveReviews', 'success');
                     }
                   } catch (e: any) { 
                     addResult(`Add review failed: ${e?.message || e}`, 'error');
@@ -723,7 +727,8 @@ export function DebugPanel() {
                       description: 'Test Description',
                       date: new Date().toISOString().split('T')[0],
                       time: '14:00',
-                      type: 'exam' as const
+                      type: 'exam' as const,
+                      createdAt: new Date().toISOString()
                     };
                     
                     // Check if storage has addEvent method
@@ -733,8 +738,8 @@ export function DebugPanel() {
                     } else {
                       // Try alternative approach
                       const updatedEvents = [...events, newEvent];
-                      await storage.setEvents(updatedEvents);
-                      addResult('Test event added via setEvents', 'success');
+                      await storage.saveEvents(updatedEvents);
+                      addResult('Test event added via saveEvents', 'success');
                     }
                   } catch (e: any) { 
                     addResult(`Add event failed: ${e?.message || e}`, 'error');
@@ -753,7 +758,7 @@ export function DebugPanel() {
                     
                     // Try to update settings - check available methods
                     const settingsWithTestValue = { ...currentSettings, testValue: 25 };
-                    await storage.setSettings(settingsWithTestValue);
+                    await storage.saveSettings(settingsWithTestValue);
                     addResult('Test value added to settings', 'success');
                     addResult('Note: Streak might be stored elsewhere', 'info');
                   } catch (e: any) { 
@@ -773,10 +778,9 @@ export function DebugPanel() {
                         addResult('All data cleared via clearAll', 'success');
                       } else {
                         // Clear individually
-                        await storage.setReviews([]);
-                        await storage.setEvents([]);
-                        await storage.setSyllabusProgress({});
-                        await storage.setTestResults([]);
+                        await storage.saveReviews([]);
+                        await storage.saveEvents([]);
+                        await storage.clear();
                         addResult('Data cleared individually', 'success');
                       }
                       setTimeout(() => window.location.reload(), 1000);

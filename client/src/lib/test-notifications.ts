@@ -14,7 +14,7 @@ export const testNotifications = {
   async testBasicNotification() {
     console.log('🧪 Testing basic notification...');
     
-    const hasPermission = await this.requestPermission();
+    const hasPermission = await testNotifications.requestPermission();
     if (!hasPermission) {
       console.error('❌ Notification permission denied');
       return;
@@ -32,7 +32,7 @@ export const testNotifications = {
   async testReviewReminder() {
     console.log('🧪 Testing review reminder notification...');
     
-    const hasPermission = await this.requestPermission();
+    const hasPermission = await testNotifications.requestPermission();
     if (!hasPermission) {
       console.error('❌ Notification permission denied');
       return;
@@ -51,7 +51,7 @@ export const testNotifications = {
   async testDailyReminder() {
     console.log('🧪 Testing daily study reminder...');
     
-    const hasPermission = await this.requestPermission();
+    const hasPermission = await testNotifications.requestPermission();
     if (!hasPermission) {
       console.error('❌ Notification permission denied');
       return;
@@ -69,7 +69,7 @@ export const testNotifications = {
   async testStreakMilestone() {
     console.log('🧪 Testing streak milestone notification...');
     
-    const hasPermission = await this.requestPermission();
+    const hasPermission = await testNotifications.requestPermission();
     if (!hasPermission) {
       console.error('❌ Notification permission denied');
       return;
@@ -122,7 +122,7 @@ export const testNotifications = {
       
       console.log(`⏰ Current user reminder time: ${reminderTime}`);
       
-      const hasPermission = await this.requestPermission();
+      const hasPermission = await testNotifications.requestPermission();
       if (!hasPermission) {
         console.error('❌ Notification permission denied');
         return;
@@ -154,7 +154,7 @@ export const testNotifications = {
         return;
       }
       
-      const hasPermission = await this.requestPermission();
+      const hasPermission = await testNotifications.requestPermission();
       if (!hasPermission) {
         console.error('❌ Notification permission denied');
         return;
@@ -183,7 +183,7 @@ export const testNotifications = {
         return;
       }
       
-      const hasPermission = await this.requestPermission();
+      const hasPermission = await testNotifications.requestPermission();
       if (!hasPermission) {
         console.error('❌ Notification permission denied');
         return;
