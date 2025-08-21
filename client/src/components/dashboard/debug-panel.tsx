@@ -507,6 +507,27 @@ export function DebugPanel() {
               <Clock className="h-3 w-3" />
               Test Daily Reminder
             </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                try {
+                  const testAllSpecialNotifications = (window as any).testAllSpecialNotifications;
+                  if (testAllSpecialNotifications) {
+                    await testAllSpecialNotifications();
+                    addResult('Special notifications test started', 'success');
+                  } else {
+                    addResult('Special notifications test not available', 'error');
+                  }
+                } catch (error) {
+                  addResult('Special notifications test failed', 'error');
+                }
+              }}
+              className="flex items-center gap-2 text-xs bg-pink-50 hover:bg-pink-100 dark:bg-pink-900/20 dark:hover:bg-pink-900/30 border-pink-200 dark:border-pink-800"
+            >
+              🐰
+              Test All Special Notifications
+            </Button>
           </div>
           
           <Separator className="bg-yellow-200 dark:bg-yellow-800 mb-3" />

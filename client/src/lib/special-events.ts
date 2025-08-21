@@ -35,7 +35,58 @@ export const MORNING_MESSAGES = [
   "Bunny the world says good morning 🌍🌸",
   "Hop into success today bunny 🐰💪",
   "Fresh start fresh vibes good morning bunny 🌼🌞",
-  "Rise up bunny today's your chance to shine ✨🐇"
+  "Rise up bunny today's your chance to shine ✨🐇",
+  // New messages added
+  "Good morning bunny, let's hop into focus today 📚🐇",
+  "Rise and grind bunny, your goals are waiting 💪🌞",
+  "Morning bunny, every hop counts toward success 🐰✨",
+  "Start the day strong bunny, you've got this 🚀🐇",
+  "Good morning bunny, chase knowledge like carrots 🥕📖",
+  "Bunny, today is full of learning adventures 🌟🐰",
+  "Morning sunshine bunny, hop into clarity 🌞🐇",
+  "Good morning bunny, let's grow wiser today 🌱📚",
+  "Focus mode on bunny, let's make today productive ⚡🐰",
+  "Bunny, may your studies feel light and fun today 🐇🎶",
+  "Good morning bunny, small hops bring big wins 🐰🌟",
+  "Hop into learning today bunny, the future is bright ✨📖",
+  "Morning bunny, grab your books and your courage 📚💖",
+  "A new day, a new chance to hop forward bunny 🌞🐇",
+  "Good morning bunny, let's turn pages and dreams 📖🌸",
+  "Rise and shine bunny, brilliance is waiting ✨🐰",
+  "Bunny, today's lessons are stepping stones 🪨🐇",
+  "Morning bunny, hop with focus and joy 🌼📚",
+  "Good morning bunny, study hard and hop proud 🐰🎓",
+  "A gentle morning for a powerful bunny 🐇🌞",
+  "Hop into knowledge bunny, today's your canvas 🎨📖",
+  "Good morning bunny, curiosity is your superpower ✨🐇",
+  "Morning bunny, the world is cheering you on 🌍💫",
+  "Keep hopping forward bunny, you're doing amazing 🐰💖",
+  "Good morning bunny, open your mind to new ideas 📚🌟",
+  "Bunny, today's sunrise is just for you 🌅🐇",
+  "Hop steady bunny, success is in every step 🐇⚡",
+  "Good morning bunny, let's make today meaningful 💡🐰",
+  "Morning bunny, hop towards progress, not perfection 🌼📚",
+  "Bunny, your potential is brighter than the sun ☀️🐰",
+  "Good morning bunny, let's learn, grow, and shine 🌟📖",
+  "Rise up bunny, knowledge is waiting 🐇✨",
+  "Morning bunny, hop happily into your goals 🌸🎓",
+  "Every day is a chance to hop smarter bunny 📚🐰",
+  "Good morning bunny, today you sparkle with ideas 💡🌟",
+  "Hop forward bunny, the future loves your effort 🐇🌞",
+  "Morning bunny, let your focus shine bright ✨📚",
+  "Bunny, today's energy is yours to hop into ⚡🐰",
+  "Good morning bunny, chase progress like a playful hop 🐇🌼",
+  "Morning bunny, turn today's effort into tomorrow's success 📖🚀",
+  "Good morning bunny, hop calmly into clarity 🧘‍♂️🌸",
+  "Every hop today makes you stronger bunny 💪🐰",
+  "Morning bunny, embrace today's lessons with joy 📚✨",
+  "Bunny, you're unstoppable when you hop with purpose 🐇⚡",
+  "Good morning bunny, your bright mind is ready to shine 🌟📖",
+  "Morning bunny, a fresh day means fresh wisdom 🌼🐰",
+  "Bunny, hop gently but surely towards success 🐇🌞",
+  "Good morning bunny, today's study is tomorrow's victory 🎓🌟",
+  "Bunny, rise with focus and hop with confidence 🐰🚀",
+  "Morning bunny, may your mind be sharp and your heart light 💡💖"
 ];
 
 // Random daytime messages (sent once randomly between 9 AM - 6 PM)
@@ -367,6 +418,53 @@ function testPersonalizedNotification(): void {
 }
 
 /**
+ * Test all special event notifications - for comprehensive testing
+ */
+async function testAllSpecialNotifications(): Promise<void> {
+  console.log('🧪 Testing all special event notifications...');
+  
+  // Test 1: Good Morning Notification (6 AM type)
+  console.log('1️⃣ Testing Good Morning notification (6 AM style)...');
+  const morningMessage = getRandomMorningMessage();
+  await nativeNotificationManager.scheduleReviewReminder(
+    'TEST: Good Morning! 🌅',
+    `${morningMessage} (Test notification)`,
+    new Date(Date.now() + 3000) // 3 seconds from now
+  );
+  
+  // Test 2: Random Daytime Notification (9 AM-6 PM type)
+  console.log('2️⃣ Testing Random Daytime notification (9 AM-6 PM style)...');
+  const randomMessage = getRandomDaytimeMessage();
+  await nativeNotificationManager.scheduleReviewReminder(
+    'TEST: NEET Study Companion 🐰',
+    `${randomMessage} (Test notification)`,
+    new Date(Date.now() + 6000) // 6 seconds from now
+  );
+  
+  // Test 3: Special October 24th notification (if today is Oct 24th, test it)
+  const today = new Date();
+  if (today.getMonth() === 9 && today.getDate() === 24) {
+    console.log('3️⃣ Testing Special October 24th popup...');
+    showSpecialPopup();
+  } else {
+    console.log('3️⃣ October 24th Special Event test (will only work on Oct 24th)');
+    console.log(`   Today is ${today.toDateString()}, special event is Oct 24th`);
+    // Test the special notification anyway
+    await nativeNotificationManager.scheduleReviewReminder(
+      'TEST: Special Day! 🎉',
+      'Happy Birthday, Rachel! 🎉💖 This is a test of your special day notification.',
+      new Date(Date.now() + 9000) // 9 seconds from now
+    );
+  }
+  
+  console.log('✅ All special notification tests scheduled!');
+  console.log('📱 Check your Android device in the next 10 seconds for:');
+  console.log('   • Good Morning test (3 seconds)');
+  console.log('   • Random Daytime test (6 seconds)');
+  console.log('   • Special Day test (9 seconds)');
+}
+
+/**
  * Initialize special events module with offline support
  */
 export function initializeSpecialEvents(): void {
@@ -390,6 +488,7 @@ export function initializeSpecialEvents(): void {
     (window as any).showSpecialPopup = showSpecialPopup;
     (window as any).testOfflineNotification = testOfflineNotification;
     (window as any).clearNotificationSpam = clearNotificationSpam;
+    (window as any).testAllSpecialNotifications = testAllSpecialNotifications;
   }
 }
 
@@ -451,6 +550,7 @@ function clearNotificationSpam(): void {
 // Export all functions for use in other modules
 export {
   testPersonalizedNotification,
+  testAllSpecialNotifications,
   showSpecialPopup,
   checkSpecialDate
 };
