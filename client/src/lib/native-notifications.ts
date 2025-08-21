@@ -11,20 +11,33 @@ export class NativeNotificationManager {
     }
 
     try {
+      console.log('🔔 Platform check:', Capacitor.getPlatform());
+      console.log('🔔 Is native platform:', Capacitor.isNativePlatform());
+      
       // Check current permissions first
       const currentPermissions = await LocalNotifications.checkPermissions();
-      console.log('Current notification permissions:', currentPermissions);
+      console.log('🔔 Current notification permissions:', currentPermissions);
       
       if (currentPermissions.display === 'granted') {
+        console.log('✅ Notification permissions already granted');
         return true;
       }
 
+      console.log('🔔 Requesting notification permissions...');
       // Request permissions
       const { display } = await LocalNotifications.requestPermissions();
-      console.log('Permission request result:', display);
-      return display === 'granted';
+      console.log('🔔 Permission request result:', display);
+      
+      if (display === 'granted') {
+        console.log('✅ Notification permissions granted successfully');
+        return true;
+      } else {
+        console.error('❌ Notification permissions denied:', display);
+        return false;
+      }
     } catch (error) {
-      console.error('Failed to request notification permissions:', error);
+      console.error('❌ Failed to request notification permissions:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
       return false;
     }
   }
@@ -64,11 +77,13 @@ export class NativeNotificationManager {
 
       console.log('📱 Android notification payload:', notification);
       
-      await LocalNotifications.schedule({
+      console.log('🔔 Attempting to schedule notification...');
+      const result = await LocalNotifications.schedule({
         notifications: [notification]
       });
-
-      console.log(`Native notification scheduled: ${title} for ${scheduledTime} with ID: ${notificationId}`);
+      
+      console.log('✅ Notification scheduling result:', result);
+      console.log(`📱 Native notification scheduled: ${title} for ${scheduledTime} with ID: ${notificationId}`);
     } catch (error) {
       console.error('Failed to schedule native notification:', error);
     }

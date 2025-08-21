@@ -4,4 +4,8 @@
     <string name="title_activity_main">NEET Study Companion</string>
     <string name="package_name">com.neetcompanion.app</string>
     <string name="custom_url_scheme">com.neetcompanion.app</string>
+    
+    <!-- Notification Channel Names -->
+    <string name="neet_reminders_channel_name">NEET Study Reminders</string>
+    <string name="neet_reminders_channel_description">Notifications for study reminders and reviews</string>
 </resources>

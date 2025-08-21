@@ -135,7 +135,10 @@ function AppContent() {
         </Switch>
         
         <BottomNavigation onNavigate={handleNavigate} />
-        <DebugPanel />
+        {(import.meta.env.DEV || 
+          import.meta.env.MODE === 'development' ||
+          window.location.hostname === 'localhost' ||
+          window.location.hostname.includes('replit')) && <DebugPanel />}
       </div>
     </div>
   );

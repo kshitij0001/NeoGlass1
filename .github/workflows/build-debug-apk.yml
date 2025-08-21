@@ -1,0 +1,109 @@
+name: Build Debug APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'client/**'
+      - 'android/**'
+      - '.github/workflows/build-debug-apk.yml'
+
+jobs:
+  build-debug-apk:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web app with debug features
+        run: |
+          cd client
+          npm run build
+        env:
+          VITE_DEBUG_MODE: 'true'
+          NODE_ENV: 'production'
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses
+
+      - name: Install Android build tools
+        run: |
+          sdkmanager "build-tools;34.0.0"
+          sdkmanager "platforms;android-34"
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Build Debug APK
+        run: |
+          cd android
+          ./gradlew assembleDebug
+
+      - name: Sign Debug APK
+        run: |
+          cd android/app/build/outputs/apk/debug
+          jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ../../../../debug.keystore -storepass android app-debug.apk androiddebugkey
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: neet-companion-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
+
+      - name: Create Release
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: debug-v${{ github.run_number }}
+          name: "NEET Companion Debug APK v${{ github.run_number }}"
+          body: |
+            🐛 **Debug APK Build**
+            
+            **Debug Features Included:**
+            - Console debug functions available
+            - Visual debug panel at bottom of screen
+            - Notification testing tools
+            - Storage inspection tools
+            - Platform detection
+            
+            **Console Commands:**
+            ```javascript
+            window.debugInfo()              // Platform info
+            window.testNotifications.testBasicNotification()  // Test notifications
+            window.debugStorage()           // Storage inspection
+            window.testConfetti()           // Visual effects test
+            ```
+            
+            **Installation:**
+            1. Download the APK file
+            2. Enable "Install from unknown sources" in Android settings
+            3. Install the APK
+            4. Look for yellow debug panel at bottom of screen
+            
+            Built from commit: ${{ github.sha }}
+          files: android/app/build/outputs/apk/debug/app-debug.apk
+          draft: false
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

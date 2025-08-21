@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
 import { ChevronDown, ChevronUp, Bug, Bell, Zap, Database, Smartphone } from "lucide-react";
 import { Capacitor } from '@capacitor/core';
 
@@ -62,8 +62,8 @@ export function DebugPanel() {
 
   return (
     <Card className="fixed bottom-24 left-4 right-4 z-50 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-400">
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CollapsibleTrigger asChild>
+      <CollapsiblePrimitive.Root open={isOpen} onOpenChange={setIsOpen}>
+        <CollapsiblePrimitive.Trigger asChild>
           <div className="flex items-center justify-between p-3 cursor-pointer">
             <div className="flex items-center space-x-2">
               <Bug className="h-4 w-4 text-yellow-600" />
@@ -80,9 +80,9 @@ export function DebugPanel() {
               <ChevronDown className="h-4 w-4 text-yellow-600" />
             )}
           </div>
-        </CollapsibleTrigger>
+        </CollapsiblePrimitive.Trigger>
         
-        <CollapsibleContent>
+        <CollapsiblePrimitive.Content>
           <div className="p-3 border-t border-yellow-200 dark:border-yellow-700">
             <div className="space-y-3">
               {/* Platform Info */}
@@ -153,8 +153,8 @@ export function DebugPanel() {
               </div>
             </div>
           </div>
-        </CollapsibleContent>
-      </Collapsible>
+        </CollapsiblePrimitive.Content>
+      </CollapsiblePrimitive.Root>
     </Card>
   );
 }
