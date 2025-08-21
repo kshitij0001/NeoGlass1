@@ -277,6 +277,26 @@ export function DebugPanel() {
                   size="sm"
                   onClick={async () => {
                     try {
+                      const testFunctions = (window as any).testNotifications;
+                      if (testFunctions?.addTestEvent) {
+                        testFunctions.addTestEvent();
+                        addResult('Test event added (triggers in 2 min)', 'success');
+                      } else {
+                        addResult('Add test event function not available', 'error');
+                      }
+                    } catch (error) {
+                      addResult('Add test event failed', 'error');
+                    }
+                  }}
+                  className="text-xs"
+                >
+                  Add Test Event
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={async () => {
+                    try {
                       // Capture console output for detailed debugging
                       const originalLog = console.log;
                       const originalError = console.error;
