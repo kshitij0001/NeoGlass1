@@ -320,6 +320,156 @@ export function DebugPanel() {
             
             <div className="space-y-2">
               <p className="text-xs text-yellow-700 dark:text-yellow-300 font-medium">
+                Advanced Notification Tests:
+              </p>
+              <div className="grid grid-cols-2 gap-1">
+                <Button variant="outline" size="sm" onClick={async () => {
+                  try {
+                    const fn = (window as any).testNotifications?.testReviewReminder;
+                    if (fn) { await fn(); addResult('Review reminder tested', 'success'); }
+                    else { addResult('Review reminder not available', 'error'); }
+                  } catch (e) { addResult('Review reminder failed', 'error'); }
+                }} className="text-xs">Review Reminder</Button>
+                
+                <Button variant="outline" size="sm" onClick={async () => {
+                  try {
+                    const fn = (window as any).testNotifications?.testDailyReminder;
+                    if (fn) { await fn(); addResult('Daily reminder tested', 'success'); }
+                    else { addResult('Daily reminder not available', 'error'); }
+                  } catch (e) { addResult('Daily reminder failed', 'error'); }
+                }} className="text-xs">Daily Reminder</Button>
+                
+                <Button variant="outline" size="sm" onClick={async () => {
+                  try {
+                    const fn = (window as any).testNotifications?.testStreakMilestone;
+                    if (fn) { await fn(); addResult('Streak milestone tested', 'success'); }
+                    else { addResult('Streak milestone not available', 'error'); }
+                  } catch (e) { addResult('Streak milestone failed', 'error'); }
+                }} className="text-xs">Streak Milestone</Button>
+                
+                <Button variant="outline" size="sm" onClick={async () => {
+                  try {
+                    const fn = (window as any).testNotifications?.testWithActualData;
+                    if (fn) { await fn(); addResult('Actual data tested', 'success'); }
+                    else { addResult('Actual data test not available', 'error'); }
+                  } catch (e) { addResult('Actual data test failed', 'error'); }
+                }} className="text-xs">With Actual Data</Button>
+                
+                <Button variant="outline" size="sm" onClick={async () => {
+                  try {
+                    const fn = (window as any).testNotifications?.testUserConfiguredTime;
+                    if (fn) { await fn(); addResult('User time tested', 'success'); }
+                    else { addResult('User time test not available', 'error'); }
+                  } catch (e) { addResult('User time test failed', 'error'); }
+                }} className="text-xs">User Config Time</Button>
+                
+                <Button variant="outline" size="sm" onClick={async () => {
+                  try {
+                    const fn = (window as any).testNotifications?.testEventNotification;
+                    if (fn) { await fn(); addResult('Event notification tested', 'success'); }
+                    else { addResult('Event notification not available', 'error'); }
+                  } catch (e) { addResult('Event notification failed', 'error'); }
+                }} className="text-xs">Event Notification</Button>
+                
+                <Button variant="outline" size="sm" onClick={async () => {
+                  try {
+                    const fn = (window as any).testNotifications?.showStatus;
+                    if (fn) { await fn(); addResult('Status shown in console', 'success'); }
+                    else { addResult('Show status not available', 'error'); }
+                  } catch (e) { addResult('Show status failed', 'error'); }
+                }} className="text-xs">Show Status</Button>
+                
+                <Button variant="outline" size="sm" onClick={async () => {
+                  try {
+                    const fn = (window as any).sendPersonalizedNotificationNow;
+                    if (fn) { await fn(); addResult('Personalized notification sent', 'success'); }
+                    else { addResult('Personalized not available', 'error'); }
+                  } catch (e) { addResult('Personalized notification failed', 'error'); }
+                }} className="text-xs">Send Personalized</Button>
+              </div>
+            </div>
+            
+            <Separator className="bg-yellow-200 dark:bg-yellow-800" />
+            
+            <div className="space-y-2">
+              <p className="text-xs text-yellow-700 dark:text-yellow-300 font-medium">
+                Storage Operations:
+              </p>
+              <div className="grid grid-cols-2 gap-1">
+                <Button variant="outline" size="sm" onClick={async () => {
+                  try {
+                    const { storage } = await import('@/lib/storage');
+                    const stats = await storage.getStorageStats();
+                    addResult(`Storage stats retrieved`, 'success');
+                  } catch (e) { addResult('Storage stats failed', 'error'); }
+                }} className="text-xs">Storage Stats</Button>
+                
+                <Button variant="outline" size="sm" onClick={async () => {
+                  try {
+                    const { storage } = await import('@/lib/storage');
+                    const settings = await storage.getSettings();
+                    addResult(`Streak: ${settings.currentStreak || 0}`, 'info');
+                  } catch (e) { addResult('Streak check failed', 'error'); }
+                }} className="text-xs">Check Streak</Button>
+                
+                <Button variant="outline" size="sm" onClick={async () => {
+                  try {
+                    const { storage } = await import('@/lib/storage');
+                    await storage.addReview({
+                      id: 'test-' + Date.now(),
+                      topic: 'Test Topic',
+                      chapter: 'Test Chapter', 
+                      subject: 'Physics',
+                      dueDate: new Date().toISOString(),
+                      interval: 0,
+                      isCompleted: false
+                    });
+                    addResult('Test review added', 'success');
+                  } catch (e) { addResult('Add review failed', 'error'); }
+                }} className="text-xs">Add Test Review</Button>
+                
+                <Button variant="outline" size="sm" onClick={async () => {
+                  try {
+                    const { storage } = await import('@/lib/storage');
+                    await storage.addEvent({
+                      id: 'test-event-' + Date.now(),
+                      title: 'Test Event',
+                      description: 'Test Description',
+                      date: new Date().toISOString().split('T')[0],
+                      time: '14:00',
+                      type: 'exam'
+                    });
+                    addResult('Test event added', 'success');
+                  } catch (e) { addResult('Add event failed', 'error'); }
+                }} className="text-xs">Add Test Event</Button>
+                
+                <Button variant="outline" size="sm" onClick={async () => {
+                  try {
+                    const { storage } = await import('@/lib/storage');
+                    await storage.updateSettings({ currentStreak: 25 });
+                    addResult('Streak set to 25', 'success');
+                  } catch (e) { addResult('Set streak failed', 'error'); }
+                }} className="text-xs">Set Test Streak</Button>
+                
+                <Button variant="outline" size="sm" onClick={async () => {
+                  try {
+                    if (confirm('Clear ALL data? This cannot be undone!')) {
+                      const { storage } = await import('@/lib/storage');
+                      await storage.clearAll();
+                      addResult('All data cleared!', 'success');
+                      setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                      addResult('Clear cancelled', 'info');
+                    }
+                  } catch (e) { addResult('Clear all failed', 'error'); }
+                }} className="text-xs bg-red-50 hover:bg-red-100 text-red-700">Clear All Data</Button>
+              </div>
+            </div>
+            
+            <Separator className="bg-yellow-200 dark:bg-yellow-800" />
+            
+            <div className="space-y-2">
+              <p className="text-xs text-yellow-700 dark:text-yellow-300 font-medium">
                 Notification Testing:
               </p>
               <div className="grid grid-cols-2 gap-2">
