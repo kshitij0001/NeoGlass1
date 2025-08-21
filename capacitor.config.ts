@@ -12,8 +12,15 @@ const config: CapacitorConfig = {
       sound: "default",
       requestPermissions: true,
       scheduleOn: "device",
-      channelId: "neet-reminders"
+      channelId: "neet_study_reminders",
+      channelName: "NEET Study Reminders",
+      channelDescription: "Reminders for NEET study sessions and events",
+      importance: "high",
+      visibility: "public"
     },
+    PushNotifications: {
+      presentationOptions: ["badge", "sound", "alert"]
+    }
   }
 };
 

@@ -12,21 +12,26 @@ export const testNotifications = {
   },
 
   async testBasicNotification() {
-    console.log('🧪 Testing basic notification...');
+    console.log('📋 ANDROID APK IMMEDIATE NOTIFICATION TEST');
+    console.log('='.repeat(50));
+    console.log('🧪 Testing immediate Android notification...');
     
     const hasPermission = await testNotifications.requestPermission();
     if (!hasPermission) {
-      console.error('❌ Notification permission denied');
+      console.error('❌ Cannot test - notification permissions required for APK');
+      console.log('📱 Enable notifications in Android Settings > Apps > NEET Study Companion');
       return;
     }
 
     await nativeNotificationManager.scheduleReviewReminder(
-      'NEET Study Companion Test',
-      'This is a test notification from your study app!',
+      '📱 APK Notification Test',
+      'SUCCESS! Your Android app can send notifications. This proves the system works!',
       new Date()
     );
 
-    console.log('✅ Basic notification sent');
+    console.log('✅ Android notification sent successfully');
+    console.log('🔔 Check your Android notification panel now');
+    console.log('='.repeat(50));
   },
 
   async testReviewReminder() {

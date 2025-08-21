@@ -1,26 +1,32 @@
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Capacitor } from '@capacitor/core';
 
+// Initialize notification channel for Android APK
+const NOTIFICATION_CHANNEL = {
+  id: 'neet_study_reminders',
+  name: 'NEET Study Reminders',
+  description: 'Notifications for study sessions, events, and review reminders',
+  importance: 'high' as const, // HIGH importance for Android
+  visibility: 'public' as const // PUBLIC visibility
+};
+
 export class NativeNotificationManager {
   private isNative = Capacitor.isNativePlatform();
 
   async requestPermissions(): Promise<boolean> {
-    console.log('🔔 Platform check:', Capacitor.getPlatform());
+    console.log('📱 Android APK - Requesting notification permissions...');
+    console.log('🔔 Platform:', Capacitor.getPlatform());
     console.log('🔔 Is native platform:', Capacitor.isNativePlatform());
-    console.log('🔔 User agent:', navigator.userAgent);
     
+    // For APK builds, always try to request permissions
     if (!this.isNative) {
-      console.log('🌐 Not on native platform - cannot request native permissions');
-      console.log('🌐 Platform details:', {
-        platform: Capacitor.getPlatform(),
-        isNative: Capacitor.isNativePlatform(),
-        userAgent: navigator.userAgent.includes('Android'),
-        capacitorAndroid: navigator.userAgent.includes('CapacitorAndroid')
-      });
+      console.log('⚠️ Development mode - notifications only work in APK build');
       return false;
     }
 
     try {
+      // Create notification channel for Android APK
+      await this.createNotificationChannel();
       
       // Check current permissions first
       const currentPermissions = await LocalNotifications.checkPermissions();
@@ -50,17 +56,32 @@ export class NativeNotificationManager {
     }
   }
 
-  async scheduleReviewReminder(title: string, body: string, scheduledTime: Date): Promise<void> {
-    console.log('📱 Attempting to schedule notification:', { title, body, scheduledTime, isNative: this.isNative });
-    
-    // Skip browser notifications completely when we want native Android notifications
-    if (!this.isNative) {
-      console.log('🌐 Skipping notification - not on native platform (Android APK)');
-      console.log('🌐 Platform info:', {
-        platform: Capacitor.getPlatform(),
-        isNative: Capacitor.isNativePlatform(),
-        userAgent: navigator.userAgent
+  private async createNotificationChannel(): Promise<void> {
+    try {
+      console.log('📱 Creating Android notification channel...');
+      await LocalNotifications.createChannel({
+        id: NOTIFICATION_CHANNEL.id,
+        name: NOTIFICATION_CHANNEL.name,
+        description: NOTIFICATION_CHANNEL.description,
+        importance: NOTIFICATION_CHANNEL.importance,
+        visibility: NOTIFICATION_CHANNEL.visibility,
+        sound: 'default',
+        vibration: true,
+        lights: true,
+        lightColor: '#e9897e'
       });
+      console.log('✅ Android notification channel created successfully');
+    } catch (error) {
+      console.log('📱 Notification channel creation (normal in development):', error);
+    }
+  }
+
+  async scheduleReviewReminder(title: string, body: string, scheduledTime: Date): Promise<void> {
+    console.log('📱 Android APK - Scheduling notification:', { title, body, scheduledTime });
+    
+    // Only work on native Android platform (APK)
+    if (!this.isNative) {
+      console.log('⚠️ Cannot schedule notification - only works in Android APK build');
       return;
     }
 
@@ -79,14 +100,18 @@ export class NativeNotificationManager {
         id: notificationId,
         schedule: { 
           at: scheduledTime,
-          allowWhileIdle: true
+          allowWhileIdle: true,
+          repeats: false
         },
         sound: 'default',
-        channelId: 'neet-reminders',
+        channelId: 'neet_study_reminders',
+        smallIcon: 'ic_stat_icon_config_sample',
+        iconColor: '#e9897e',
         ongoing: false,
         autoCancel: true,
         extra: {
-          type: 'review-reminder'
+          type: 'neet-study-reminder',
+          scheduledTime: scheduledTime.toISOString()
         }
       };
 
