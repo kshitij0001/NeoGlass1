@@ -85,8 +85,20 @@ export class NotificationInitializer {
       // Check if we can create notification channels (Android 8.0+)
       console.log('📱 Setting up Android notification channel...');
       
-      // This will be handled by the native Android code and Capacitor config
-      // The channel is defined in capacitor.config.ts
+      // Create the notification channel for Android 8+
+      await LocalNotifications.createChannel({
+        id: 'neet-reminders',
+        name: 'NEET Reminders',
+        description: 'Daily study reminders and review notifications',
+        importance: 5, // MAX = 5 (high priority)
+        visibility: 1, // PUBLIC = 1
+        sound: 'default',
+        vibration: true,
+        lights: true,
+        lightColor: '#F59E0B'
+      });
+      
+      console.log('✅ Android notification channel "neet-reminders" created');
       
     } catch (error) {
       console.error('❌ Error setting up Android channel:', error);

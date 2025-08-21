@@ -81,8 +81,6 @@ export class NativeNotificationManager {
           at: scheduledTime,
           allowWhileIdle: true
         },
-        smallIcon: 'ic_stat_icon_config_sample',
-        iconColor: '#F59E0B',
         sound: 'default',
         channelId: 'neet-reminders',
         ongoing: false,

@@ -12,7 +12,28 @@ export const createNotificationDebugFunctions = () => {
       console.log('Is native:', Capacitor.isNativePlatform());
       
       if (!Capacitor.isNativePlatform()) {
-        console.error('❌ Not on native platform - notifications won\'t work');
+        console.log('🌐 Not on native platform - trying browser fallback notification...');
+        
+        // Browser fallback for testing
+        if ('Notification' in window) {
+          let permission = Notification.permission;
+          
+          if (permission === 'default') {
+            permission = await Notification.requestPermission();
+          }
+          
+          if (permission === 'granted') {
+            new Notification('🧪 NEET Study Companion - Browser Test', {
+              body: 'This is a browser test notification. In the APK, this would be a native notification.',
+              icon: '/android-launchericon-192-192.png'
+            });
+            console.log('✅ Browser notification sent (fallback for testing)');
+          } else {
+            console.log('❌ Browser notification permission denied');
+          }
+        } else {
+          console.log('❌ Browser does not support notifications');
+        }
         return;
       }
 
@@ -42,8 +63,6 @@ export const createNotificationDebugFunctions = () => {
               at: new Date(Date.now() + 2000), // 2 seconds from now
               allowWhileIdle: true
             },
-            smallIcon: 'ic_stat_icon_config_sample',
-            iconColor: '#F59E0B',
             sound: 'default',
             channelId: 'neet-reminders',
             ongoing: false,

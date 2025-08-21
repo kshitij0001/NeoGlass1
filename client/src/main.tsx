@@ -3,6 +3,7 @@ import App from "./App";
 import "./index.css";
 import { enableDebugFeatures } from "./lib/debug";
 import "./lib/notification-init"; // Initialize notifications on app startup
+import "./lib/notification-test-browser"; // Browser testing fallback
 
 // The starfield background is now handled purely by CSS animations
 

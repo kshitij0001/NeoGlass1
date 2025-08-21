@@ -1,0 +1,74 @@
+1. Platform check (Capacitor.isNativePlatform())
+
+In Capacitor v5, Capacitor.isNativePlatform() returns true only inside the native Android/iOS app (e.g., when built into an APK/IPA).
+
+If you’re testing in a browser (including Chrome dev tools mobile emulation) → it will always be false, and your code will skip scheduling because of:
+
+if (!this.isNative) {
+  console.log('🌐 Skipping notification - not on native platform (Android APK)');
+  return;
+}
+
+
+✅ Make sure you’re actually testing inside a built Android/iOS app, not just running ionic serve or capacitor run web.
+
+2. Notification Channel (Android only)
+
+On Android 8+, notifications must belong to a channel.
+You’re using:
+
+channelId: 'neet-reminders',
+
+
+…but you never actually create this channel.
+You need to set it up at app startup:
+
+import { LocalNotifications } from '@capacitor/local-notifications';
+
+await LocalNotifications.createChannel({
+  id: 'neet-reminders',
+  name: 'NEET Reminders',
+  description: 'Daily study reminders',
+  importance: 5, // MAX = 5
+  visibility: 1, // PUBLIC
+  sound: 'default',
+});
+
+
+⚡ Without this, notifications silently fail on Android.
+
+3. Icons
+smallIcon: 'ic_stat_icon_config_sample',
+
+
+That icon must exist in your Android res/drawable folder (in your native project). If it doesn’t, Android may discard the notification.
+
+Try removing smallIcon/iconColor first and test with defaults.
+
+4. Permissions
+
+You’re handling requestPermissions() correctly, but note:
+
+On Android 13+, notifications require runtime permission (like camera/mic).
+
+On older Android versions, permission is granted by default — requestPermissions() might just return "granted" without prompting.
+
+Double-check what your logs say under:
+
+console.log('🔔 Current notification permissions:', currentPermissions);
+
+5. Foreground vs Background
+
+By default, scheduled notifications may not fire while your app is in the foreground. On iOS they definitely don’t, and on Android it depends. Try putting your app in the background or lock the phone to test.
+
+✅ Next steps for you to try:
+
+Confirm you’re running this in a native app build (not browser).
+
+Add LocalNotifications.createChannel(...) early in your app.
+
+Test without custom smallIcon / channelId.
+
+Check if logs show schedule success but notification doesn’t appear.
+
+Do you want me to tweak your class so it automatically creates the notification channel on init and falls back to defaults if custom icons aren’t available? That would make your code safer across devices.
