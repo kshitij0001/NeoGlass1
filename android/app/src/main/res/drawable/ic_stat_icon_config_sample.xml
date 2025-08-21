@@ -5,7 +5,16 @@
     android:viewportWidth="24"
     android:viewportHeight="24"
     android:tint="@android:color/white">
+    <!-- Book shape -->
     <path
         android:fillColor="@android:color/white"
-        android:pathData="M12,2C6.48,2 2,6.48 2,12s4.48,10 10,10 10,-4.48 10,-10S17.52,2 12,2zM13,17h-2v-6h2v6zM13,9h-2L11,7h2v2z"/>
+        android:pathData="M6,3C5.45,3 5,3.45 5,4V20C5,20.55 5.45,21 6,21H11C11.55,21 12,20.55 12,20V4C12,3.45 11.55,3 11,3H6ZM8.5,3V21"/>
+    <!-- Coffee cup -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M16,10C15.45,10 15,10.45 15,11V16C15,16.55 15.45,17 16,17H18C18.55,17 19,16.55 19,16V11C19,10.45 18.55,10 18,10H16Z"/>
+    <!-- Coffee steam -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M16.5,8C16.5,8 17,7.5 17,7C17,6.5 16.5,6 16.5,6C16.5,6 17,5.5 17,5"/>
 </vector>
