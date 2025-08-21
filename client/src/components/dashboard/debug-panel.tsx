@@ -76,7 +76,7 @@ export function DebugPanel() {
         if (args.length === 0) {
           return new OriginalDate((window as any).__MOCK_DATE__);
         }
-        return new OriginalDate(...args);
+        return new (OriginalDate as any)(...args);
       };
       Object.setPrototypeOf((window as any).Date, OriginalDate);
       Object.defineProperty((window as any).Date, 'now', {
@@ -135,8 +135,8 @@ export function DebugPanel() {
       
       addResult(`Events: ${events.length}`, 'info');
       addResult(`Reviews: ${reviews.length}`, 'info');  
-      addResult(`Notifications: ${settings.notifications ? 'ON' : 'OFF'}`, settings.notifications ? 'success' : 'error');
-      addResult(`Event Notifications: ${settings.eventNotifications ? 'ON' : 'OFF'}`, settings.eventNotifications ? 'success' : 'error');
+      addResult(`Notifications: ${settings?.notifications ? 'ON' : 'OFF'}`, settings?.notifications ? 'success' : 'error');
+      addResult(`Event Notifications: ${settings?.eventNotifications ? 'ON' : 'OFF'}`, settings?.eventNotifications ? 'success' : 'error');
     } catch (error) {
       console.error('❌ Storage check failed:', error);
       addResult('Failed to check storage', 'error');
