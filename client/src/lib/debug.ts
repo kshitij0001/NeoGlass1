@@ -2,9 +2,11 @@
 import { createNotificationDebugFunctions } from './debug-notifications';
 
 export const isDebugMode = () => {
-  // Only show debug panel in actual debug builds, not in development
+  // Show debug panel in development mode and developer builds
   return (
-    import.meta.env.VITE_DEBUG_MODE === 'true'
+    import.meta.env.VITE_DEBUG_MODE === 'true' ||
+    import.meta.env.DEV ||
+    localStorage.getItem('debug-mode') === 'true'
   );
 };
 
