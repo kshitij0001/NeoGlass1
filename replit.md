@@ -8,6 +8,15 @@ The application is built as a full-stack solution with a React frontend and Expr
 
 ## Recent Changes (August 2025)
 
+- **APK Build System Fixed**: Resolved all APK build issues with proper debug vs production separation:
+  - Fixed Android build configuration to create distinct debug and production APKs
+  - Debug APK includes app ID suffix `.debug` and visual debug panel
+  - Added comprehensive debug features system with console functions and storage inspection
+  - Fixed GitHub Actions workflow permissions and removed problematic release creation
+  - Created proper environment variable handling for debug mode detection
+  - Debug and production builds now generate correctly differentiated APKs
+  - Documented complete build process in APK-BUILD-FIXED.md
+
 - **Project Cleanup Complete**: Removed all unnecessary documentation files, keeping only essential README and APK build guide for a clean project structure
 
 - **Native Android APK Setup Complete**: Successfully configured Capacitor framework for native Android development:

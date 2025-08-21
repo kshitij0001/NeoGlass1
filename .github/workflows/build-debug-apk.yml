@@ -27,9 +27,7 @@ jobs:
         run: npm ci
 
       - name: Build web app with debug features
-        run: |
-          cd client
-          npm run build
+        run: npm run build
         env:
           VITE_DEBUG_MODE: 'true'
           NODE_ENV: 'production'
@@ -71,39 +69,19 @@ jobs:
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
 
-      - name: Create Release
-        if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: debug-v${{ github.run_number }}
-          name: "NEET Companion Debug APK v${{ github.run_number }}"
-          body: |
-            🐛 **Debug APK Build**
-            
-            **Debug Features Included:**
-            - Console debug functions available
-            - Visual debug panel at bottom of screen
-            - Notification testing tools
-            - Storage inspection tools
-            - Platform detection
-            
-            **Console Commands:**
-            ```javascript
-            window.debugInfo()              // Platform info
-            window.testNotifications.testBasicNotification()  // Test notifications
-            window.debugStorage()           // Storage inspection
-            window.testConfetti()           // Visual effects test
-            ```
-            
-            **Installation:**
-            1. Download the APK file
-            2. Enable "Install from unknown sources" in Android settings
-            3. Install the APK
-            4. Look for yellow debug panel at bottom of screen
-            
-            Built from commit: ${{ github.sha }}
-          files: android/app/build/outputs/apk/debug/app-debug.apk
-          draft: false
-          prerelease: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Show APK Info
+        run: |
+          echo "🐛 Debug APK Build Complete!"
+          echo "📱 APK Location: android/app/build/outputs/apk/debug/app-debug.apk"
+          echo "🔧 Debug Features Included:"
+          echo "  - Console debug functions"
+          echo "  - Visual debug panel at bottom"
+          echo "  - Storage inspection tools"
+          echo "  - Platform detection"
+          echo ""
+          echo "Console Commands Available:"
+          echo "  window.debugInfo()     // Platform info"
+          echo "  window.debugStorage()  // Storage inspection"
+          echo "  window.testConfetti()  // Visual effects test"
+          echo ""
+          ls -la android/app/build/outputs/apk/debug/ || echo "APK directory not found"

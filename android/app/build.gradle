@@ -31,11 +31,16 @@ android {
             debuggable true
             minifyEnabled false
             zipAlignEnabled true
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+            buildConfigField "boolean", "DEBUG_FEATURES", "true"
         }
         release {
-            signingConfig signingConfigs.debug
-            minifyEnabled false
+            signingConfig signingConfigs.debug  // Using debug signing for now, change for production
+            minifyEnabled true
             zipAlignEnabled true
+            debuggable false
+            buildConfigField "boolean", "DEBUG_FEATURES", "false"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

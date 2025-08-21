@@ -33,8 +33,10 @@ jobs:
     - name: Install dependencies
       run: npm install
       
-    - name: Build web application
+    - name: Build web application (Production)
       run: npm run build
+      env:
+        NODE_ENV: 'production'
       
     - name: Copy web assets to Android
       run: npx cap copy android
