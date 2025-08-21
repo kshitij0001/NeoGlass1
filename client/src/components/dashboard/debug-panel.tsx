@@ -297,16 +297,36 @@ export function DebugPanel() {
                   size="sm"
                   onClick={async () => {
                     try {
-                      const debugFunctions = (window as any).notificationDebugging;
-                      if (debugFunctions) {
-                        // Call the debugging function
-                        addResult('Notification debugging run', 'success');
-                        addResult('Check console for details', 'info');
-                      } else {
-                        addResult('Notification debugging not available', 'error');
-                      }
+                      // Import notification debugging and run comprehensive check
+                      const { NotificationInitializer } = await import('@/lib/notification-init');
+                      
+                      addResult('🔔 Running notification debugging...', 'info');
+                      
+                      // Check platform
+                      const isNative = (window as any).Capacitor?.isNativePlatform?.();
+                      addResult(`📱 Platform: ${isNative ? 'Native' : 'Web'}`, 'info');
+                      
+                      // Check permissions
+                      const status = await NotificationInitializer.getStatus();
+                      addResult(`🔐 Permissions: ${status ? 'Granted' : 'Denied'}`, status ? 'success' : 'error');
+                      
+                      // Check notification functions
+                      const testFns = (window as any).testNotifications;
+                      addResult(`🧪 Test functions: ${testFns ? 'Available' : 'Missing'}`, testFns ? 'success' : 'error');
+                      
+                      // Check if notifications are properly initialized
+                      const hasLocalNotifications = !!(window as any).Capacitor?.Plugins?.LocalNotifications;
+                      addResult(`📲 Local notifications: ${hasLocalNotifications ? 'Available' : 'Not available'}`, hasLocalNotifications ? 'success' : 'info');
+                      
+                      // Check storage for notification settings
+                      const { storage } = await import('@/lib/storage');
+                      const settings = await storage.getSettings();
+                      addResult(`⏰ Reminder time: ${settings.reminderTime || '19:00'}`, 'info');
+                      
+                      addResult('✅ Notification debugging complete', 'success');
+                      
                     } catch (error) {
-                      addResult('Notification debugging failed', 'error');
+                      addResult(`❌ Notification debugging failed: ${error}`, 'error');
                     }
                   }}
                   className="text-xs"
