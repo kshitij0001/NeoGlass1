@@ -19,6 +19,7 @@ import { checkAndTriggerStreakMilestone, testConfetti, testAllClearConfetti } fr
 import { populateTestData, clearTestData } from "@/lib/test-data";
 import { testNotifications, notificationDebugging } from "@/lib/test-notifications";
 import { notificationScheduler } from "@/lib/notification-scheduler";
+import { DebugPanel } from "@/components/ui/debug-panel";
 
 function AppContent() {
   const { initialize, isInitialized, isLoading, settings, getCurrentStreak } = useStore();
@@ -42,18 +43,36 @@ function AppContent() {
     }
   }, [isInitialized, getCurrentStreak]);
 
-  // Add global test functions for debugging (development only)
+  // Add global test functions for debugging (always enabled for APK debugging)
   useEffect(() => {
-    if (typeof window !== 'undefined' && import.meta.env.DEV) {
+    if (typeof window !== 'undefined') {
       (window as any).testConfetti = testConfetti;
       (window as any).testAllClearConfetti = testAllClearConfetti;
       (window as any).populateTestData = populateTestData;
       (window as any).clearTestData = clearTestData;
       (window as any).testNotifications = testNotifications;
       (window as any).notificationDebugging = notificationDebugging;
+      
+      // Enhanced debugging for APK
+      (window as any).debugInfo = () => {
+        console.log('📱 Platform:', navigator.userAgent);
+        console.log('🔔 Native Platform:', (window as any).Capacitor?.isNativePlatform() || false);
+        console.log('📦 Build Mode:', import.meta.env.DEV ? 'Development' : 'Production');
+        console.log('🌐 URL:', window.location.href);
+      };
+      
+      (window as any).debugStorage = async () => {
+        const { storage } = await import('@/lib/storage');
+        console.log('📊 Reviews:', await storage.getReviews());
+        console.log('⚙️ Settings:', await storage.getSettings());
+        console.log('📅 Events:', await storage.getEvents());
+        console.log('🧪 Tests:', await storage.getTests());
+      };
+
       console.log('🧪 Test functions available: window.testConfetti(), window.testAllClearConfetti()');
       console.log('📸 Screenshot data functions: window.populateTestData(), window.clearTestData()');
       console.log('🔔 Notification test functions: window.testNotifications, window.notificationDebugging');
+      console.log('🔍 Debug functions: window.debugInfo(), window.debugStorage()');
     }
   }, []);
 
@@ -110,6 +129,7 @@ function AppContent() {
         </Switch>
         
         <BottomNavigation onNavigate={handleNavigate} />
+        <DebugPanel />
       </div>
     </div>
   );
