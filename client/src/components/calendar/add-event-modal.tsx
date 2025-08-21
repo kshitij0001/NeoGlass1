@@ -30,7 +30,7 @@ export function AddEventModal({ isOpen, onClose, selectedDate }: AddEventModalPr
     }
   }, [selectedDate]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!title.trim()) {
       return;
     }
@@ -42,6 +42,15 @@ export function AddEventModal({ isOpen, onClose, selectedDate }: AddEventModalPr
       description: description.trim() || undefined,
       time: eventTime,
     });
+
+    // Trigger notification scheduler to refresh and schedule the new event
+    try {
+      const { notificationScheduler } = await import('@/lib/notification-scheduler');
+      await notificationScheduler.scheduleEventNotifications();
+      console.log('📅 Event created and notification scheduled successfully');
+    } catch (error) {
+      console.error('❌ Error scheduling notification for new event:', error);
+    }
 
     // Reset form
     setTitle("");

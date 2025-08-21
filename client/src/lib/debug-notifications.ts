@@ -519,11 +519,73 @@ export const createNotificationDebugFunctions = () => {
           notificationTime: settings?.notificationTime,
           eventNotifications: settings?.eventNotifications
         });
+
+        // Check stored events
+        const events = await storage.getEvents();
+        console.log('📅 Stored events:', events.length);
+        if (events.length > 0) {
+          console.log('📅 Event details:', events.map(e => ({
+            title: e.title,
+            date: e.date,
+            time: e.time,
+            type: e.type
+          })));
+        }
         
         console.log('✅ Status check complete');
         
       } catch (error) {
         console.error('❌ Status check failed:', error);
+      }
+    },
+
+    // Test event notification scheduling specifically
+    testEventNotificationScheduling: async () => {
+      console.log('📅 TESTING EVENT NOTIFICATION SCHEDULING:');
+      
+      if (!Capacitor.isNativePlatform()) {
+        console.log('❌ Not on native platform');
+        return;
+      }
+
+      try {
+        // Create test event for 1 minute from now
+        const testTime = new Date();
+        testTime.setMinutes(testTime.getMinutes() + 1);
+        
+        const testEvent = {
+          id: 'test-event-' + Date.now(),
+          title: 'Test Event Notification',
+          description: 'This is a test event to verify notifications work',
+          date: testTime.toISOString().split('T')[0],
+          time: `${testTime.getHours().toString().padStart(2, '0')}:${testTime.getMinutes().toString().padStart(2, '0')}`,
+          type: 'exam' as const,
+          createdAt: new Date().toISOString()
+        };
+
+        console.log('📅 Created test event:', testEvent);
+
+        // Add to storage
+        const { storage } = await import('@/lib/storage');
+        const currentEvents = await storage.getEvents();
+        await storage.saveEvents([...currentEvents, testEvent]);
+        
+        console.log('💾 Test event saved to storage');
+
+        // Trigger notification scheduler
+        const { notificationScheduler } = await import('@/lib/notification-scheduler');
+        await notificationScheduler.scheduleEventNotifications();
+        
+        console.log('✅ Event notification scheduling test complete');
+        console.log('⏰ You should receive a notification in 1 minute');
+        console.log('📱 Check your Android device notification shade');
+        
+        // Check pending notifications
+        const pending = await LocalNotifications.getPending();
+        console.log('📋 Total pending after test:', pending.notifications.length);
+        
+      } catch (error) {
+        console.error('❌ Event notification scheduling test failed:', error);
       }
     }
   };

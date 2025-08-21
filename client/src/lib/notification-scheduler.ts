@@ -302,11 +302,17 @@ class NotificationScheduler {
           const isToday = event.date === today;
           console.log(`📅 Scheduling notification for "${event.title}" at ${eventTime} on ${event.date} ${isToday ? '(today)' : '(upcoming)'}`);
           
-          const timeoutId = setTimeout(async () => {
-            await this.sendEventNotification(event);
-          }, timeUntilEvent);
+          // Use native notification scheduling instead of setTimeout
+          const title = event.type === 'mock' || event.type === 'exam' ? `📝 ${event.title}` : `📅 ${event.title}`;
+          let body = `${event.type.charAt(0).toUpperCase() + event.type.slice(1)} scheduled for ${eventTime}`;
           
-          this.eventTimeouts.push(timeoutId);
+          if (event.description) {
+            body += ` - ${event.description}`;
+          }
+
+          await nativeNotificationManager.scheduleReviewReminder(title, body, eventDate);
+          
+          console.log(`✅ Event notification scheduled using native Android notifications: "${event.title}"`);
         } else {
           console.log(`📅 Event "${event.title}" time has already passed (${event.date} ${eventTime})`);
         }
