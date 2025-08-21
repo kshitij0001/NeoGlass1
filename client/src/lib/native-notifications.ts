@@ -15,7 +15,17 @@ export class NativeNotificationManager {
     }
 
     try {
+      // Check current permissions first
+      const currentPermissions = await LocalNotifications.checkPermissions();
+      console.log('Current notification permissions:', currentPermissions);
+      
+      if (currentPermissions.display === 'granted') {
+        return true;
+      }
+
+      // Request permissions
       const { display } = await LocalNotifications.requestPermissions();
+      console.log('Permission request result:', display);
       return display === 'granted';
     } catch (error) {
       console.error('Failed to request notification permissions:', error);
@@ -41,21 +51,33 @@ export class NativeNotificationManager {
       const hasPermission = await this.requestPermissions();
       if (!hasPermission) return;
 
+      const notificationId = Date.now();
+      
       await LocalNotifications.schedule({
         notifications: [{
           title,
           body,
-          id: Date.now(),
+          id: notificationId,
           schedule: { at: scheduledTime },
           smallIcon: 'ic_stat_icon_config_sample',
           iconColor: '#F59E0B',
           extra: {
             type: 'review-reminder'
-          }
+          },
+          actionTypeId: '',
+          attachments: [],
+          summaryText: '',
+          group: 'neet-study',
+          groupSummary: false,
+          ongoing: false,
+          autoCancel: true,
+          largeIcon: '',
+          sound: 'default',
+          channelId: 'neet-reminders'
         }]
       });
 
-      console.log(`Native notification scheduled: ${title} for ${scheduledTime}`);
+      console.log(`Native notification scheduled: ${title} for ${scheduledTime} with ID: ${notificationId}`);
     } catch (error) {
       console.error('Failed to schedule native notification:', error);
     }
