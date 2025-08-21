@@ -52,15 +52,19 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
+      - name: Generate debug keystore
+        run: |
+          cd android/app
+          if [ ! -f debug.keystore ]; then
+            keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          else
+            echo "Debug keystore already exists, skipping generation"
+          fi
+
       - name: Build Debug APK
         run: |
           cd android
           ./gradlew assembleDebug
-
-      - name: Sign Debug APK
-        run: |
-          cd android/app/build/outputs/apk/debug
-          jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ../../../../debug.keystore -storepass android app-debug.apk androiddebugkey
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4

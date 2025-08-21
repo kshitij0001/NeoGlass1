@@ -37,6 +37,7 @@ jobs:
       run: npm run build
       env:
         NODE_ENV: 'production'
+        # Ensure no debug features in production
       
     - name: Copy web assets to Android
       run: npx cap copy android

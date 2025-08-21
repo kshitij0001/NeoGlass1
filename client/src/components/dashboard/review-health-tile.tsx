@@ -10,22 +10,22 @@ export function ReviewHealthTile() {
   const circumference = 175.93; // 2 * π * 28 (radius)
   const strokeDashoffset = circumference - (circumference * healthPercentage) / 100;
 
-  // Dynamic color based on health percentage
+  // Dynamic color based on health percentage - Fixed thresholds
   const getHealthColor = (percentage: number) => {
-    if (percentage >= 90) return "bg-[#91d48e]"; // green for high health
-    if (percentage >= 85) return "bg-bright-2"; // bright peach 
-    return "bg-bright-1"; // bright coral
+    if (percentage >= 90) return "bg-[#91d48e]"; // green for high health (90%+)
+    if (percentage >= 75) return "bg-bright-2"; // yellow for medium health (75%-89%)
+    return "bg-bright-1"; // red for low health (below 75%)
   };
 
   const getStrokeColor = (percentage: number) => {
     if (percentage >= 90) return "#16a34a"; // dark green for better visibility
-    if (percentage >= 85) return "#d97706"; // dark amber for better visibility
+    if (percentage >= 75) return "#d97706"; // dark amber for better visibility
     return "#dc2626"; // dark red for better visibility
   };
 
   const getTextColor = (percentage: number) => {
     if (percentage >= 90) return "text-green-600"; 
-    if (percentage >= 85) return "text-amber-600";
+    if (percentage >= 75) return "text-amber-600";
     return "text-rose-600";
   };
 
