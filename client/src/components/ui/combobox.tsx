@@ -100,7 +100,7 @@ export function Combobox({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "w-full justify-between border-3 border-brutal-black dark:border-white bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm font-bold",
+            "w-full justify-between border-3 border-brutal-black dark:border-white bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm font-bold text-brutal-black dark:text-white",
             className
           )}
           disabled={disabled}
@@ -117,7 +117,7 @@ export function Combobox({
               placeholder={searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 border-none"
+              className="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground dark:placeholder:text-gray-400 text-brutal-black dark:text-white disabled:cursor-not-allowed disabled:opacity-50 border-none"
             />
           </div>
           <div 
@@ -130,7 +130,7 @@ export function Combobox({
               Object.entries(groupedOptions).map(([category, categoryOptions]) => (
                 <div key={category}>
                   {category && (
-                    <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+                    <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground dark:text-gray-400">
                       {category}
                     </div>
                   )}
@@ -143,7 +143,7 @@ export function Combobox({
                         handleSelect(option.value);
                       }}
                       className={cn(
-                        "relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm font-bold hover:bg-white/50 dark:hover:bg-gray-700/50 transition-colors",
+                        "relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm font-bold hover:bg-white/50 dark:hover:bg-gray-700/50 transition-colors text-brutal-black dark:text-white",
                         value === option.value && "bg-accent text-accent-foreground"
                       )}
                     >
@@ -159,7 +159,7 @@ export function Combobox({
                 </div>
               ))
             ) : (
-              <div className="py-6 text-center text-sm">
+              <div className="py-6 text-center text-sm text-brutal-black dark:text-white">
                 {emptyMessage}
               </div>
             )}
