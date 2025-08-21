@@ -59,9 +59,9 @@ cd android && ./gradlew assembleRelease
 
 ## GitHub Actions Workflows
 
-### 1. **build-android.yml** (Main Workflow)
-- Builds **both** debug and release APKs
-- Upload as artifacts: `neet-companion-debug-apk` and `neet-companion-release-apk`
+### 1. **build-android.yml** (Production Workflow)
+- Builds **only** production release APK
+- Upload as artifact: `neet-companion-release-apk`
 - Production build without debug features
 
 ### 2. **build-debug-apk.yml** (Debug Only)

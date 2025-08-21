@@ -55,21 +55,10 @@ jobs:
         else
           echo "Debug keystore already exists, skipping generation"
         fi
-    - name: Build Android APK (Debug)
-      run: |
-        cd android
-        ./gradlew assembleDebug
-        
     - name: Build Android APK (Release)
       run: |
         cd android
         ./gradlew assembleRelease
-        
-    - name: Upload Debug APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: neet-companion-debug-apk
-        path: android/app/build/outputs/apk/debug/*.apk
         
     - name: Upload Release APK
       uses: actions/upload-artifact@v4
@@ -79,11 +68,7 @@ jobs:
         
     - name: Show APK info
       run: |
-        echo "✅ Android APK Build Complete!"
-        echo "📱 Debug APK files:"
-        find android/app/build/outputs/apk/debug/ -name "*.apk" -exec ls -la {} \;
+        echo "✅ Android Production APK Build Complete!"
         echo "📱 Release APK files:"
         find android/app/build/outputs/apk/release/ -name "*.apk" -exec ls -la {} \;
         echo "💾 APK files are available in the Actions artifacts"
-        echo "📁 Full directory structure:"
-        find android/app/build/outputs/apk/ -name "*.apk" -type f
