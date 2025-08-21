@@ -83,7 +83,7 @@ export const createNotificationDebugFunctions = () => {
         console.log('✅ Permissions confirmed granted');
 
         console.log('📱 STEP 4: Scheduling test notification...');
-        const testId = Date.now();
+        const testId = Math.floor(Math.random() * 2147483647); // Java int max value
         const notificationPayload = {
           title: '🧪 APK Test Notification',
           body: 'Success! Native notifications are working on your Android device.',

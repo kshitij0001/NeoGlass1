@@ -68,7 +68,7 @@ export class NativeNotificationManager {
       const hasPermission = await this.requestPermissions();
       if (!hasPermission) return;
 
-      const notificationId = Date.now();
+      const notificationId = Math.floor(Math.random() * 2147483647); // Java int max value
       
       console.log('📱 Scheduling Android notification with ID:', notificationId);
       console.log('⏰ Scheduled time:', scheduledTime.toISOString());

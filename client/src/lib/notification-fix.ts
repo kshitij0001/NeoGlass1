@@ -86,7 +86,7 @@ export class EnhancedNotificationManager {
         return false;
       }
 
-      const notificationId = Date.now();
+      const notificationId = Math.floor(Math.random() * 2147483647); // Java int max value
       
       const notification = {
         title,
