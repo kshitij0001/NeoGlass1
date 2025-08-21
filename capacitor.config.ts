@@ -13,7 +13,8 @@ const config: CapacitorConfig = {
       iconColor: "#F59E0B",
       sound: "default",
       requestPermissions: true,
-      scheduleOn: "device"
+      scheduleOn: "device",
+      channelId: "neet-reminders"
     },
   }
 };

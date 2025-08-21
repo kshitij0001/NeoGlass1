@@ -25,8 +25,17 @@ export function DebugPanel() {
 
   const handleTestNotifications = async () => {
     try {
-      await (window as any).testNotifications?.testBasicNotification?.();
-      console.log('🧪 Test notification scheduled - should appear in 2 seconds');
+      // Try the new notification initializer first
+      const { NotificationInitializer } = await import('@/lib/notification-init');
+      const success = await NotificationInitializer.testNotification();
+      
+      if (success) {
+        console.log('🧪 Test notification scheduled - should appear in 3 seconds');
+      } else {
+        // Fallback to old test method
+        await (window as any).testNotifications?.testBasicNotification?.();
+        console.log('🧪 Fallback test notification scheduled - should appear in 2 seconds');
+      }
     } catch (error) {
       console.error('❌ Failed to test notifications:', error);
     }
@@ -128,6 +137,17 @@ export function DebugPanel() {
                   className="text-xs"
                 >
                   Request Permissions
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={async () => {
+                    const { NotificationInitializer } = await import('@/lib/notification-init');
+                    await NotificationInitializer.getStatus();
+                  }}
+                  className="text-xs col-span-2"
+                >
+                  Full Status Check
                 </Button>
               </div>
             </div>
