@@ -1,4 +1,6 @@
 // Debug mode detection and features
+import { createNotificationDebugFunctions } from './debug-notifications';
+
 export const isDebugMode = () => {
   return (
     import.meta.env.VITE_DEBUG_MODE === 'true' ||
@@ -69,10 +71,14 @@ export const enableDebugFeatures = () => {
     });
   }
   
+  // Add notification debug functions
+  createNotificationDebugFunctions();
+  
   console.log('🐛 Debug mode enabled. Available functions:', {
     debugInfo: 'Platform and environment information',
     debugStorage: 'Storage inspection',
-    testConfetti: 'Test confetti animations'
+    testConfetti: 'Test confetti animations',
+    testNotifications: 'Native notification testing functions'
   });
 };
 

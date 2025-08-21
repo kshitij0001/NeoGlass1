@@ -1,5 +1,6 @@
 import { createNotificationManagerFromSettings } from './notifications';
 import { nativeNotificationManager } from './native-notifications';
+import { enhancedNotificationManager } from './notification-fix';
 import { storage } from './storage';
 
 class NotificationScheduler {

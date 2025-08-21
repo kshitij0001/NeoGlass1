@@ -5,14 +5,22 @@ export class NativeNotificationManager {
   private isNative = Capacitor.isNativePlatform();
 
   async requestPermissions(): Promise<boolean> {
+    console.log('🔔 Platform check:', Capacitor.getPlatform());
+    console.log('🔔 Is native platform:', Capacitor.isNativePlatform());
+    console.log('🔔 User agent:', navigator.userAgent);
+    
     if (!this.isNative) {
       console.log('🌐 Not on native platform - cannot request native permissions');
+      console.log('🌐 Platform details:', {
+        platform: Capacitor.getPlatform(),
+        isNative: Capacitor.isNativePlatform(),
+        userAgent: navigator.userAgent.includes('Android'),
+        capacitorAndroid: navigator.userAgent.includes('CapacitorAndroid')
+      });
       return false;
     }
 
     try {
-      console.log('🔔 Platform check:', Capacitor.getPlatform());
-      console.log('🔔 Is native platform:', Capacitor.isNativePlatform());
       
       // Check current permissions first
       const currentPermissions = await LocalNotifications.checkPermissions();
@@ -43,9 +51,16 @@ export class NativeNotificationManager {
   }
 
   async scheduleReviewReminder(title: string, body: string, scheduledTime: Date): Promise<void> {
+    console.log('📱 Attempting to schedule notification:', { title, body, scheduledTime, isNative: this.isNative });
+    
     // Skip browser notifications completely when we want native Android notifications
     if (!this.isNative) {
       console.log('🌐 Skipping notification - not on native platform (Android APK)');
+      console.log('🌐 Platform info:', {
+        platform: Capacitor.getPlatform(),
+        isNative: Capacitor.isNativePlatform(),
+        userAgent: navigator.userAgent
+      });
       return;
     }
 
@@ -70,6 +85,8 @@ export class NativeNotificationManager {
         iconColor: '#F59E0B',
         sound: 'default',
         channelId: 'neet-reminders',
+        ongoing: false,
+        autoCancel: true,
         extra: {
           type: 'review-reminder'
         }
