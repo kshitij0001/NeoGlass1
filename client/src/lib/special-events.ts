@@ -102,6 +102,7 @@ export const RANDOM_MESSAGES = [
 
 export const NOTIFICATION_CONFIG = {
   MORNING_TIME: { hours: 6, minutes: 0 }, // 6:00 AM
+  STREAK_REMINDER_TIME: { hours: 21, minutes: 0 }, // 9:00 PM
   RANDOM_TIME_RANGE: {
     START: { hours: 9, minutes: 0 },     // 9:00 AM
     END: { hours: 18, minutes: 0 }       // 6:00 PM

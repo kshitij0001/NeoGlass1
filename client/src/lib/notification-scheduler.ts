@@ -5,6 +5,7 @@ import { storage } from './storage';
 
 class NotificationScheduler {
   private dailyReminderTimeout: NodeJS.Timeout | null = null;
+  private streakReminderTimeout: NodeJS.Timeout | null = null;
   private eventTimeouts: NodeJS.Timeout[] = [];
 
   async initializeScheduler() {
@@ -20,6 +21,9 @@ class NotificationScheduler {
       
       // Schedule daily reminders
       await this.scheduleDailyReminders(settings.notificationTime || '19:00');
+      
+      // Schedule streak reminder at 9 PM
+      await this.scheduleStreakReminders();
       
       // Schedule event notifications
       await this.scheduleEventNotifications();
@@ -120,6 +124,77 @@ class NotificationScheduler {
     }
   }
 
+  async scheduleStreakReminders() {
+    // Clear existing timeout
+    if (this.streakReminderTimeout) {
+      clearTimeout(this.streakReminderTimeout);
+    }
+
+    const now = new Date();
+    const streakTime = new Date();
+    streakTime.setHours(21, 0, 0, 0); // 9:00 PM
+
+    // If the time has passed today, schedule for tomorrow
+    if (streakTime <= now) {
+      streakTime.setDate(streakTime.getDate() + 1);
+    }
+
+    const timeToStreak = streakTime.getTime() - now.getTime();
+    
+    console.log(`🏆 Next streak reminder scheduled for: ${streakTime.toLocaleString()}`);
+
+    this.streakReminderTimeout = setTimeout(async () => {
+      await this.sendStreakReminder();
+      // Reschedule for the next day
+      await this.scheduleStreakReminders();
+    }, timeToStreak);
+  }
+
+  async sendStreakReminder() {
+    try {
+      const reviews = await storage.getReviews();
+      
+      // Check if user completed any reviews today
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      const reviewsCompletedToday = reviews?.filter(r => {
+        if (!r.lastReviewed) return false;
+        const reviewDate = new Date(r.lastReviewed);
+        return reviewDate >= today && reviewDate < tomorrow;
+      }).length || 0;
+
+      // Only send streak reminder if no reviews were completed today
+      if (reviewsCompletedToday === 0) {
+        const overdueCount = reviews?.filter(r => {
+          const dueDate = new Date(r.dueDate);
+          const todayStart = new Date();
+          todayStart.setHours(0, 0, 0, 0);
+          return dueDate <= todayStart && !r.isCompleted;
+        }).length || 0;
+
+        let title = '🏆 Don\'t Break Your Streak!';
+        let body = 'You haven\'t studied today. Even 5 minutes keeps your momentum going!';
+
+        if (overdueCount > 0) {
+          title = '⚠️ Streak Alert!';
+          body = `You have ${overdueCount} overdue review${overdueCount > 1 ? 's' : ''} waiting. Don't let your streak break now!`;
+        }
+
+        // Send native notification
+        await nativeNotificationManager.scheduleReviewReminder(title, body, new Date());
+
+        console.log('Streak reminder sent successfully');
+      } else {
+        console.log(`Streak reminder skipped - user completed ${reviewsCompletedToday} reviews today`);
+      }
+    } catch (error) {
+      console.error('Failed to send streak reminder:', error);
+    }
+  }
+
   async updateSchedule() {
     // Reinitialize with new settings
     await this.initializeScheduler();
@@ -207,6 +282,11 @@ class NotificationScheduler {
     if (this.dailyReminderTimeout) {
       clearTimeout(this.dailyReminderTimeout);
       this.dailyReminderTimeout = null;
+    }
+    
+    if (this.streakReminderTimeout) {
+      clearTimeout(this.streakReminderTimeout);
+      this.streakReminderTimeout = null;
     }
     
     // Clear event timeouts
