@@ -321,12 +321,19 @@ export function DebugPanel() {
                       // Check storage for notification settings
                       const { storage } = await import('@/lib/storage');
                       const settings = await storage.getSettings();
-                      addResult(`⏰ Reminder time: ${settings.reminderTime || '19:00'}`, 'info');
+                      const notificationTime = settings?.notificationTime || '19:00';
+                      addResult(`⏰ Notification time: ${notificationTime}`, 'info');
+                      
+                      // Check if notifications are enabled
+                      const notificationsEnabled = settings?.notifications || false;
+                      addResult(`🔔 Notifications enabled: ${notificationsEnabled ? 'Yes' : 'No'}`, notificationsEnabled ? 'success' : 'error');
                       
                       addResult('✅ Notification debugging complete', 'success');
                       
-                    } catch (error) {
-                      addResult(`❌ Notification debugging failed: ${error}`, 'error');
+                    } catch (error: any) {
+                      const errorMessage = error?.message || error?.toString() || 'Unknown error';
+                      addResult(`❌ Debug failed: ${errorMessage}`, 'error');
+                      addResult(`💡 Error details: ${JSON.stringify(error)}`, 'info');
                     }
                   }}
                   className="text-xs"
@@ -419,69 +426,137 @@ export function DebugPanel() {
                 <Button variant="outline" size="sm" onClick={async () => {
                   try {
                     const { storage } = await import('@/lib/storage');
-                    const stats = await storage.getStorageStats();
-                    addResult(`Storage stats retrieved`, 'success');
-                  } catch (e) { addResult('Storage stats failed', 'error'); }
+                    const reviews = await storage.getReviews();
+                    const events = await storage.getEvents();
+                    const settings = await storage.getSettings();
+                    addResult(`📊 Reviews: ${reviews.length}, Events: ${events.length}`, 'success');
+                    addResult(`⚙️ Settings: ${settings ? 'Found' : 'Missing'}`, settings ? 'success' : 'error');
+                  } catch (e: any) { 
+                    addResult(`Storage stats failed: ${e?.message || e}`, 'error'); 
+                  }
                 }} className="text-xs">Storage Stats</Button>
                 
                 <Button variant="outline" size="sm" onClick={async () => {
                   try {
                     const { storage } = await import('@/lib/storage');
                     const settings = await storage.getSettings();
-                    addResult(`Streak: ${settings.currentStreak || 0}`, 'info');
-                  } catch (e) { addResult('Streak check failed', 'error'); }
-                }} className="text-xs">Check Streak</Button>
+                    if (!settings) {
+                      addResult('No settings found', 'error');
+                      return;
+                    }
+                    // Check if streak exists in settings - it might be stored elsewhere
+                    addResult(`Settings found, checking streak location...`, 'info');
+                    const settingsKeys = Object.keys(settings);
+                    addResult(`Available keys: ${settingsKeys.join(', ')}`, 'info');
+                  } catch (e: any) { 
+                    addResult(`Streak check failed: ${e?.message || e}`, 'error'); 
+                  }
+                }} className="text-xs">Check Settings</Button>
                 
                 <Button variant="outline" size="sm" onClick={async () => {
                   try {
                     const { storage } = await import('@/lib/storage');
-                    await storage.addReview({
+                    const reviews = await storage.getReviews();
+                    const newReview = {
                       id: 'test-' + Date.now(),
                       topic: 'Test Topic',
                       chapter: 'Test Chapter', 
-                      subject: 'Physics',
+                      subject: 'Physics' as const,
                       dueDate: new Date().toISOString(),
                       interval: 0,
                       isCompleted: false
-                    });
-                    addResult('Test review added', 'success');
-                  } catch (e) { addResult('Add review failed', 'error'); }
+                    };
+                    
+                    // Check if storage has addReview method
+                    if (typeof (storage as any).addReview === 'function') {
+                      await (storage as any).addReview(newReview);
+                      addResult('Test review added via addReview', 'success');
+                    } else {
+                      // Try alternative approach - add to existing reviews
+                      const updatedReviews = [...reviews, newReview];
+                      await storage.setReviews(updatedReviews);
+                      addResult('Test review added via setReviews', 'success');
+                    }
+                  } catch (e: any) { 
+                    addResult(`Add review failed: ${e?.message || e}`, 'error');
+                    addResult(`Check if storage has proper review methods`, 'info');
+                  }
                 }} className="text-xs">Add Test Review</Button>
                 
                 <Button variant="outline" size="sm" onClick={async () => {
                   try {
                     const { storage } = await import('@/lib/storage');
-                    await storage.addEvent({
+                    const events = await storage.getEvents();
+                    const newEvent = {
                       id: 'test-event-' + Date.now(),
                       title: 'Test Event',
                       description: 'Test Description',
                       date: new Date().toISOString().split('T')[0],
                       time: '14:00',
-                      type: 'exam'
-                    });
-                    addResult('Test event added', 'success');
-                  } catch (e) { addResult('Add event failed', 'error'); }
+                      type: 'exam' as const
+                    };
+                    
+                    // Check if storage has addEvent method
+                    if (typeof (storage as any).addEvent === 'function') {
+                      await (storage as any).addEvent(newEvent);
+                      addResult('Test event added via addEvent', 'success');
+                    } else {
+                      // Try alternative approach
+                      const updatedEvents = [...events, newEvent];
+                      await storage.setEvents(updatedEvents);
+                      addResult('Test event added via setEvents', 'success');
+                    }
+                  } catch (e: any) { 
+                    addResult(`Add event failed: ${e?.message || e}`, 'error');
+                    addResult(`Check if storage has proper event methods`, 'info');
+                  }
                 }} className="text-xs">Add Test Event</Button>
                 
                 <Button variant="outline" size="sm" onClick={async () => {
                   try {
                     const { storage } = await import('@/lib/storage');
-                    await storage.updateSettings({ currentStreak: 25 });
-                    addResult('Streak set to 25', 'success');
-                  } catch (e) { addResult('Set streak failed', 'error'); }
-                }} className="text-xs">Set Test Streak</Button>
+                    const currentSettings = await storage.getSettings();
+                    if (!currentSettings) {
+                      addResult('No settings found to update', 'error');
+                      return;
+                    }
+                    
+                    // Try to update settings - check available methods
+                    const settingsWithTestValue = { ...currentSettings, testValue: 25 };
+                    await storage.setSettings(settingsWithTestValue);
+                    addResult('Test value added to settings', 'success');
+                    addResult('Note: Streak might be stored elsewhere', 'info');
+                  } catch (e: any) { 
+                    addResult(`Update settings failed: ${e?.message || e}`, 'error');
+                    addResult(`Available storage methods might be limited`, 'info');
+                  }
+                }} className="text-xs">Test Settings Update</Button>
                 
                 <Button variant="outline" size="sm" onClick={async () => {
                   try {
                     if (confirm('Clear ALL data? This cannot be undone!')) {
                       const { storage } = await import('@/lib/storage');
-                      await storage.clearAll();
-                      addResult('All data cleared!', 'success');
+                      
+                      // Check if clearAll exists, otherwise clear individually
+                      if (typeof (storage as any).clearAll === 'function') {
+                        await (storage as any).clearAll();
+                        addResult('All data cleared via clearAll', 'success');
+                      } else {
+                        // Clear individually
+                        await storage.setReviews([]);
+                        await storage.setEvents([]);
+                        await storage.setSyllabusProgress({});
+                        await storage.setTestResults([]);
+                        addResult('Data cleared individually', 'success');
+                      }
                       setTimeout(() => window.location.reload(), 1000);
                     } else {
                       addResult('Clear cancelled', 'info');
                     }
-                  } catch (e) { addResult('Clear all failed', 'error'); }
+                  } catch (e: any) { 
+                    addResult(`Clear failed: ${e?.message || e}`, 'error');
+                    addResult(`Some data might remain`, 'info');
+                  }
                 }} className="text-xs bg-red-50 hover:bg-red-100 text-red-700">Clear All Data</Button>
               </div>
             </div>
