@@ -2,50 +2,113 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Bug, Smartphone, Database, Sparkles, Bell } from "lucide-react";
+import { Bug, Smartphone, Database, Sparkles, Bell, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { useState } from "react";
 
 export function DebugPanel() {
   const [expanded, setExpanded] = useState(false);
+  const [results, setResults] = useState<string[]>([]);
+  const [lastAction, setLastAction] = useState<string>('');
+
+  const addResult = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+    const timestamp = new Date().toLocaleTimeString();
+    const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+    setResults(prev => [`${icon} ${timestamp}: ${message}`, ...prev.slice(0, 4)]);
+    setLastAction(message);
+  };
 
   const handleTestConfetti = () => {
-    const event = new CustomEvent('triggerConfetti', { 
-      detail: { type: 'celebration', message: 'Debug test!' } 
-    });
-    window.dispatchEvent(event);
+    try {
+      const event = new CustomEvent('triggerConfetti', { 
+        detail: { type: 'celebration', message: 'Debug test!' } 
+      });
+      window.dispatchEvent(event);
+      addResult('Confetti triggered successfully!', 'success');
+    } catch (error) {
+      addResult('Failed to trigger confetti', 'error');
+    }
   };
 
   const handleDebugInfo = () => {
-    (window as any).debugInfo?.();
+    try {
+      const info = {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        buildType: import.meta.env.VITE_DEBUG_MODE === 'true' ? 'developer' : 'development',
+        environment: import.meta.env.DEV ? 'development' : 'production',
+        hasCapacitor: !!(window as any).Capacitor,
+        isNative: !!(window as any).Capacitor?.isNativePlatform?.(),
+      };
+      
+      addResult(`Platform: ${info.platform}`, 'info');
+      addResult(`Build: ${info.buildType}`, 'info');
+      addResult(`Native: ${info.isNative ? 'Yes' : 'No'}`, 'info');
+      addResult(`Capacitor: ${info.hasCapacitor ? 'Yes' : 'No'}`, 'info');
+    } catch (error) {
+      addResult('Failed to get platform info', 'error');
+    }
   };
 
   const handleDebugStorage = () => {
-    (window as any).debugStorage?.();
+    try {
+      const storageCount = Object.keys(localStorage).length;
+      const hasIndexedDB = !!window.indexedDB;
+      
+      addResult(`LocalStorage: ${storageCount} items`, 'info');
+      addResult(`IndexedDB: ${hasIndexedDB ? 'Available' : 'Not available'}`, 'info');
+      
+      // Show some key storage items
+      const importantKeys = ['reviews', 'settings', 'syllabus'].filter(key => localStorage.getItem(key));
+      if (importantKeys.length > 0) {
+        addResult(`Found: ${importantKeys.join(', ')}`, 'success');
+      }
+    } catch (error) {
+      addResult('Failed to check storage', 'error');
+    }
   };
 
   const handleTestNotifications = async () => {
     try {
-      // Try the new notification initializer first
+      addResult('Testing notifications...', 'info');
+      
+      // Check if we're on native platform first
+      const isNative = !!(window as any).Capacitor?.isNativePlatform?.();
+      
+      if (!isNative) {
+        addResult('Web platform - notifications limited', 'info');
+        return;
+      }
+      
       const { NotificationInitializer } = await import('@/lib/notification-init');
       const success = await NotificationInitializer.testNotification();
       
       if (success) {
-        console.log('🧪 Test notification scheduled - should appear in 3 seconds');
+        addResult('Test notification scheduled (3s)', 'success');
       } else {
-        // Fallback to old test method
-        await (window as any).testNotifications?.testBasicNotification?.();
-        console.log('🧪 Fallback test notification scheduled - should appear in 2 seconds');
+        addResult('Notification test failed', 'error');
       }
     } catch (error) {
-      console.error('❌ Failed to test notifications:', error);
+      addResult('Notification test error', 'error');
     }
   };
 
   const handleCheckPermissions = async () => {
     try {
-      await (window as any).testNotifications?.checkPermissions?.();
+      addResult('Checking permissions...', 'info');
+      
+      const isNative = !!(window as any).Capacitor?.isNativePlatform?.();
+      
+      if (!isNative) {
+        addResult('Web platform - limited permissions', 'info');
+        return;
+      }
+      
+      const { NotificationInitializer } = await import('@/lib/notification-init');
+      const status = await NotificationInitializer.getStatus();
+      
+      addResult(`Permissions: ${status ? 'Granted' : 'Denied'}`, status ? 'success' : 'error');
     } catch (error) {
-      console.error('❌ Failed to check permissions:', error);
+      addResult('Permission check failed', 'error');
     }
   };
 
@@ -133,7 +196,23 @@ export function DebugPanel() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => (window as any).testNotifications?.requestPermissions?.()}
+                  onClick={async () => {
+                    try {
+                      addResult('Requesting permissions...', 'info');
+                      const isNative = !!(window as any).Capacitor?.isNativePlatform?.();
+                      
+                      if (!isNative) {
+                        addResult('Web platform - limited permissions', 'info');
+                        return;
+                      }
+                      
+                      const { NotificationInitializer } = await import('@/lib/notification-init');
+                      const granted = await NotificationInitializer.requestPermissions();
+                      addResult(`Permissions: ${granted ? 'Granted' : 'Denied'}`, granted ? 'success' : 'error');
+                    } catch (error) {
+                      addResult('Permission request failed', 'error');
+                    }
+                  }}
                   className="text-xs"
                 >
                   Request Permissions
@@ -142,8 +221,14 @@ export function DebugPanel() {
                   variant="outline"
                   size="sm"
                   onClick={async () => {
-                    const { NotificationInitializer } = await import('@/lib/notification-init');
-                    await NotificationInitializer.getStatus();
+                    try {
+                      addResult('Getting full status...', 'info');
+                      const { NotificationInitializer } = await import('@/lib/notification-init');
+                      const status = await NotificationInitializer.getStatus();
+                      addResult('Status check completed', 'success');
+                    } catch (error) {
+                      addResult('Status check failed', 'error');
+                    }
                   }}
                   className="text-xs col-span-2"
                 >
@@ -152,12 +237,33 @@ export function DebugPanel() {
               </div>
             </div>
             
+            {results.length > 0 && (
+              <div className="space-y-1">
+                <p className="text-xs text-yellow-700 dark:text-yellow-300 font-medium">
+                  Results:
+                </p>
+                <div className="text-xs bg-black dark:bg-gray-900 text-green-400 p-2 rounded font-mono max-h-32 overflow-y-auto">
+                  {results.map((result, index) => (
+                    <div key={index} className="mb-1">
+                      {result}
+                    </div>
+                  ))}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setResults([])}
+                  className="text-xs w-full"
+                >
+                  Clear Results
+                </Button>
+              </div>
+            )}
+            
             <div className="text-xs text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900 p-2 rounded">
-              <strong>Console Functions:</strong><br />
-              • debugInfo() - Platform details<br />
-              • debugStorage() - Storage contents<br />
-              • testNotifications.* - Notification testing<br />
-              • testConfetti() - Trigger confetti
+              <strong>Mobile-Friendly Testing:</strong><br />
+              All results appear above instead of console.<br />
+              Tests work on both web and Android APK.
             </div>
           </div>
         </>
