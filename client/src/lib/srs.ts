@@ -33,7 +33,7 @@ export function createReview(
   }
   
   return {
-    id: `review-${topicId}-${Date.now()}`,
+    id: `review-${topicId}-${Math.floor(Math.random() * 1000000)}`,
     topicId,
     subject: subject as any,
     chapter,

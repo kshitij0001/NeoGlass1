@@ -215,8 +215,402 @@ export const createNotificationDebugFunctions = () => {
       } catch (error) {
         console.error('❌ Failed to cancel notifications:', error);
       }
+    },
+
+    // Test review reminder notification
+    testReviewReminder: async () => {
+      console.log('📚 Testing review reminder notification...');
+      
+      if (!Capacitor.isNativePlatform()) {
+        console.log('❌ Not on native platform');
+        return;
+      }
+
+      try {
+        const notificationId = Math.floor(Math.random() * 2147483647); // Java int max value
+        
+        const notification = {
+          title: '📚 Review Reminder Test',
+          body: 'You have 3 Physics topics due for review today. Keep your streak going!',
+          id: notificationId,
+          schedule: { 
+            at: new Date(Date.now() + 5000), // 5 seconds from now
+            allowWhileIdle: true
+          },
+          sound: 'default',
+          channelId: 'neet-reminders',
+          ongoing: false,
+          autoCancel: true,
+          extra: {
+            type: 'review-reminder'
+          }
+        };
+
+        console.log('📚 Review reminder payload:', notification);
+        
+        const result = await LocalNotifications.schedule({
+          notifications: [notification]
+        });
+        
+        console.log('✅ Review reminder scheduled successfully:', result);
+        console.log('📱 Check your notification shade in 5 seconds');
+        
+      } catch (error) {
+        console.error('❌ Review reminder failed:', error);
+      }
+    },
+
+    // Test daily reminder notification
+    testDailyReminder: async () => {
+      console.log('⏰ Testing daily reminder notification...');
+      
+      if (!Capacitor.isNativePlatform()) {
+        console.log('❌ Not on native platform');
+        return;
+      }
+
+      try {
+        const notificationId = Math.floor(Math.random() * 2147483647); // Java int max value
+        
+        const notification = {
+          title: '⏰ Daily Study Time!',
+          body: 'Time for your evening study session. You have 5 reviews due today!',
+          id: notificationId,
+          schedule: { 
+            at: new Date(Date.now() + 5000), // 5 seconds from now
+            allowWhileIdle: true
+          },
+          sound: 'default',
+          channelId: 'neet-reminders',
+          ongoing: false,
+          autoCancel: true,
+          extra: {
+            type: 'daily-reminder'
+          }
+        };
+
+        console.log('⏰ Daily reminder payload:', notification);
+        
+        const result = await LocalNotifications.schedule({
+          notifications: [notification]
+        });
+        
+        console.log('✅ Daily reminder scheduled successfully:', result);
+        console.log('📱 Check your notification shade in 5 seconds');
+        
+      } catch (error) {
+        console.error('❌ Daily reminder failed:', error);
+      }
+    },
+
+    // Test streak milestone notification
+    testStreakMilestone: async () => {
+      console.log('🏆 Testing streak milestone notification...');
+      
+      if (!Capacitor.isNativePlatform()) {
+        console.log('❌ Not on native platform');
+        return;
+      }
+
+      try {
+        const notificationId = Math.floor(Math.random() * 2147483647); // Java int max value
+        
+        const notification = {
+          title: '🏆 Streak Milestone!',
+          body: 'Congratulations! You reached a 30-day study streak. Keep it up!',
+          id: notificationId,
+          schedule: { 
+            at: new Date(Date.now() + 5000), // 5 seconds from now
+            allowWhileIdle: true
+          },
+          sound: 'default',
+          channelId: 'neet-reminders',
+          ongoing: false,
+          autoCancel: true,
+          extra: {
+            type: 'streak-milestone'
+          }
+        };
+
+        console.log('🏆 Streak milestone payload:', notification);
+        
+        const result = await LocalNotifications.schedule({
+          notifications: [notification]
+        });
+        
+        console.log('✅ Streak milestone scheduled successfully:', result);
+        console.log('📱 Check your notification shade in 5 seconds');
+        
+      } catch (error) {
+        console.error('❌ Streak milestone failed:', error);
+      }
+    },
+
+    // Test with actual data
+    testWithActualData: async () => {
+      console.log('📊 Testing notification with actual user data...');
+      
+      if (!Capacitor.isNativePlatform()) {
+        console.log('❌ Not on native platform');
+        return;
+      }
+
+      try {
+        // Import storage and get real data
+        const { storage } = await import('@/lib/storage');
+        const reviews = await storage.getReviews();
+        const settings = await storage.getSettings();
+        
+        console.log('📊 Loaded data:', { 
+          reviewCount: reviews.length, 
+          hasSettings: !!settings 
+        });
+
+        const overdueCount = reviews.filter(r => {
+          const dueDate = new Date(r.dueDate);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          return dueDate <= today && !r.isCompleted;
+        }).length;
+
+        const notificationId = Math.floor(Math.random() * 2147483647); // Java int max value
+        
+        const notification = {
+          title: '📊 Real Data Test',
+          body: `You have ${overdueCount} overdue reviews and ${reviews.length} total reviews in your study queue.`,
+          id: notificationId,
+          schedule: { 
+            at: new Date(Date.now() + 5000), // 5 seconds from now
+            allowWhileIdle: true
+          },
+          sound: 'default',
+          channelId: 'neet-reminders',
+          ongoing: false,
+          autoCancel: true,
+          extra: {
+            type: 'actual-data-test'
+          }
+        };
+
+        console.log('📊 Actual data payload:', notification);
+        
+        const result = await LocalNotifications.schedule({
+          notifications: [notification]
+        });
+        
+        console.log('✅ Actual data notification scheduled successfully:', result);
+        console.log('📱 Check your notification shade in 5 seconds');
+        
+      } catch (error) {
+        console.error('❌ Actual data test failed:', error);
+      }
+    },
+
+    // Test user configured time
+    testUserConfiguredTime: async () => {
+      console.log('⏰ Testing user configured time notification...');
+      
+      if (!Capacitor.isNativePlatform()) {
+        console.log('❌ Not on native platform');
+        return;
+      }
+
+      try {
+        // Get user's notification time preference
+        const { storage } = await import('@/lib/storage');
+        const settings = await storage.getSettings();
+        const userTime = settings?.notificationTime || '19:00';
+        
+        console.log('⏰ User configured time:', userTime);
+
+        const notificationId = Math.floor(Math.random() * 2147483647); // Java int max value
+        
+        const notification = {
+          title: '⏰ User Time Test',
+          body: `Your daily reminder is set for ${userTime}. This is a test of that notification time.`,
+          id: notificationId,
+          schedule: { 
+            at: new Date(Date.now() + 5000), // 5 seconds from now
+            allowWhileIdle: true
+          },
+          sound: 'default',
+          channelId: 'neet-reminders',
+          ongoing: false,
+          autoCancel: true,
+          extra: {
+            type: 'user-time-test'
+          }
+        };
+
+        console.log('⏰ User time payload:', notification);
+        
+        const result = await LocalNotifications.schedule({
+          notifications: [notification]
+        });
+        
+        console.log('✅ User time notification scheduled successfully:', result);
+        console.log('📱 Check your notification shade in 5 seconds');
+        
+      } catch (error) {
+        console.error('❌ User time test failed:', error);
+      }
+    },
+
+    // Test event notification
+    testEventNotification: async () => {
+      console.log('📅 Testing event notification...');
+      
+      if (!Capacitor.isNativePlatform()) {
+        console.log('❌ Not on native platform');
+        return;
+      }
+
+      try {
+        const notificationId = Math.floor(Math.random() * 2147483647); // Java int max value
+        
+        const notification = {
+          title: '📅 Event Reminder: Mock Test',
+          body: 'Exam scheduled for 14:00: NEET Practice Test - Physics & Chemistry. Location: Study Hall.',
+          id: notificationId,
+          schedule: { 
+            at: new Date(Date.now() + 5000), // 5 seconds from now
+            allowWhileIdle: true
+          },
+          sound: 'default',
+          channelId: 'neet-reminders',
+          ongoing: false,
+          autoCancel: true,
+          extra: {
+            type: 'event-reminder'
+          }
+        };
+
+        console.log('📅 Event notification payload:', notification);
+        
+        const result = await LocalNotifications.schedule({
+          notifications: [notification]
+        });
+        
+        console.log('✅ Event notification scheduled successfully:', result);
+        console.log('📱 Check your notification shade in 5 seconds');
+        
+      } catch (error) {
+        console.error('❌ Event notification failed:', error);
+      }
+    },
+
+    // Show comprehensive status
+    showStatus: async () => {
+      console.log('📋 COMPREHENSIVE NOTIFICATION STATUS:');
+      
+      try {
+        const platform = Capacitor.getPlatform();
+        const isNative = Capacitor.isNativePlatform();
+        
+        console.log('📱 Platform:', platform);
+        console.log('📱 Native:', isNative);
+        
+        if (!isNative) {
+          console.log('❌ Status: Not on native platform');
+          return;
+        }
+
+        // Check permissions
+        const permissions = await LocalNotifications.checkPermissions();
+        console.log('🔐 Permissions:', permissions);
+        
+        // Check pending notifications
+        const pending = await LocalNotifications.getPending();
+        console.log('📋 Pending notifications:', pending.notifications.length);
+        
+        if (pending.notifications.length > 0) {
+          console.log('📋 Pending details:', pending.notifications.map(n => ({
+            id: n.id,
+            title: n.title,
+            schedule: n.schedule
+          })));
+        }
+        
+        // Check settings
+        const { storage } = await import('@/lib/storage');
+        const settings = await storage.getSettings();
+        console.log('⚙️ User settings:', {
+          notifications: settings?.notifications,
+          notificationTime: settings?.notificationTime,
+          eventNotifications: settings?.eventNotifications
+        });
+        
+        console.log('✅ Status check complete');
+        
+      } catch (error) {
+        console.error('❌ Status check failed:', error);
+      }
     }
   };
+
+  // Add global personalized notification function
+  (window as any).sendPersonalizedNotificationNow = async () => {
+    console.log('👤 Sending personalized notification...');
+    
+    if (!Capacitor.isNativePlatform()) {
+      console.log('❌ Not on native platform');
+      return;
+    }
+
+    try {
+      // Get user data for personalization
+      const { storage } = await import('@/lib/storage');
+      const reviews = await storage.getReviews();
+      const settings = await storage.getSettings();
+      
+      const overdueCount = reviews.filter(r => {
+        const dueDate = new Date(r.dueDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return dueDate <= today && !r.isCompleted;
+      }).length;
+
+      const notificationId = Math.floor(Math.random() * 2147483647); // Java int max value
+      
+      let title = '👤 Personal Study Update';
+      let body = 'Time to check your study progress and continue your NEET preparation!';
+      
+      if (overdueCount > 0) {
+        title = '👤 Personal Reminder';
+        body = `Hi there! You have ${overdueCount} review${overdueCount > 1 ? 's' : ''} waiting. Let's get back on track with your NEET 2026 goal!`;
+      }
+      
+      const notification = {
+        title,
+        body,
+        id: notificationId,
+        schedule: { 
+          at: new Date(Date.now() + 3000), // 3 seconds from now
+          allowWhileIdle: true
+        },
+        sound: 'default',
+        channelId: 'neet-reminders',
+        ongoing: false,
+        autoCancel: true,
+        extra: {
+          type: 'personalized'
+        }
+      };
+
+      console.log('👤 Personalized notification payload:', notification);
+      
+      const result = await LocalNotifications.schedule({
+        notifications: [notification]
+      });
+      
+      console.log('✅ Personalized notification sent successfully:', result);
+      console.log('📱 Check your notification shade in 3 seconds');
+      
+    } catch (error) {
+      console.error('❌ Personalized notification failed:', error);
+    }
+  };
+};
 
   console.log('🔔 Notification test functions available:');
   console.log('  window.testNotifications.testBasicNotification() - Test immediate notification');
