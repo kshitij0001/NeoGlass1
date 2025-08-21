@@ -279,7 +279,7 @@ export function DebugPanel() {
                     try {
                       const testFunctions = (window as any).testNotifications;
                       if (testFunctions?.addTestEvent) {
-                        testFunctions.addTestEvent();
+                        await testFunctions.addTestEvent();
                         addResult('Test event added (triggers in 2 min)', 'success');
                       } else {
                         addResult('Add test event function not available', 'error');

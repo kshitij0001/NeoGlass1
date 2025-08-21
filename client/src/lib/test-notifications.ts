@@ -377,7 +377,7 @@ export const notificationDebugging = {
     }
   },
 
-  addTestEvent() {
+  async addTestEvent() {
     console.log('📅 Adding a test event in 2 minutes for notification testing...');
     
     const testEventTime = new Date();
@@ -386,20 +386,36 @@ export const notificationDebugging = {
     const timeString = testEventTime.toTimeString().slice(0, 5); // HH:MM format
     const dateString = testEventTime.toISOString().split('T')[0]; // YYYY-MM-DD format
     
-    console.log(`⏰ Test event will trigger notification at: ${timeString}`);
+    console.log(`⏰ Test event will trigger notification at: ${timeString} on ${dateString}`);
     
-    // Add event via store
-    import('@/store').then(({ useStore }) => {
+    try {
+      // Add event via store (properly awaited)
+      const { useStore } = await import('@/store');
       const store = useStore.getState();
-      store.addEvent({
+      
+      await store.addEvent({
         title: 'TEST Notification',
         type: 'exam' as const,
         description: 'Testing if notifications work',
         date: dateString,
         time: timeString
       });
-      console.log('📅 Test event added! Notification should appear in ~2 minutes.');
-      console.log('📅 Check the Calendar page to see the event, and watch for the notification!');
-    });
+      
+      console.log('📅 ✅ Test event added successfully!');
+      console.log('📅 📱 Check the Calendar page to see the event');
+      console.log('🔔 Notification will appear in ~2 minutes');
+      
+      // Also check if event notifications are enabled
+      const settings = await storage.getSettings();
+      if (!settings?.eventNotifications) {
+        console.warn('⚠️ Event notifications are DISABLED in settings!');
+        console.warn('🔧 Enable them in Settings > Notifications > Event Notifications');
+      } else {
+        console.log('✅ Event notifications are enabled in settings');
+      }
+      
+    } catch (error) {
+      console.error('❌ Failed to add test event:', error);
+    }
   }
 };

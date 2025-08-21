@@ -213,30 +213,38 @@ class NotificationScheduler {
       this.eventTimeouts = [];
 
       const events = await storage.getEvents();
-      const today = new Date().toISOString().split('T')[0];
+      const now = new Date();
+      const today = now.toISOString().split('T')[0];
       
-      // Find events for today
-      const todaysEvents = events.filter(event => event.date === today);
+      // Find events for today AND upcoming events (next 7 days)
+      const upcomingEvents = events.filter(event => {
+        const eventDateObj = new Date(event.date);
+        const todayObj = new Date(today);
+        const daysDiff = Math.ceil((eventDateObj.getTime() - todayObj.getTime()) / (1000 * 60 * 60 * 24));
+        return daysDiff >= 0 && daysDiff <= 7; // Today and next 7 days
+      });
       
-      if (todaysEvents.length === 0) {
-        console.log('📅 No events scheduled for today');
+      if (upcomingEvents.length === 0) {
+        console.log('📅 No events scheduled for the next 7 days');
         return;
       }
 
-      console.log(`📅 Found ${todaysEvents.length} events for today, scheduling notifications`);
+      console.log(`📅 Found ${upcomingEvents.length} upcoming events (${events.filter(e => e.date === today).length} today), scheduling notifications`);
 
-      // Schedule notifications for each event at its specific time
-      for (const event of todaysEvents) {
+      // Schedule notifications for each upcoming event
+      for (const event of upcomingEvents) {
         const eventTime = event.time || '09:00';
         const [hours, minutes] = eventTime.split(':').map(Number);
         
-        const eventDate = new Date();
+        // Create the full event date with time
+        const eventDate = new Date(event.date);
         eventDate.setHours(hours, minutes, 0, 0);
         
-        const timeUntilEvent = eventDate.getTime() - Date.now();
+        const timeUntilEvent = eventDate.getTime() - now.getTime();
         
         if (timeUntilEvent > 0) {
-          console.log(`📅 Scheduling notification for "${event.title}" at ${eventTime}`);
+          const isToday = event.date === today;
+          console.log(`📅 Scheduling notification for "${event.title}" at ${eventTime} on ${event.date} ${isToday ? '(today)' : '(upcoming)'}`);
           
           const timeoutId = setTimeout(async () => {
             await this.sendEventNotification(event);
@@ -244,7 +252,7 @@ class NotificationScheduler {
           
           this.eventTimeouts.push(timeoutId);
         } else {
-          console.log(`📅 Event "${event.title}" time has already passed today`);
+          console.log(`📅 Event "${event.title}" time has already passed (${event.date} ${eventTime})`);
         }
       }
       
