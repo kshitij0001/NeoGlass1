@@ -256,7 +256,7 @@ export async function setupPersonalizedNotifications(): Promise<void> {
   // Request permission if not already granted
   await nativeNotificationManager.requestPermissions();
   
-  // Schedule morning notification (6 AM daily) - only once per day
+  // Schedule morning notification (6 AM daily) using native Android notifications
   const scheduleMorningNotification = () => {
     const now = new Date();
     const morningTime = new Date();
@@ -268,37 +268,50 @@ export async function setupPersonalizedNotifications(): Promise<void> {
     }
     
     const targetDay = morningTime.toDateString();
-    const scheduledKey = `online-morning-scheduled-${targetDay}`;
+    const scheduledKey = `native-morning-scheduled-${targetDay}`;
     
     // Check if already scheduled for this day
     if (localStorage.getItem(scheduledKey)) {
-      console.log('Online morning notification already scheduled for', targetDay);
+      console.log('Native morning notification already scheduled for', targetDay);
       return;
     }
     
-    const timeToMorning = morningTime.getTime() - now.getTime();
+    // Use native notification scheduling for Android APK (works even when app is closed)
+    const message = getRandomMorningMessage();
+    nativeNotificationManager.scheduleReviewReminder(
+      'Good Morning! 🌅',
+      message,
+      morningTime
+    );
     
-    const timeoutId = setTimeout(() => {
-      sendMorningNotification();
-      // Clear the flag and schedule next day after a delay
-      localStorage.removeItem(scheduledKey);
-      localStorage.removeItem(setupKey); // Allow setup for next day
-    }, timeToMorning);
+    // Schedule for next 7 days as well
+    for (let i = 1; i <= 7; i++) {
+      const futureDate = new Date(morningTime);
+      futureDate.setDate(futureDate.getDate() + i);
+      
+      const futureMorningMessage = getRandomMorningMessage();
+      nativeNotificationManager.scheduleReviewReminder(
+        'Good Morning! 🌅',
+        futureMorningMessage,
+        futureDate
+      );
+    }
     
     // Mark as scheduled
     localStorage.setItem(scheduledKey, 'true');
-    console.log(`📅 Morning notification scheduled for ${morningTime.toLocaleString()}`);
+    console.log(`🐰 Native morning notifications scheduled starting ${morningTime.toLocaleString()}`);
+    console.log(`📱 Android will send "Good morning bunny" messages daily at 6:00 AM`);
   };
   
-  // Schedule random daytime notification (once daily between 9 AM - 6 PM)
+  // Schedule random daytime notification (once daily between 9 AM - 6 PM) using native scheduling
   const scheduleRandomNotification = () => {
     const now = new Date();
     const today = now.toDateString();
-    const scheduledKey = `online-random-scheduled-${today}`;
+    const scheduledKey = `native-random-scheduled-${today}`;
     
     // Check if already scheduled for today
     if (localStorage.getItem(scheduledKey)) {
-      console.log('Online random notification already scheduled for today');
+      console.log('Native random notification already scheduled for today');
       return;
     }
     
@@ -308,30 +321,33 @@ export async function setupPersonalizedNotifications(): Promise<void> {
     startTime.setHours(NOTIFICATION_CONFIG.RANDOM_TIME_RANGE.START.hours, NOTIFICATION_CONFIG.RANDOM_TIME_RANGE.START.minutes, 0, 0);
     endTime.setHours(NOTIFICATION_CONFIG.RANDOM_TIME_RANGE.END.hours, NOTIFICATION_CONFIG.RANDOM_TIME_RANGE.END.minutes, 0, 0);
     
-    // If end time has passed today, don't schedule for today
+    // If end time has passed today, schedule for tomorrow
     if (endTime <= now) {
-      console.log('Random notification time window has passed for today');
-      return;
+      console.log('Random notification time window has passed for today, scheduling for tomorrow');
+      startTime.setDate(startTime.getDate() + 1);
+      endTime.setDate(endTime.getDate() + 1);
     }
     
-    // If start time hasn't come yet, schedule from now
-    if (startTime <= now) {
-      startTime.setTime(now.getTime());
+    // If start time hasn't come yet today, use it
+    if (startTime <= now && endTime > now) {
+      startTime.setTime(now.getTime() + (10 * 60 * 1000)); // 10 minutes from now
     }
     
     // Generate random time between start and end
     const randomTime = new Date(startTime.getTime() + Math.random() * (endTime.getTime() - startTime.getTime()));
-    const timeToRandom = randomTime.getTime() - now.getTime();
     
-    const timeoutId = setTimeout(() => {
-      sendRandomDaytimeNotification();
-      // Mark as sent for today
-      localStorage.setItem(scheduledKey, 'sent');
-    }, timeToRandom);
+    // Use native notification scheduling for Android APK
+    const message = getRandomDaytimeMessage();
+    nativeNotificationManager.scheduleReviewReminder(
+      'NEET Study Companion 🐰',
+      message,
+      randomTime
+    );
     
     // Mark as scheduled for today
     localStorage.setItem(scheduledKey, 'true');
-    console.log(`📅 Random notification scheduled for ${randomTime.toLocaleString()}`);
+    console.log(`🐰 Native random notification scheduled for ${randomTime.toLocaleString()}`);
+    console.log(`📱 Android will send motivational "bunny" message today`);
   };
   
   // Start both scheduling processes only once per day
