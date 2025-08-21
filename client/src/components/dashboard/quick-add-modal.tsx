@@ -124,8 +124,11 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
   };
 
   const handleClose = () => {
-    resetForm();
-    onClose();
+    // Add small delay to prevent screen flicker
+    setTimeout(() => {
+      resetForm();
+      onClose();
+    }, 50);
   };
 
   const handleSubjectChange = (value: string) => {
@@ -328,7 +331,7 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
             <div className="flex space-x-2">
               <Button
                 variant={difficulty === "Easy" ? "default" : "outline"}
-                className={`flex-1 neobrutalist-btn ${difficulty === "Easy" ? "bg-green-500 text-white border-green-600" : "bg-white dark:bg-gray-100 text-brutal-black border-gray-300"} font-bold border-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)]`}
+                className={`flex-1 neobrutalist-btn transition-all duration-150 ${difficulty === "Easy" ? "bg-green-500 text-white border-green-600" : "bg-white dark:bg-gray-100 text-brutal-black border-gray-300"} font-bold border-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.25)] hover:-translate-y-1 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.25)] active:translate-y-1`}
                 onClick={() => setDifficulty("Easy")}
                 data-testid="difficulty-easy"
               >
@@ -336,7 +339,7 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
               </Button>
               <Button
                 variant={difficulty === "Medium" ? "default" : "outline"}
-                className={`flex-1 neobrutalist-btn ${difficulty === "Medium" ? "bg-yellow-500 text-brutal-black border-yellow-600" : "bg-white dark:bg-gray-100 text-brutal-black border-gray-300"} font-bold border-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)]`}
+                className={`flex-1 neobrutalist-btn transition-all duration-150 ${difficulty === "Medium" ? "bg-yellow-500 text-brutal-black border-yellow-600" : "bg-white dark:bg-gray-100 text-brutal-black border-gray-300"} font-bold border-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.25)] hover:-translate-y-1 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.25)] active:translate-y-1`}
                 onClick={() => setDifficulty("Medium")}
                 data-testid="difficulty-medium"
               >
@@ -344,7 +347,7 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
               </Button>
               <Button
                 variant={difficulty === "Hard" ? "default" : "outline"}
-                className={`flex-1 neobrutalist-btn ${difficulty === "Hard" ? "bg-red-500 text-white border-red-600" : "bg-white dark:bg-gray-100 text-brutal-black border-gray-300"} font-bold border-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)]`}
+                className={`flex-1 neobrutalist-btn transition-all duration-150 ${difficulty === "Hard" ? "bg-red-500 text-white border-red-600" : "bg-white dark:bg-gray-100 text-brutal-black border-gray-300"} font-bold border-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.25)] hover:-translate-y-1 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.25)] active:translate-y-1`}
                 onClick={() => setDifficulty("Hard")}
                 data-testid="difficulty-hard"
               >
@@ -354,7 +357,7 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
           </div>
 
           <Button
-            className="w-full neobrutalist-btn bg-mustard hover:bg-mustard/90 p-4 rounded-xl font-black text-brutal-black text-lg"
+            className="w-full neobrutalist-btn bg-mustard p-4 rounded-xl font-black text-brutal-black text-lg transition-all duration-150 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.25)] hover:-translate-y-1 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.25)] active:translate-y-1 disabled:opacity-50 disabled:hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)] disabled:hover:translate-y-0"
             onClick={handleSubmit}
             disabled={
               !selectedSubject || 
