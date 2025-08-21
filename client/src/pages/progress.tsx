@@ -2,7 +2,7 @@ import { StickyMotivationBar } from "@/components/layout/sticky-motivation-bar";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Calendar, Target, TrendingUp, Download, BookOpen } from "lucide-react";
+import { Calendar, Target, TrendingUp, Download, BookOpen, GraduationCap, Clock, CheckCircle } from "lucide-react";
 import { useStore } from "@/store";
 import { format, addDays, startOfWeek, eachDayOfInterval } from "date-fns";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
@@ -449,27 +449,36 @@ export default function ProgressPage() {
                   <BookOpen className="h-4 w-4 mr-2" />
                   Total Reviews Completed
                 </span>
-                <Badge className="bg-mustard text-[#383f4b]">
+                <span className="text-lg font-black text-brutal-black dark:text-white">
                   {reviews.filter(r => r.lastReviewed).length}
-                </Badge>
+                </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="font-bold text-brutal-black dark:text-white">Total Test Sessions</span>
-                <Badge className="bg-electric-blue text-[#383f4b]">
+                <span className="font-bold text-brutal-black dark:text-white flex items-center">
+                  <GraduationCap className="h-4 w-4 mr-2" />
+                  Total Test Sessions
+                </span>
+                <span className="text-lg font-black text-brutal-black dark:text-white">
                   {tests.length}
-                </Badge>
+                </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="font-bold text-brutal-black dark:text-white">Topics in Progress</span>
-                <Badge className="bg-soft-pink text-brutal-black">
+                <span className="font-bold text-brutal-black dark:text-white flex items-center">
+                  <Clock className="h-4 w-4 mr-2" />
+                  Topics in Progress
+                </span>
+                <span className="text-lg font-black text-brutal-black dark:text-white">
                   {overallProgress.inProgress}
-                </Badge>
+                </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="font-bold text-brutal-black dark:text-white">Topics Completed</span>
-                <Badge className="bg-mint-green text-brutal-black">
+                <span className="font-bold text-brutal-black dark:text-white flex items-center">
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Topics Completed
+                </span>
+                <span className="text-lg font-black text-brutal-black dark:text-white">
                   {overallProgress.completed}
-                </Badge>
+                </span>
               </div>
             </div>
           </Card>
