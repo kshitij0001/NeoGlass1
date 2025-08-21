@@ -2,112 +2,254 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Bug, Smartphone, Database, Sparkles, Bell, CheckCircle, XCircle, AlertCircle } from "lucide-react";
-import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Bug, Smartphone, Database, Bell, Clock, Calendar, Play, Trash2, RefreshCw, Copy, Terminal } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export function DebugPanel() {
   const [expanded, setExpanded] = useState(false);
   const [results, setResults] = useState<string[]>([]);
-  const [lastAction, setLastAction] = useState<string>('');
+  const [consoleOutput, setConsoleOutput] = useState<string[]>([]);
+  const [mockDate, setMockDate] = useState<string>('');
+  const [mockTime, setMockTime] = useState<string>('');
 
   const addResult = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
     const timestamp = new Date().toLocaleTimeString();
     const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
-    setResults(prev => [`${icon} ${timestamp}: ${message}`, ...prev.slice(0, 4)]);
-    setLastAction(message);
+    setResults(prev => [`${icon} ${timestamp}: ${message}`, ...prev.slice(0, 9)]);
   };
 
-  const handleTestConfetti = async () => {
+  // Initialize console capture on mount
+  useEffect(() => {
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+    
+    console.log = (...args: any[]) => {
+      const message = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)).join(' ');
+      setConsoleOutput(prev => [...prev, `📋 ${new Date().toLocaleTimeString()}: ${message}`].slice(-20));
+      originalLog.apply(console, args);
+    };
+    
+    console.error = (...args: any[]) => {
+      const message = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)).join(' ');
+      setConsoleOutput(prev => [...prev, `❌ ${new Date().toLocaleTimeString()}: ${message}`].slice(-20));
+      originalError.apply(console, args);
+    };
+    
+    console.warn = (...args: any[]) => {
+      const message = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)).join(' ');
+      setConsoleOutput(prev => [...prev, `⚠️ ${new Date().toLocaleTimeString()}: ${message}`].slice(-20));
+      originalWarn.apply(console, args);
+    };
+
+    return () => {
+      console.log = originalLog;
+      console.error = originalError;
+      console.warn = originalWarn;
+    };
+  }, []);
+
+  const copyConsoleOutput = () => {
+    const output = consoleOutput.join('\n');
+    navigator.clipboard?.writeText(output).then(() => {
+      addResult('Console output copied to clipboard', 'success');
+    }).catch(() => {
+      addResult('Failed to copy console output', 'error');
+    });
+  };
+
+  const setMockDateTime = () => {
+    if (!mockDate || !mockTime) {
+      addResult('Please set both date and time', 'error');
+      return;
+    }
+
     try {
-      // Import confetti directly to ensure it works
-      const { testConfetti } = await import('@/lib/confetti');
-      testConfetti();
-      addResult('Confetti triggered directly!', 'success');
+      const mockDateTime = new Date(`${mockDate}T${mockTime}`);
+      (window as any).__MOCK_DATE__ = mockDateTime;
+      
+      // Override Date constructor
+      const OriginalDate = Date;
+      (window as any).Date = function(...args: any[]) {
+        if (args.length === 0) {
+          return new OriginalDate((window as any).__MOCK_DATE__);
+        }
+        return new OriginalDate(...args);
+      };
+      Object.setPrototypeOf((window as any).Date, OriginalDate);
+      Object.defineProperty((window as any).Date, 'now', {
+        value: () => (window as any).__MOCK_DATE__.getTime()
+      });
+
+      addResult(`Mock date/time set to ${mockDateTime.toLocaleString()}`, 'success');
     } catch (error) {
-      addResult('Failed to trigger confetti', 'error');
+      addResult('Invalid date/time format', 'error');
     }
   };
 
-  const handleDebugInfo = () => {
+  const resetMockDateTime = () => {
+    delete (window as any).__MOCK_DATE__;
+    (window as any).Date = Date;
+    setMockDate('');
+    setMockTime('');
+    addResult('Mock date/time reset to system time', 'success');
+  };
+
+  // Core debug functions
+  const handlePlatformInfo = () => {
     try {
       const info = {
         userAgent: navigator.userAgent,
         platform: navigator.platform,
-        buildType: import.meta.env.VITE_DEBUG_MODE === 'true' ? 'developer' : 'development',
-        environment: import.meta.env.DEV ? 'development' : 'production',
-        hasCapacitor: !!(window as any).Capacitor,
         isNative: !!(window as any).Capacitor?.isNativePlatform?.(),
+        hasCapacitor: !!(window as any).Capacitor,
+        hasLocalNotifications: !!(window as any).Capacitor?.Plugins?.LocalNotifications,
+        buildType: import.meta.env.VITE_DEBUG_MODE === 'true' ? 'Developer' : 'Development'
       };
       
-      addResult(`Platform: ${info.platform}`, 'info');
-      addResult(`Build: ${info.buildType}`, 'info');
-      addResult(`Native: ${info.isNative ? 'Yes' : 'No'}`, 'info');
-      addResult(`Capacitor: ${info.hasCapacitor ? 'Yes' : 'No'}`, 'info');
+      console.log('🔍 PLATFORM INFO:', info);
+      addResult(`Platform: ${info.isNative ? 'Android' : 'Web'}`, 'info');
+      addResult(`Capacitor: ${info.hasCapacitor ? 'Yes' : 'No'}`, info.hasCapacitor ? 'success' : 'error');
+      addResult(`LocalNotifications: ${info.hasLocalNotifications ? 'Yes' : 'No'}`, info.hasLocalNotifications ? 'success' : 'error');
     } catch (error) {
+      console.error('❌ Platform info failed:', error);
       addResult('Failed to get platform info', 'error');
     }
   };
 
-  const handleDebugStorage = () => {
+  const handleStorageInfo = async () => {
     try {
-      const storageCount = Object.keys(localStorage).length;
-      const hasIndexedDB = !!window.indexedDB;
+      const { storage } = await import('@/lib/storage');
+      const settings = await storage.getSettings();
+      const events = await storage.getEvents();
+      const reviews = await storage.getReviews();
       
-      addResult(`LocalStorage: ${storageCount} items`, 'info');
-      addResult(`IndexedDB: ${hasIndexedDB ? 'Available' : 'Not available'}`, 'info');
+      console.log('💾 STORAGE INFO:', {
+        settings: settings,
+        eventsCount: events.length,
+        reviewsCount: reviews.length,
+        localStorage: Object.keys(localStorage).length
+      });
       
-      // Show some key storage items
-      const importantKeys = ['reviews', 'settings', 'syllabus'].filter(key => localStorage.getItem(key));
-      if (importantKeys.length > 0) {
-        addResult(`Found: ${importantKeys.join(', ')}`, 'success');
-      }
+      addResult(`Events: ${events.length}`, 'info');
+      addResult(`Reviews: ${reviews.length}`, 'info');  
+      addResult(`Notifications: ${settings.notifications ? 'ON' : 'OFF'}`, settings.notifications ? 'success' : 'error');
+      addResult(`Event Notifications: ${settings.eventNotifications ? 'ON' : 'OFF'}`, settings.eventNotifications ? 'success' : 'error');
     } catch (error) {
+      console.error('❌ Storage check failed:', error);
       addResult('Failed to check storage', 'error');
     }
   };
 
-  const handleTestNotifications = async () => {
+  const handleNotificationStatus = async () => {
     try {
-      addResult('Testing notifications...', 'info');
+      console.log('🔔 CHECKING NOTIFICATION STATUS...');
       
-      // Check if we're on native platform first
       const isNative = !!(window as any).Capacitor?.isNativePlatform?.();
+      console.log('📱 Platform check:', isNative ? 'Android Native' : 'Web Browser');
       
       if (!isNative) {
-        addResult('Web platform - notifications limited', 'info');
+        addResult('❌ Only works in Android APK', 'error');
         return;
       }
       
-      const { NotificationInitializer } = await import('@/lib/notification-init');
-      const success = await NotificationInitializer.testNotification();
+      // Check permissions
+      const { LocalNotifications } = (window as any).Capacitor.Plugins;
+      const permResult = await LocalNotifications.checkPermissions();
+      console.log('🔐 Permissions:', permResult);
+      addResult(`Permissions: ${permResult.display}`, permResult.display === 'granted' ? 'success' : 'error');
       
-      if (success) {
-        addResult('Test notification scheduled (3s)', 'success');
-      } else {
-        addResult('Notification test failed', 'error');
-      }
+      // Check pending notifications
+      const pending = await LocalNotifications.getPending();
+      console.log('📋 Pending notifications:', pending.notifications.length);
+      addResult(`Pending: ${pending.notifications.length}`, 'info');
+      
+      // Check test functions
+      const testFunctions = (window as any).testNotifications;
+      console.log('🧪 Test functions available:', !!testFunctions);
+      addResult(`Test functions: ${testFunctions ? 'Available' : 'Missing'}`, testFunctions ? 'success' : 'error');
+      
     } catch (error) {
-      addResult('Notification test error', 'error');
+      console.error('❌ Status check failed:', error);
+      addResult('Status check failed', 'error');
     }
   };
 
-  const handleCheckPermissions = async () => {
+  const handleTestBasicNotification = async () => {
     try {
-      addResult('Checking permissions...', 'info');
+      console.log('🧪 TESTING BASIC NOTIFICATION...');
       
-      const isNative = !!(window as any).Capacitor?.isNativePlatform?.();
-      
-      if (!isNative) {
-        addResult('Web platform - limited permissions', 'info');
+      const testFunctions = (window as any).testNotifications;
+      if (!testFunctions?.testBasicNotification) {
+        addResult('❌ Test function not available', 'error');
         return;
       }
       
-      const { NotificationInitializer } = await import('@/lib/notification-init');
-      const status = await NotificationInitializer.getStatus();
+      await testFunctions.testBasicNotification();
+      addResult('✅ Basic notification test triggered', 'success');
       
-      addResult(`Permissions: ${status ? 'Granted' : 'Denied'}`, status ? 'success' : 'error');
     } catch (error) {
-      addResult('Permission check failed', 'error');
+      console.error('❌ Basic notification test failed:', error);
+      addResult('Basic notification test failed', 'error');
+    }
+  };
+
+  const handleQuickEventTest = async () => {
+    try {
+      console.log('📅 QUICK EVENT TEST...');
+      
+      if (typeof (window as any).quickEventTest === 'function') {
+        await (window as any).quickEventTest();
+        addResult('✅ Quick event test completed', 'success');
+      } else {
+        // Fallback - create test event manually
+        const { storage } = await import('@/lib/storage');
+        const { notificationScheduler } = await import('@/lib/notification-scheduler');
+        
+        const testTime = new Date();
+        testTime.setMinutes(testTime.getMinutes() + 1);
+        
+        const testEvent = {
+          id: 'debug-test-' + Date.now(),
+          title: 'Debug Test Event',
+          description: 'Testing event notifications from debug panel',
+          date: testTime.toISOString().split('T')[0],
+          time: `${testTime.getHours().toString().padStart(2, '0')}:${testTime.getMinutes().toString().padStart(2, '0')}`,
+          type: 'exam' as const,
+          createdAt: new Date().toISOString()
+        };
+
+        const currentEvents = await storage.getEvents();
+        await storage.saveEvents([...currentEvents, testEvent]);
+        await notificationScheduler.scheduleEventNotifications();
+        
+        console.log('📅 Test event created:', testEvent);
+        addResult('✅ Test event created for 1 minute', 'success');
+      }
+    } catch (error) {
+      console.error('❌ Quick event test failed:', error);
+      addResult('Quick event test failed', 'error');
+    }
+  };
+
+  const handleClearAllNotifications = async () => {
+    try {
+      const isNative = !!(window as any).Capacitor?.isNativePlatform?.();
+      if (!isNative) {
+        addResult('❌ Only works in Android APK', 'error');
+        return;
+      }
+      
+      const { LocalNotifications } = (window as any).Capacitor.Plugins;
+      await LocalNotifications.cancel({ notifications: [] });
+      
+      console.log('🧹 All notifications cleared');
+      addResult('✅ All notifications cleared', 'success');
+    } catch (error) {
+      console.error('❌ Failed to clear notifications:', error);
+      addResult('Failed to clear notifications', 'error');
     }
   };
 
@@ -137,801 +279,157 @@ export function DebugPanel() {
         <>
           <Separator className="my-3 bg-yellow-200 dark:bg-yellow-800" />
           
-          <div className="space-y-3">
+          {/* Mock Date/Time Controls */}
+          <div className="space-y-2 p-3 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800 mb-3">
+            <div className="flex items-center gap-2 mb-2">
+              <Clock className="h-4 w-4 text-blue-600" />
+              <span className="font-medium text-blue-800 dark:text-blue-200 text-sm">Mock Date/Time</span>
+            </div>
             <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-xs">Date</Label>
+                <Input
+                  type="date"
+                  value={mockDate}
+                  onChange={(e) => setMockDate(e.target.value)}
+                  className="h-8 text-xs"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Time</Label>
+                <Input
+                  type="time"
+                  value={mockTime}
+                  onChange={(e) => setMockTime(e.target.value)}
+                  className="h-8 text-xs"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={handleDebugInfo}
-                className="flex items-center gap-2 text-xs"
+                onClick={setMockDateTime}
+                className="flex-1 text-xs"
               >
-                <Smartphone className="h-3 w-3" />
-                Platform Info
+                <Clock className="h-3 w-3 mr-1" />
+                Set Mock Time
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={handleDebugStorage}
-                className="flex items-center gap-2 text-xs"
+                onClick={resetMockDateTime}
+                className="flex-1 text-xs"
               >
-                <Database className="h-3 w-3" />
-                Storage Info
+                <RefreshCw className="h-3 w-3 mr-1" />
+                Reset
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleTestConfetti}
-                className="flex items-center gap-2 text-xs"
-              >
-                <Sparkles className="h-3 w-3" />
-                Test Confetti
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleTestNotifications}
-                className="flex items-center gap-2 text-xs"
-              >
-                <Bell className="h-3 w-3" />
-                Test Notification
-              </Button>
-            </div>
-            
-            <Separator className="bg-yellow-200 dark:bg-yellow-800" />
-            
-            <div className="space-y-2">
-              <p className="text-xs text-yellow-700 dark:text-yellow-300 font-medium">
-                Additional Console Functions:
-              </p>
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={async () => {
-                    try {
-                      const { testAllClearConfetti } = await import('@/lib/confetti');
-                      testAllClearConfetti();
-                      addResult('All Clear confetti triggered!', 'success');
-                    } catch (error) {
-                      addResult('All Clear confetti failed', 'error');
-                    }
-                  }}
-                  className="text-xs"
-                >
-                  All Clear Confetti
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={async () => {
-                    try {
-                      const { populateTestData } = await import('@/lib/test-data');
-                      await populateTestData();
-                      addResult('Test data populated!', 'success');
-                    } catch (error) {
-                      addResult('Test data population failed', 'error');
-                    }
-                  }}
-                  className="text-xs"
-                >
-                  Populate Test Data
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={async () => {
-                    try {
-                      const { clearTestData } = await import('@/lib/test-data');
-                      await clearTestData();
-                      addResult('Test data cleared!', 'success');
-                    } catch (error) {
-                      addResult('Test data clearing failed', 'error');
-                    }
-                  }}
-                  className="text-xs"
-                >
-                  Clear Test Data
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={async () => {
-                    try {
-                      const testFunctions = (window as any).testNotifications;
-                      if (testFunctions?.getPendingNotifications) {
-                        await testFunctions.getPendingNotifications();
-                        addResult('Pending notifications listed', 'success');
-                      } else {
-                        addResult('Pending function not available', 'error');
-                      }
-                    } catch (error) {
-                      addResult('Pending check failed', 'error');
-                    }
-                  }}
-                  className="text-xs"
-                >
-                  Get Pending
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={async () => {
-                    try {
-                      const testFunctions = (window as any).testNotifications;
-                      if (testFunctions?.cancelAll) {
-                        await testFunctions.cancelAll();
-                        addResult('All notifications cancelled', 'success');
-                      } else {
-                        addResult('Cancel function not available', 'error');
-                      }
-                    } catch (error) {
-                      addResult('Cancel all failed', 'error');
-                    }
-                  }}
-                  className="text-xs"
-                >
-                  Cancel All
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={async () => {
-                    try {
-                      const testFunctions = (window as any).testNotifications;
-                      if (testFunctions?.addTestEvent) {
-                        await testFunctions.addTestEvent();
-                        addResult('Test event added (triggers in 2 min)', 'success');
-                      } else {
-                        addResult('Add test event function not available', 'error');
-                      }
-                    } catch (error) {
-                      addResult('Add test event failed', 'error');
-                    }
-                  }}
-                  className="text-xs"
-                >
-                  Add Test Event
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={async () => {
-                    try {
-                      // Capture console output for detailed debugging
-                      const originalLog = console.log;
-                      const originalError = console.error;
-                      const originalWarn = console.warn;
-                      
-                      const logs: string[] = [];
-                      const captureLogs = (...args: any[]) => {
-                        logs.push(args.join(' '));
-                        originalLog.apply(console, args);
-                      };
-                      const captureErrors = (...args: any[]) => {
-                        logs.push(`❌ ${args.join(' ')}`);
-                        originalError.apply(console, args);
-                      };
-                      const captureWarns = (...args: any[]) => {
-                        logs.push(`⚠️ ${args.join(' ')}`);
-                        originalWarn.apply(console, args);
-                      };
-                      
-                      console.log = captureLogs;
-                      console.error = captureErrors;
-                      console.warn = captureWarns;
-                      
-                      try {
-                        addResult('🧪 Starting detailed notification test...', 'info');
-                        
-                        const testFunctions = (window as any).testNotifications;
-                        if (testFunctions?.testBasicNotification) {
-                          await testFunctions.testBasicNotification();
-                          
-                          // Add captured logs to results
-                          logs.forEach(log => {
-                            if (log.includes('❌') || log.includes('failed') || log.includes('Failed')) {
-                              addResult(log, 'error');
-                            } else if (log.includes('✅') || log.includes('SUCCESS') || log.includes('scheduled')) {
-                              addResult(log, 'success');
-                            } else if (log.includes('⚠️') || log.includes('warn')) {
-                              addResult(log, 'info');  
-                            } else if (log.includes('STEP') || log.includes('📱')) {
-                              addResult(log, 'info');
-                            }
-                          });
-                          
-                          addResult('📱 Check your notification shade!', 'success');
-                        } else {
-                          addResult('❌ Test functions not available', 'error');
-                        }
-                      } finally {
-                        // Restore original console methods
-                        console.log = originalLog;
-                        console.error = originalError;
-                        console.warn = originalWarn;
-                      }
-                    } catch (error: any) {
-                      addResult(`❌ Test failed: ${error?.message || error}`, 'error');
-                    }
-                  }}
-                  className="text-xs"
-                >
-                  Detailed Test
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={async () => {
-                    try {
-                      // Import notification debugging and run comprehensive check
-                      const { NotificationInitializer } = await import('@/lib/notification-init');
-                      
-                      addResult('🔔 Running notification debugging...', 'info');
-                      
-                      // Check platform
-                      const isNative = (window as any).Capacitor?.isNativePlatform?.();
-                      addResult(`📱 Platform: ${isNative ? 'Native' : 'Web'}`, 'info');
-                      
-                      // Check permissions
-                      const status = await NotificationInitializer.getStatus();
-                      addResult(`🔐 Permissions: ${status ? 'Granted' : 'Denied'}`, status ? 'success' : 'error');
-                      
-                      // Check notification functions
-                      const testFns = (window as any).testNotifications;
-                      addResult(`🧪 Test functions: ${testFns ? 'Available' : 'Missing'}`, testFns ? 'success' : 'error');
-                      
-                      // Check if notifications are properly initialized
-                      const hasLocalNotifications = !!(window as any).Capacitor?.Plugins?.LocalNotifications;
-                      addResult(`📲 Local notifications: ${hasLocalNotifications ? 'Available' : 'Not available'}`, hasLocalNotifications ? 'success' : 'info');
-                      
-                      // Check storage for notification settings
-                      const { storage } = await import('@/lib/storage');
-                      const settings = await storage.getSettings();
-                      const notificationTime = settings?.notificationTime || '19:00';
-                      addResult(`⏰ Notification time: ${notificationTime}`, 'info');
-                      
-                      // Check if notifications are enabled
-                      const notificationsEnabled = settings?.notifications || false;
-                      addResult(`🔔 Notifications enabled: ${notificationsEnabled ? 'Yes' : 'No'}`, notificationsEnabled ? 'success' : 'error');
-                      
-                      addResult('✅ Notification debugging complete', 'success');
-                      
-                    } catch (error: any) {
-                      const errorMessage = error?.message || error?.toString() || 'Unknown error';
-                      addResult(`❌ Debug failed: ${errorMessage}`, 'error');
-                      addResult(`💡 Error details: ${JSON.stringify(error)}`, 'info');
-                    }
-                  }}
-                  className="text-xs"
-                >
-                  Notification Debug
-                </Button>
-              </div>
-            </div>
-            
-            <Separator className="bg-yellow-200 dark:bg-yellow-800" />
-            
-            <div className="space-y-2">
-              <p className="text-xs text-yellow-700 dark:text-yellow-300 font-medium">
-                Advanced Notification Tests:
-              </p>
-              <div className="grid grid-cols-2 gap-1">
-                <Button variant="outline" size="sm" onClick={async () => {
-                  const logs: string[] = [];
-                  const originalLog = console.log;
-                  const originalError = console.error;
-                  const originalWarn = console.warn;
-                  
-                  console.log = (...args: any[]) => { logs.push(args.join(' ')); originalLog.apply(console, args); };
-                  console.error = (...args: any[]) => { logs.push(`❌ ${args.join(' ')}`); originalError.apply(console, args); };
-                  console.warn = (...args: any[]) => { logs.push(`⚠️ ${args.join(' ')}`); originalWarn.apply(console, args); };
-                  
-                  try {
-                    addResult('🔄 Testing review reminder...', 'info');
-                    const fn = (window as any).testNotifications?.testReviewReminder;
-                    if (fn) { 
-                      await fn(); 
-                      logs.forEach(log => {
-                        if (log.includes('❌') || log.includes('failed')) addResult(log, 'error');
-                        else if (log.includes('✅') || log.includes('scheduled')) addResult(log, 'success');
-                        else addResult(log, 'info');
-                      });
-                      addResult('📱 Review reminder test completed', 'success'); 
-                    } else { 
-                      addResult('❌ Review reminder function not available', 'error'); 
-                    }
-                  } catch (e: any) { 
-                    addResult(`❌ Review reminder failed: ${e?.message || e}`, 'error'); 
-                  } finally {
-                    console.log = originalLog; console.error = originalError; console.warn = originalWarn;
-                  }
-                }} className="text-xs">Review Reminder</Button>
-                
-                <Button variant="outline" size="sm" onClick={async () => {
-                  const logs: string[] = [];
-                  const originalLog = console.log;
-                  const originalError = console.error;
-                  const originalWarn = console.warn;
-                  
-                  console.log = (...args: any[]) => { logs.push(args.join(' ')); originalLog.apply(console, args); };
-                  console.error = (...args: any[]) => { logs.push(`❌ ${args.join(' ')}`); originalError.apply(console, args); };
-                  console.warn = (...args: any[]) => { logs.push(`⚠️ ${args.join(' ')}`); originalWarn.apply(console, args); };
-                  
-                  try {
-                    addResult('🔄 Testing daily reminder...', 'info');
-                    const fn = (window as any).testNotifications?.testDailyReminder;
-                    if (fn) { 
-                      await fn(); 
-                      logs.forEach(log => {
-                        if (log.includes('❌') || log.includes('failed')) addResult(log, 'error');
-                        else if (log.includes('✅') || log.includes('scheduled')) addResult(log, 'success');
-                        else addResult(log, 'info');
-                      });
-                      addResult('📱 Daily reminder test completed', 'success'); 
-                    } else { 
-                      addResult('❌ Daily reminder function not available', 'error'); 
-                    }
-                  } catch (e: any) { 
-                    addResult(`❌ Daily reminder failed: ${e?.message || e}`, 'error'); 
-                  } finally {
-                    console.log = originalLog; console.error = originalError; console.warn = originalWarn;
-                  }
-                }} className="text-xs">Daily Reminder</Button>
-                
-                <Button variant="outline" size="sm" onClick={async () => {
-                  const logs: string[] = [];
-                  const originalLog = console.log;
-                  const originalError = console.error;
-                  const originalWarn = console.warn;
-                  
-                  console.log = (...args: any[]) => { logs.push(args.join(' ')); originalLog.apply(console, args); };
-                  console.error = (...args: any[]) => { logs.push(`❌ ${args.join(' ')}`); originalError.apply(console, args); };
-                  console.warn = (...args: any[]) => { logs.push(`⚠️ ${args.join(' ')}`); originalWarn.apply(console, args); };
-                  
-                  try {
-                    addResult('🔄 Testing streak milestone...', 'info');
-                    const fn = (window as any).testNotifications?.testStreakMilestone;
-                    if (fn) { 
-                      await fn(); 
-                      logs.forEach(log => {
-                        if (log.includes('❌') || log.includes('failed')) addResult(log, 'error');
-                        else if (log.includes('✅') || log.includes('scheduled')) addResult(log, 'success');
-                        else addResult(log, 'info');
-                      });
-                      addResult('🏆 Streak milestone test completed', 'success'); 
-                    } else { 
-                      addResult('❌ Streak milestone function not available', 'error'); 
-                    }
-                  } catch (e: any) { 
-                    addResult(`❌ Streak milestone failed: ${e?.message || e}`, 'error'); 
-                  } finally {
-                    console.log = originalLog; console.error = originalError; console.warn = originalWarn;
-                  }
-                }} className="text-xs">Streak Milestone</Button>
-                
-                <Button variant="outline" size="sm" onClick={async () => {
-                  const logs: string[] = [];
-                  const originalLog = console.log;
-                  const originalError = console.error;
-                  const originalWarn = console.warn;
-                  
-                  console.log = (...args: any[]) => { logs.push(args.join(' ')); originalLog.apply(console, args); };
-                  console.error = (...args: any[]) => { logs.push(`❌ ${args.join(' ')}`); originalError.apply(console, args); };
-                  console.warn = (...args: any[]) => { logs.push(`⚠️ ${args.join(' ')}`); originalWarn.apply(console, args); };
-                  
-                  try {
-                    addResult('🔄 Testing with actual data...', 'info');
-                    const fn = (window as any).testNotifications?.testWithActualData;
-                    if (fn) { 
-                      await fn(); 
-                      logs.forEach(log => {
-                        if (log.includes('❌') || log.includes('failed')) addResult(log, 'error');
-                        else if (log.includes('✅') || log.includes('scheduled')) addResult(log, 'success');
-                        else addResult(log, 'info');
-                      });
-                      addResult('📈 Actual data test completed', 'success'); 
-                    } else { 
-                      addResult('❌ Actual data test function not available', 'error'); 
-                    }
-                  } catch (e: any) { 
-                    addResult(`❌ Actual data test failed: ${e?.message || e}`, 'error'); 
-                  } finally {
-                    console.log = originalLog; console.error = originalError; console.warn = originalWarn;
-                  }
-                }} className="text-xs">With Actual Data</Button>
-                
-                <Button variant="outline" size="sm" onClick={async () => {
-                  const logs: string[] = [];
-                  const originalLog = console.log;
-                  const originalError = console.error;
-                  const originalWarn = console.warn;
-                  
-                  console.log = (...args: any[]) => { logs.push(args.join(' ')); originalLog.apply(console, args); };
-                  console.error = (...args: any[]) => { logs.push(`❌ ${args.join(' ')}`); originalError.apply(console, args); };
-                  console.warn = (...args: any[]) => { logs.push(`⚠️ ${args.join(' ')}`); originalWarn.apply(console, args); };
-                  
-                  try {
-                    addResult('🔄 Testing user configured time...', 'info');
-                    const fn = (window as any).testNotifications?.testUserConfiguredTime;
-                    if (fn) { 
-                      await fn(); 
-                      logs.forEach(log => {
-                        if (log.includes('❌') || log.includes('failed')) addResult(log, 'error');
-                        else if (log.includes('✅') || log.includes('scheduled')) addResult(log, 'success');
-                        else addResult(log, 'info');
-                      });
-                      addResult('⏰ User config time test completed', 'success'); 
-                    } else { 
-                      addResult('❌ User time test function not available', 'error'); 
-                    }
-                  } catch (e: any) { 
-                    addResult(`❌ User time test failed: ${e?.message || e}`, 'error'); 
-                  } finally {
-                    console.log = originalLog; console.error = originalError; console.warn = originalWarn;
-                  }
-                }} className="text-xs">User Config Time</Button>
-                
-                <Button variant="outline" size="sm" onClick={async () => {
-                  const logs: string[] = [];
-                  const originalLog = console.log;
-                  const originalError = console.error;
-                  const originalWarn = console.warn;
-                  
-                  console.log = (...args: any[]) => { logs.push(args.join(' ')); originalLog.apply(console, args); };
-                  console.error = (...args: any[]) => { logs.push(`❌ ${args.join(' ')}`); originalError.apply(console, args); };
-                  console.warn = (...args: any[]) => { logs.push(`⚠️ ${args.join(' ')}`); originalWarn.apply(console, args); };
-                  
-                  try {
-                    addResult('🔄 Testing event notification...', 'info');
-                    const fn = (window as any).testNotifications?.testEventNotification;
-                    if (fn) { 
-                      await fn(); 
-                      logs.forEach(log => {
-                        if (log.includes('❌') || log.includes('failed')) addResult(log, 'error');
-                        else if (log.includes('✅') || log.includes('scheduled')) addResult(log, 'success');
-                        else addResult(log, 'info');
-                      });
-                      addResult('📅 Event notification test completed', 'success'); 
-                    } else { 
-                      addResult('❌ Event notification function not available', 'error'); 
-                    }
-                  } catch (e: any) { 
-                    addResult(`❌ Event notification failed: ${e?.message || e}`, 'error'); 
-                  } finally {
-                    console.log = originalLog; console.error = originalError; console.warn = originalWarn;
-                  }
-                }} className="text-xs">Event Notification</Button>
-                
-                <Button variant="outline" size="sm" onClick={async () => {
-                  const logs: string[] = [];
-                  const originalLog = console.log;
-                  const originalError = console.error;
-                  const originalWarn = console.warn;
-                  
-                  console.log = (...args: any[]) => { logs.push(args.join(' ')); originalLog.apply(console, args); };
-                  console.error = (...args: any[]) => { logs.push(`❌ ${args.join(' ')}`); originalError.apply(console, args); };
-                  console.warn = (...args: any[]) => { logs.push(`⚠️ ${args.join(' ')}`); originalWarn.apply(console, args); };
-                  
-                  try {
-                    addResult('🔄 Getting notification status...', 'info');
-                    const fn = (window as any).testNotifications?.showStatus;
-                    if (fn) { 
-                      await fn(); 
-                      logs.forEach(log => {
-                        if (log.includes('❌') || log.includes('failed')) addResult(log, 'error');
-                        else if (log.includes('✅') || log.includes('Status:')) addResult(log, 'success');
-                        else addResult(log, 'info');
-                      });
-                      addResult('📋 Status check completed', 'success'); 
-                    } else { 
-                      addResult('❌ Show status function not available', 'error'); 
-                    }
-                  } catch (e: any) { 
-                    addResult(`❌ Show status failed: ${e?.message || e}`, 'error'); 
-                  } finally {
-                    console.log = originalLog; console.error = originalError; console.warn = originalWarn;
-                  }
-                }} className="text-xs">Show Status</Button>
-                
-                <Button variant="outline" size="sm" onClick={async () => {
-                  const logs: string[] = [];
-                  const originalLog = console.log;
-                  const originalError = console.error;
-                  const originalWarn = console.warn;
-                  
-                  console.log = (...args: any[]) => { logs.push(args.join(' ')); originalLog.apply(console, args); };
-                  console.error = (...args: any[]) => { logs.push(`❌ ${args.join(' ')}`); originalError.apply(console, args); };
-                  console.warn = (...args: any[]) => { logs.push(`⚠️ ${args.join(' ')}`); originalWarn.apply(console, args); };
-                  
-                  try {
-                    addResult('🔄 Sending personalized notification...', 'info');
-                    const fn = (window as any).sendPersonalizedNotificationNow;
-                    if (fn) { 
-                      await fn(); 
-                      logs.forEach(log => {
-                        if (log.includes('❌') || log.includes('failed')) addResult(log, 'error');
-                        else if (log.includes('✅') || log.includes('sent')) addResult(log, 'success');
-                        else addResult(log, 'info');
-                      });
-                      addResult('👤 Personalized notification completed', 'success'); 
-                    } else { 
-                      addResult('❌ Personalized notification function not available', 'error'); 
-                    }
-                  } catch (e: any) { 
-                    addResult(`❌ Personalized notification failed: ${e?.message || e}`, 'error'); 
-                  } finally {
-                    console.log = originalLog; console.error = originalError; console.warn = originalWarn;
-                  }
-                }} className="text-xs">Send Personalized</Button>
-              </div>
-            </div>
-            
-            <Separator className="bg-yellow-200 dark:bg-yellow-800" />
-            
-            <div className="space-y-2">
-              <p className="text-xs text-yellow-700 dark:text-yellow-300 font-medium">
-                Storage Operations:
-              </p>
-              <div className="grid grid-cols-2 gap-1">
-                <Button variant="outline" size="sm" onClick={async () => {
-                  try {
-                    const { storage } = await import('@/lib/storage');
-                    const reviews = await storage.getReviews();
-                    const events = await storage.getEvents();
-                    const settings = await storage.getSettings();
-                    addResult(`📊 Reviews: ${reviews.length}, Events: ${events.length}`, 'success');
-                    addResult(`⚙️ Settings: ${settings ? 'Found' : 'Missing'}`, settings ? 'success' : 'error');
-                  } catch (e: any) { 
-                    addResult(`Storage stats failed: ${e?.message || e}`, 'error'); 
-                  }
-                }} className="text-xs">Storage Stats</Button>
-                
-                <Button variant="outline" size="sm" onClick={async () => {
-                  try {
-                    const { storage } = await import('@/lib/storage');
-                    const settings = await storage.getSettings();
-                    if (!settings) {
-                      addResult('No settings found', 'error');
-                      return;
-                    }
-                    // Check if streak exists in settings - it might be stored elsewhere
-                    addResult(`Settings found, checking streak location...`, 'info');
-                    const settingsKeys = Object.keys(settings);
-                    addResult(`Available keys: ${settingsKeys.join(', ')}`, 'info');
-                  } catch (e: any) { 
-                    addResult(`Streak check failed: ${e?.message || e}`, 'error'); 
-                  }
-                }} className="text-xs">Check Settings</Button>
-                
-                <Button variant="outline" size="sm" onClick={async () => {
-                  try {
-                    const { storage } = await import('@/lib/storage');
-                    const reviews = await storage.getReviews();
-                    const newReview = {
-                      id: 'test-' + Date.now(),
-                      topicId: 'test-topic-' + Date.now(),
-                      topic: 'Test Topic',
-                      chapter: 'Test Chapter', 
-                      subject: 'Physics' as const,
-                      difficulty: 'Medium' as const,
-                      dueDate: new Date().toISOString(),
-                      interval: 0,
-                      timesReviewed: 0,
-                      isCompleted: false,
-                      createdAt: new Date().toISOString()
-                    };
-                    
-                    // Check if storage has addReview method
-                    if (typeof (storage as any).addReview === 'function') {
-                      await (storage as any).addReview(newReview);
-                      addResult('Test review added via addReview', 'success');
-                    } else {
-                      // Try alternative approach - add to existing reviews
-                      const updatedReviews = [...reviews, newReview];
-                      await storage.saveReviews(updatedReviews);
-                      addResult('Test review added via saveReviews', 'success');
-                    }
-                  } catch (e: any) { 
-                    addResult(`Add review failed: ${e?.message || e}`, 'error');
-                    addResult(`Check if storage has proper review methods`, 'info');
-                  }
-                }} className="text-xs">Add Test Review</Button>
-                
-                <Button variant="outline" size="sm" onClick={async () => {
-                  try {
-                    const { storage } = await import('@/lib/storage');
-                    const events = await storage.getEvents();
-                    const newEvent = {
-                      id: 'test-event-' + Date.now(),
-                      title: 'Test Event',
-                      description: 'Test Description',
-                      date: new Date().toISOString().split('T')[0],
-                      time: '14:00',
-                      type: 'exam' as const,
-                      createdAt: new Date().toISOString()
-                    };
-                    
-                    // Check if storage has addEvent method
-                    if (typeof (storage as any).addEvent === 'function') {
-                      await (storage as any).addEvent(newEvent);
-                      addResult('Test event added via addEvent', 'success');
-                    } else {
-                      // Try alternative approach
-                      const updatedEvents = [...events, newEvent];
-                      await storage.saveEvents(updatedEvents);
-                      addResult('Test event added via saveEvents', 'success');
-                    }
-                  } catch (e: any) { 
-                    addResult(`Add event failed: ${e?.message || e}`, 'error');
-                    addResult(`Check if storage has proper event methods`, 'info');
-                  }
-                }} className="text-xs">Add Test Event</Button>
-                
-                <Button variant="outline" size="sm" onClick={async () => {
-                  try {
-                    const { storage } = await import('@/lib/storage');
-                    const currentSettings = await storage.getSettings();
-                    if (!currentSettings) {
-                      addResult('No settings found to update', 'error');
-                      return;
-                    }
-                    
-                    // Try to update settings - check available methods
-                    const settingsWithTestValue = { ...currentSettings, testValue: 25 };
-                    await storage.saveSettings(settingsWithTestValue);
-                    addResult('Test value added to settings', 'success');
-                    addResult('Note: Streak might be stored elsewhere', 'info');
-                  } catch (e: any) { 
-                    addResult(`Update settings failed: ${e?.message || e}`, 'error');
-                    addResult(`Available storage methods might be limited`, 'info');
-                  }
-                }} className="text-xs">Test Settings Update</Button>
-                
-                <Button variant="outline" size="sm" onClick={async () => {
-                  try {
-                    if (confirm('Clear ALL data? This cannot be undone!')) {
-                      const { storage } = await import('@/lib/storage');
-                      
-                      // Check if clearAll exists, otherwise clear individually
-                      if (typeof (storage as any).clearAll === 'function') {
-                        await (storage as any).clearAll();
-                        addResult('All data cleared via clearAll', 'success');
-                      } else {
-                        // Clear individually
-                        await storage.saveReviews([]);
-                        await storage.saveEvents([]);
-                        await storage.clear();
-                        addResult('Data cleared individually', 'success');
-                      }
-                      setTimeout(() => window.location.reload(), 1000);
-                    } else {
-                      addResult('Clear cancelled', 'info');
-                    }
-                  } catch (e: any) { 
-                    addResult(`Clear failed: ${e?.message || e}`, 'error');
-                    addResult(`Some data might remain`, 'info');
-                  }
-                }} className="text-xs bg-red-50 hover:bg-red-100 text-red-700">Clear All Data</Button>
-              </div>
-            </div>
-            
-            <Separator className="bg-yellow-200 dark:bg-yellow-800" />
-            
-            <div className="space-y-2">
-              <p className="text-xs text-yellow-700 dark:text-yellow-300 font-medium">
-                Notification Testing:
-              </p>
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleCheckPermissions}
-                  className="text-xs"
-                >
-                  Check Permissions
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={async () => {
-                    try {
-                      addResult('Requesting permissions...', 'info');
-                      const isNative = !!(window as any).Capacitor?.isNativePlatform?.();
-                      
-                      if (!isNative) {
-                        addResult('Web platform - limited permissions', 'info');
-                        return;
-                      }
-                      
-                      // Use the global test functions instead
-                      const testFunctions = (window as any).testNotifications;
-                      if (testFunctions?.requestPermissions) {
-                        await testFunctions.requestPermissions();
-                        addResult('Permission request sent', 'success');
-                      } else {
-                        addResult('Permission functions not available', 'error');
-                      }
-                    } catch (error) {
-                      addResult('Permission request failed', 'error');
-                    }
-                  }}
-                  className="text-xs"
-                >
-                  Request Permissions
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={async () => {
-                    try {
-                      addResult('Getting full system status...', 'info');
-                      
-                      // Platform info
-                      const isNative = !!(window as any).Capacitor?.isNativePlatform?.();
-                      const platform = (window as any).Capacitor?.getPlatform?.() || 'web';
-                      addResult(`Platform: ${platform}`, 'info');
-                      addResult(`Native: ${isNative ? 'Yes' : 'No'}`, isNative ? 'success' : 'info');
-                      
-                      // Storage status
-                      const storageCount = Object.keys(localStorage).length;
-                      addResult(`Storage: ${storageCount} items`, 'success');
-                      
-                      // Notification status
-                      if (isNative) {
-                        try {
-                          const testFunctions = (window as any).testNotifications;
-                          if (testFunctions?.checkPermissions) {
-                            await testFunctions.checkPermissions();
-                            addResult('Notification check: Done', 'success');
-                          }
-                        } catch (e) {
-                          addResult('Notification check: Failed', 'error');
-                        }
-                      } else {
-                        addResult('Notifications: Web limited', 'info');
-                      }
-                      
-                      addResult('Full status check completed!', 'success');
-                    } catch (error) {
-                      addResult('Status check failed', 'error');
-                    }
-                  }}
-                  className="text-xs col-span-2"
-                >
-                  Full Status Check
-                </Button>
-              </div>
-            </div>
-            
-            {results.length > 0 && (
-              <div className="space-y-1">
-                <p className="text-xs text-yellow-700 dark:text-yellow-300 font-medium">
-                  Results:
-                </p>
-                <div className="text-xs bg-black dark:bg-gray-900 text-green-400 p-2 rounded font-mono max-h-32 overflow-y-auto">
-                  {results.map((result, index) => (
-                    <div key={index} className="mb-1">
-                      {result}
-                    </div>
-                  ))}
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setResults([])}
-                  className="text-xs w-full"
-                >
-                  Clear Results
-                </Button>
-              </div>
-            )}
-            
-            <div className="text-xs text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900 p-2 rounded">
-              <strong>Mobile-Friendly Testing:</strong><br />
-              All results appear above instead of console.<br />
-              Tests work on both web and Android APK.
             </div>
           </div>
+          
+          {/* Core Debug Functions */}
+          <div className="grid grid-cols-2 gap-2 mb-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePlatformInfo}
+              className="flex items-center gap-2 text-xs"
+            >
+              <Smartphone className="h-3 w-3" />
+              Platform Info
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleStorageInfo}
+              className="flex items-center gap-2 text-xs"
+            >
+              <Database className="h-3 w-3" />
+              Storage Info
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleNotificationStatus}
+              className="flex items-center gap-2 text-xs"
+            >
+              <Bell className="h-3 w-3" />
+              Notification Status
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleTestBasicNotification}
+              className="flex items-center gap-2 text-xs"
+            >
+              <Play className="h-3 w-3" />
+              Test Notification
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleQuickEventTest}
+              className="flex items-center gap-2 text-xs"
+            >
+              <Calendar className="h-3 w-3" />
+              Quick Event Test
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleClearAllNotifications}
+              className="flex items-center gap-2 text-xs"
+            >
+              <Trash2 className="h-3 w-3" />
+              Clear All
+            </Button>
+          </div>
+          
+          <Separator className="bg-yellow-200 dark:bg-yellow-800 mb-3" />
+          
+          {/* Results Display */}
+          {results.length > 0 && (
+            <div className="space-y-2 mb-3">
+              <p className="text-xs text-yellow-700 dark:text-yellow-300 font-medium">
+                Recent Results:
+              </p>
+              <div className="bg-gray-50 dark:bg-gray-900 rounded p-2 max-h-32 overflow-y-auto text-xs space-y-1">
+                {results.map((result, index) => (
+                  <div key={index} className="text-gray-700 dark:text-gray-300 font-mono">
+                    {result}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Console Output Display */}
+          {consoleOutput.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-yellow-700 dark:text-yellow-300 font-medium flex items-center gap-1">
+                  <Terminal className="h-3 w-3" />
+                  Console Output:
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={copyConsoleOutput}
+                  className="text-xs h-6 px-2"
+                >
+                  <Copy className="h-3 w-3 mr-1" />
+                  Copy
+                </Button>
+              </div>
+              <div className="bg-gray-900 dark:bg-gray-950 rounded p-2 max-h-40 overflow-y-auto text-xs space-y-1 border">
+                {consoleOutput.map((output, index) => (
+                  <div key={index} className="text-green-400 font-mono text-xs">
+                    {output}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </>
       )}
     </Card>

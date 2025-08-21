@@ -8,6 +8,16 @@ This is a production-ready Progressive Web App (PWA) designed as a mobile-first 
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes
+
+**August 21, 2025 - Notification System Cleanup & Debug Panel Enhancement:**
+- Completely removed ALL browser/web notification code from service worker and offline systems
+- Fixed Android notification scheduler to use native LocalNotifications.schedule() instead of setTimeout() for proper background operation
+- Updated notification system to work ONLY on Android APK builds, not in browser
+- Enhanced debug panel with streamlined interface, console output capture, and date/time mocking capability
+- Added real-time console output display for effective debugging and troubleshooting
+- Removed redundant debug options and consolidated essential notification testing functions
+
 ## System Architecture
 
 ### Frontend Architecture
