@@ -387,6 +387,130 @@ export function DebugPanel() {
           
           <Separator className="bg-yellow-200 dark:bg-yellow-800 mb-3" />
           
+          {/* Additional Useful Functions */}
+          <div className="grid grid-cols-2 gap-2 mb-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                try {
+                  const testFunctions = (window as any).testNotifications;
+                  if (testFunctions?.getPendingNotifications) {
+                    await testFunctions.getPendingNotifications();
+                    addResult('Pending notifications listed', 'success');
+                  } else {
+                    addResult('Get pending function not available', 'error');
+                  }
+                } catch (error) {
+                  addResult('Get pending failed', 'error');
+                }
+              }}
+              className="flex items-center gap-2 text-xs"
+            >
+              <Database className="h-3 w-3" />
+              Get Pending
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                try {
+                  const { populateTestData } = await import('@/lib/test-data');
+                  await populateTestData();
+                  addResult('Test data populated!', 'success');
+                } catch (error) {
+                  addResult('Test data population failed', 'error');
+                }
+              }}
+              className="flex items-center gap-2 text-xs"
+            >
+              <Play className="h-3 w-3" />
+              Populate Test Data
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                try {
+                  const { clearTestData } = await import('@/lib/test-data');
+                  await clearTestData();
+                  addResult('Test data cleared!', 'success');
+                } catch (error) {
+                  addResult('Test data clearing failed', 'error');
+                }
+              }}
+              className="flex items-center gap-2 text-xs"
+            >
+              <Trash2 className="h-3 w-3" />
+              Clear Test Data
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                try {
+                  const testFunctions = (window as any).testNotifications;
+                  if (testFunctions?.addTestEvent) {
+                    await testFunctions.addTestEvent();
+                    addResult('Test event added (2 min)', 'success');
+                  } else {
+                    addResult('Add test event function not available', 'error');
+                  }
+                } catch (error) {
+                  addResult('Add test event failed', 'error');
+                }
+              }}
+              className="flex items-center gap-2 text-xs"
+            >
+              <Calendar className="h-3 w-3" />
+              Add Test Event
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                try {
+                  const testFunctions = (window as any).testNotifications;
+                  if (testFunctions?.testReviewReminder) {
+                    await testFunctions.testReviewReminder();
+                    addResult('Review reminder test triggered', 'success');
+                  } else {
+                    addResult('Review reminder function not available', 'error');
+                  }
+                } catch (error) {
+                  addResult('Review reminder test failed', 'error');
+                }
+              }}
+              className="flex items-center gap-2 text-xs"
+            >
+              <Bell className="h-3 w-3" />
+              Test Review Reminder
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                try {
+                  const testFunctions = (window as any).testNotifications;
+                  if (testFunctions?.testDailyReminder) {
+                    await testFunctions.testDailyReminder();
+                    addResult('Daily reminder test triggered', 'success');
+                  } else {
+                    addResult('Daily reminder function not available', 'error');
+                  }
+                } catch (error) {
+                  addResult('Daily reminder test failed', 'error');
+                }
+              }}
+              className="flex items-center gap-2 text-xs"
+            >
+              <Clock className="h-3 w-3" />
+              Test Daily Reminder
+            </Button>
+          </div>
+          
+          <Separator className="bg-yellow-200 dark:bg-yellow-800 mb-3" />
+          
           {/* Results Display */}
           {results.length > 0 && (
             <div className="space-y-2 mb-3">
