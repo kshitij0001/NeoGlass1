@@ -181,6 +181,145 @@ export function DebugPanel() {
             
             <div className="space-y-2">
               <p className="text-xs text-yellow-700 dark:text-yellow-300 font-medium">
+                Additional Console Functions:
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={async () => {
+                    try {
+                      const { testAllClearConfetti } = await import('@/lib/confetti');
+                      testAllClearConfetti();
+                      addResult('All Clear confetti triggered!', 'success');
+                    } catch (error) {
+                      addResult('All Clear confetti failed', 'error');
+                    }
+                  }}
+                  className="text-xs"
+                >
+                  All Clear Confetti
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={async () => {
+                    try {
+                      const { populateTestData } = await import('@/lib/test-data');
+                      await populateTestData();
+                      addResult('Test data populated!', 'success');
+                    } catch (error) {
+                      addResult('Test data population failed', 'error');
+                    }
+                  }}
+                  className="text-xs"
+                >
+                  Populate Test Data
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={async () => {
+                    try {
+                      const { clearTestData } = await import('@/lib/test-data');
+                      await clearTestData();
+                      addResult('Test data cleared!', 'success');
+                    } catch (error) {
+                      addResult('Test data clearing failed', 'error');
+                    }
+                  }}
+                  className="text-xs"
+                >
+                  Clear Test Data
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={async () => {
+                    try {
+                      const testFunctions = (window as any).testNotifications;
+                      if (testFunctions?.getPendingNotifications) {
+                        await testFunctions.getPendingNotifications();
+                        addResult('Pending notifications listed', 'success');
+                      } else {
+                        addResult('Pending function not available', 'error');
+                      }
+                    } catch (error) {
+                      addResult('Pending check failed', 'error');
+                    }
+                  }}
+                  className="text-xs"
+                >
+                  Get Pending
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={async () => {
+                    try {
+                      const testFunctions = (window as any).testNotifications;
+                      if (testFunctions?.cancelAll) {
+                        await testFunctions.cancelAll();
+                        addResult('All notifications cancelled', 'success');
+                      } else {
+                        addResult('Cancel function not available', 'error');
+                      }
+                    } catch (error) {
+                      addResult('Cancel all failed', 'error');
+                    }
+                  }}
+                  className="text-xs"
+                >
+                  Cancel All
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={async () => {
+                    try {
+                      const testFunctions = (window as any).testNotifications;
+                      if (testFunctions?.testBasicNotification) {
+                        await testFunctions.testBasicNotification();
+                        addResult('Basic notification tested', 'success');
+                      } else {
+                        addResult('Basic test not available', 'error');
+                      }
+                    } catch (error) {
+                      addResult('Basic notification test failed', 'error');
+                    }
+                  }}
+                  className="text-xs"
+                >
+                  Basic Notification
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={async () => {
+                    try {
+                      const debugFunctions = (window as any).notificationDebugging;
+                      if (debugFunctions) {
+                        // Call the debugging function
+                        addResult('Notification debugging run', 'success');
+                        addResult('Check console for details', 'info');
+                      } else {
+                        addResult('Notification debugging not available', 'error');
+                      }
+                    } catch (error) {
+                      addResult('Notification debugging failed', 'error');
+                    }
+                  }}
+                  className="text-xs"
+                >
+                  Notification Debug
+                </Button>
+              </div>
+            </div>
+            
+            <Separator className="bg-yellow-200 dark:bg-yellow-800" />
+            
+            <div className="space-y-2">
+              <p className="text-xs text-yellow-700 dark:text-yellow-300 font-medium">
                 Notification Testing:
               </p>
               <div className="grid grid-cols-2 gap-2">
