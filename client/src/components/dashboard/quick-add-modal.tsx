@@ -328,7 +328,7 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
             <div className="flex space-x-2">
               <Button
                 variant={difficulty === "Easy" ? "default" : "outline"}
-                className={`flex-1 neobrutalist-btn ${difficulty === "Easy" ? "bg-green-500 text-white" : "bg-white/90 text-brutal-black"} font-bold border-3 border-brutal-black dark:border-white backdrop-blur-sm`}
+                className={`flex-1 neobrutalist-btn ${difficulty === "Easy" ? "bg-green-500 text-white border-green-600" : "bg-white dark:bg-gray-100 text-brutal-black border-gray-300"} font-bold border-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)]`}
                 onClick={() => setDifficulty("Easy")}
                 data-testid="difficulty-easy"
               >
@@ -336,7 +336,7 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
               </Button>
               <Button
                 variant={difficulty === "Medium" ? "default" : "outline"}
-                className={`flex-1 neobrutalist-btn ${difficulty === "Medium" ? "bg-yellow-500 text-brutal-black" : "bg-white/90 text-brutal-black"} font-bold border-3 border-brutal-black dark:border-white backdrop-blur-sm`}
+                className={`flex-1 neobrutalist-btn ${difficulty === "Medium" ? "bg-yellow-500 text-brutal-black border-yellow-600" : "bg-white dark:bg-gray-100 text-brutal-black border-gray-300"} font-bold border-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)]`}
                 onClick={() => setDifficulty("Medium")}
                 data-testid="difficulty-medium"
               >
@@ -344,7 +344,7 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
               </Button>
               <Button
                 variant={difficulty === "Hard" ? "default" : "outline"}
-                className={`flex-1 neobrutalist-btn ${difficulty === "Hard" ? "bg-red-500 text-white" : "bg-white/90 text-brutal-black"} font-bold border-3 border-brutal-black dark:border-white backdrop-blur-sm`}
+                className={`flex-1 neobrutalist-btn ${difficulty === "Hard" ? "bg-red-500 text-white border-red-600" : "bg-white dark:bg-gray-100 text-brutal-black border-gray-300"} font-bold border-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)]`}
                 onClick={() => setDifficulty("Hard")}
                 data-testid="difficulty-hard"
               >
