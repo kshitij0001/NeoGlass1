@@ -3,6 +3,11 @@ apply plugin: 'com.android.application'
 android {
     namespace "com.neetcompanion.app"
     compileSdk rootProject.ext.compileSdkVersion
+    
+    buildFeatures {
+        buildConfig true
+    }
+    
     defaultConfig {
         applicationId "com.neetcompanion.app"
         minSdkVersion rootProject.ext.minSdkVersion
