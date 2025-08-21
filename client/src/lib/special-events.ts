@@ -360,8 +360,13 @@ export function initializeSpecialEvents(): void {
   setupPersonalizedNotifications();
   setupOfflineNotifications();
   
-  // Add test functions to window for debugging
-  if (typeof window !== 'undefined') {
+  // Add test functions to window for debugging (only in development)
+  const isDebugBuild = import.meta.env.DEV || 
+                      import.meta.env.MODE === 'development' ||
+                      window.location.hostname === 'localhost' ||
+                      window.location.hostname.includes('replit');
+  
+  if (typeof window !== 'undefined' && isDebugBuild) {
     (window as any).testPersonalizedNotification = testPersonalizedNotification;
     (window as any).sendPersonalizedNotificationNow = sendPersonalizedNotificationNow;
     (window as any).checkSpecialDate = checkSpecialDate;

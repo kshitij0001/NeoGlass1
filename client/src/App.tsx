@@ -43,9 +43,14 @@ function AppContent() {
     }
   }, [isInitialized, getCurrentStreak]);
 
-  // Add global test functions for debugging (always enabled for APK debugging)
+  // Add global test functions for debugging (only in development or debug builds)
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    const isDebugBuild = import.meta.env.DEV || 
+                        import.meta.env.MODE === 'development' ||
+                        window.location.hostname === 'localhost' ||
+                        window.location.hostname.includes('replit');
+    
+    if (typeof window !== 'undefined' && isDebugBuild) {
       (window as any).testConfetti = testConfetti;
       (window as any).testAllClearConfetti = testAllClearConfetti;
       (window as any).populateTestData = populateTestData;
@@ -59,6 +64,7 @@ function AppContent() {
         console.log('🔔 Native Platform:', (window as any).Capacitor?.isNativePlatform() || false);
         console.log('📦 Build Mode:', import.meta.env.DEV ? 'Development' : 'Production');
         console.log('🌐 URL:', window.location.href);
+        console.log('🔧 Debug Features:', isDebugBuild ? 'Enabled' : 'Disabled');
       };
       
       (window as any).debugStorage = async () => {
