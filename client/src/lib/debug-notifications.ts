@@ -610,7 +610,6 @@ export const createNotificationDebugFunctions = () => {
       console.error('❌ Personalized notification failed:', error);
     }
   };
-};
 
   console.log('🔔 Notification test functions available:');
   console.log('  window.testNotifications.testBasicNotification() - Test immediate notification');
