@@ -53,12 +53,18 @@ export class NativeNotificationManager {
 
       const notificationId = Date.now();
       
+      console.log('📱 Scheduling Android notification with ID:', notificationId);
+      console.log('⏰ Scheduled time:', scheduledTime.toISOString());
+      
       await LocalNotifications.schedule({
         notifications: [{
           title,
           body,
           id: notificationId,
-          schedule: { at: scheduledTime },
+          schedule: { 
+            at: scheduledTime,
+            allowWhileIdle: true
+          },
           smallIcon: 'ic_stat_icon_config_sample',
           iconColor: '#F59E0B',
           extra: {
