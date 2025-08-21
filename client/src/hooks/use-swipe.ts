@@ -48,9 +48,8 @@ export function useSwipe({
   }, []);
 
   const onTouchMove = useCallback((e: TouchEvent) => {
-    if (preventDefaultTouchmoveEvent) {
-      e.preventDefault();
-    }
+    // Always prevent default to stop screen scrolling during swipe
+    e.preventDefault();
 
     // Ensure it's a valid touch event with at least one touch point
     if (e.targetTouches.length === 0 || !touchStart.current) return;

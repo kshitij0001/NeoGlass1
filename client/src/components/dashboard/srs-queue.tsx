@@ -93,7 +93,18 @@ export function SRSQueue() {
     if (isDueToday(review)) {
       return "Due today";
     }
-    return "Due tomorrow";
+    
+    // Check if it's actually tomorrow
+    const dueDate = new Date(review.dueDate);
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    if (dueDate.toDateString() === tomorrow.toDateString()) {
+      return "Due tomorrow";
+    }
+    
+    // Shouldn't happen with new filtering, but fallback
+    return "Due later";
   };
 
   if (reviews.length === 0) {

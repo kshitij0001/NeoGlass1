@@ -216,19 +216,23 @@ export const reviewsSlice = (set: any, get: any): ReviewsSlice => ({
   
   getQueuedReviews: () => {
     const { reviews } = get();
-    // Show overdue, due today, and a limited number of upcoming reviews
+    // Show only overdue, due today, and due tomorrow
     const availableReviews = reviews.filter((r: Review) => {
       if (r.isCompleted) return false;
       
       // Always show overdue and due today
       if (isOverdue(r) || isDueToday(r)) return true;
       
-      // Show some upcoming reviews (next 3 days) if no overdue/due today reviews
+      // Only show due tomorrow (no further ahead)
       const dueDate = new Date(r.dueDate);
-      const threeDaysFromNow = new Date();
-      threeDaysFromNow.setDate(threeDaysFromNow.getDate() + 3);
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(23, 59, 59, 999); // End of tomorrow
       
-      return dueDate <= threeDaysFromNow;
+      const today = new Date();
+      today.setHours(23, 59, 59, 999); // End of today
+      
+      return dueDate > today && dueDate <= tomorrow;
     });
     return sortReviews(availableReviews);
   },
