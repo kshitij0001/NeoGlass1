@@ -378,6 +378,7 @@ export const notificationDebugging = {
   },
 
   async addTestEvent() {
+    console.log('🔍 ===== DETAILED TEST EVENT DEBUG =====');
     console.log('📅 Adding a test event in 2 minutes for notification testing...');
     
     const testEventTime = new Date();
@@ -387,26 +388,15 @@ export const notificationDebugging = {
     const dateString = testEventTime.toISOString().split('T')[0]; // YYYY-MM-DD format
     
     console.log(`⏰ Test event will trigger notification at: ${timeString} on ${dateString}`);
+    console.log(`📅 Current time: ${new Date().toLocaleTimeString()}`);
+    console.log(`📅 Event time: ${testEventTime.toLocaleTimeString()}`);
     
     try {
-      // Add event via store (properly awaited)
-      const { useStore } = await import('@/store');
-      const store = useStore.getState();
-      
-      await store.addEvent({
-        title: 'TEST Notification',
-        type: 'exam' as const,
-        description: 'Testing if notifications work',
-        date: dateString,
-        time: timeString
-      });
-      
-      console.log('📅 ✅ Test event added successfully!');
-      console.log('📅 📱 Check the Calendar page to see the event');
-      console.log('🔔 Notification will appear in ~2 minutes');
-      
-      // Also check if event notifications are enabled
+      // Check settings first
+      console.log('🔍 STEP 1: Checking current settings...');
       const settings = await storage.getSettings();
+      console.log('⚙️ Current settings:', JSON.stringify(settings, null, 2));
+      
       if (!settings?.eventNotifications) {
         console.warn('⚠️ Event notifications are DISABLED in settings!');
         console.warn('🔧 Enable them in Settings > Notifications > Event Notifications');
@@ -414,8 +404,59 @@ export const notificationDebugging = {
         console.log('✅ Event notifications are enabled in settings');
       }
       
+      if (!settings?.notifications) {
+        console.warn('⚠️ General notifications are DISABLED in settings!');
+        console.warn('🔧 Enable them in Settings > Notifications');
+      } else {
+        console.log('✅ General notifications are enabled in settings');
+      }
+      
+      // Check current events
+      console.log('🔍 STEP 2: Checking current events...');
+      const currentEvents = await storage.getEvents();
+      console.log(`📅 Current events in storage: ${currentEvents.length}`);
+      currentEvents.forEach(event => {
+        console.log(`  - ${event.title} on ${event.date} at ${event.time}`);
+      });
+      
+      // Add event via store
+      console.log('🔍 STEP 3: Adding test event to store...');
+      const { useStore } = await import('@/store');
+      const store = useStore.getState();
+      
+      const newEvent = {
+        title: 'TEST Notification',
+        type: 'exam' as const,
+        description: 'Testing if notifications work',
+        date: dateString,
+        time: timeString
+      };
+      console.log('📅 New event data:', JSON.stringify(newEvent, null, 2));
+      
+      await store.addEvent(newEvent);
+      
+      console.log('🔍 STEP 4: Verifying event was added...');
+      const updatedEvents = await storage.getEvents();
+      console.log(`📅 Events after adding: ${updatedEvents.length}`);
+      const testEvent = updatedEvents.find(e => e.title === 'TEST Notification');
+      if (testEvent) {
+        console.log('✅ Test event found in storage:', JSON.stringify(testEvent, null, 2));
+      } else {
+        console.error('❌ Test event NOT found in storage after adding!');
+      }
+      
+      console.log('🔍 STEP 5: Manually triggering notification scheduler...');
+      const { notificationScheduler } = await import('../lib/notification-scheduler');
+      await notificationScheduler.scheduleEventNotifications();
+      
+      console.log('📅 ✅ Test event added successfully!');
+      console.log('📅 📱 Check the Calendar page to see the event');
+      console.log('🔔 Notification will appear in ~2 minutes');
+      console.log('🔍 ===== END TEST EVENT DEBUG =====');
+      
     } catch (error) {
       console.error('❌ Failed to add test event:', error);
+      console.error('❌ Error details:', error);
     }
   }
 };
