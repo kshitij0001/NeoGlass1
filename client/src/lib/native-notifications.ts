@@ -6,11 +6,7 @@ export class NativeNotificationManager {
 
   async requestPermissions(): Promise<boolean> {
     if (!this.isNative) {
-      // Fallback to web notifications
-      if ('Notification' in window) {
-        const permission = await Notification.requestPermission();
-        return permission === 'granted';
-      }
+      console.log('🌐 Not on native platform - cannot request native permissions');
       return false;
     }
 
@@ -34,16 +30,9 @@ export class NativeNotificationManager {
   }
 
   async scheduleReviewReminder(title: string, body: string, scheduledTime: Date): Promise<void> {
+    // Skip browser notifications completely when we want native Android notifications
     if (!this.isNative) {
-      // Fallback to web notifications for browser
-      if ('Notification' in window && Notification.permission === 'granted') {
-        const delay = scheduledTime.getTime() - Date.now();
-        if (delay > 0) {
-          setTimeout(() => {
-            new Notification(title, { body, icon: '/android-launchericon-192-192.png' });
-          }, delay);
-        }
-      }
+      console.log('🌐 Skipping notification - not on native platform (Android APK)');
       return;
     }
 
@@ -56,31 +45,27 @@ export class NativeNotificationManager {
       console.log('📱 Scheduling Android notification with ID:', notificationId);
       console.log('⏰ Scheduled time:', scheduledTime.toISOString());
       
+      const notification = {
+        title,
+        body,
+        id: notificationId,
+        schedule: { 
+          at: scheduledTime,
+          allowWhileIdle: true
+        },
+        smallIcon: 'ic_stat_icon_config_sample',
+        iconColor: '#F59E0B',
+        sound: 'default',
+        channelId: 'neet-reminders',
+        extra: {
+          type: 'review-reminder'
+        }
+      };
+
+      console.log('📱 Android notification payload:', notification);
+      
       await LocalNotifications.schedule({
-        notifications: [{
-          title,
-          body,
-          id: notificationId,
-          schedule: { 
-            at: scheduledTime,
-            allowWhileIdle: true
-          },
-          smallIcon: 'ic_stat_icon_config_sample',
-          iconColor: '#F59E0B',
-          extra: {
-            type: 'review-reminder'
-          },
-          actionTypeId: '',
-          attachments: [],
-          summaryText: '',
-          group: 'neet-study',
-          groupSummary: false,
-          ongoing: false,
-          autoCancel: true,
-          largeIcon: '',
-          sound: 'default',
-          channelId: 'neet-reminders'
-        }]
+        notifications: [notification]
       });
 
       console.log(`Native notification scheduled: ${title} for ${scheduledTime} with ID: ${notificationId}`);
