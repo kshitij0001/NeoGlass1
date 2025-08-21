@@ -277,20 +277,66 @@ export function DebugPanel() {
                   size="sm"
                   onClick={async () => {
                     try {
-                      const testFunctions = (window as any).testNotifications;
-                      if (testFunctions?.testBasicNotification) {
-                        await testFunctions.testBasicNotification();
-                        addResult('Basic notification tested', 'success');
-                      } else {
-                        addResult('Basic test not available', 'error');
+                      // Capture console output for detailed debugging
+                      const originalLog = console.log;
+                      const originalError = console.error;
+                      const originalWarn = console.warn;
+                      
+                      const logs: string[] = [];
+                      const captureLogs = (...args: any[]) => {
+                        logs.push(args.join(' '));
+                        originalLog.apply(console, args);
+                      };
+                      const captureErrors = (...args: any[]) => {
+                        logs.push(`❌ ${args.join(' ')}`);
+                        originalError.apply(console, args);
+                      };
+                      const captureWarns = (...args: any[]) => {
+                        logs.push(`⚠️ ${args.join(' ')}`);
+                        originalWarn.apply(console, args);
+                      };
+                      
+                      console.log = captureLogs;
+                      console.error = captureErrors;
+                      console.warn = captureWarns;
+                      
+                      try {
+                        addResult('🧪 Starting detailed notification test...', 'info');
+                        
+                        const testFunctions = (window as any).testNotifications;
+                        if (testFunctions?.testBasicNotification) {
+                          await testFunctions.testBasicNotification();
+                          
+                          // Add captured logs to results
+                          logs.forEach(log => {
+                            if (log.includes('❌') || log.includes('failed') || log.includes('Failed')) {
+                              addResult(log, 'error');
+                            } else if (log.includes('✅') || log.includes('SUCCESS') || log.includes('scheduled')) {
+                              addResult(log, 'success');
+                            } else if (log.includes('⚠️') || log.includes('warn')) {
+                              addResult(log, 'info');  
+                            } else if (log.includes('STEP') || log.includes('📱')) {
+                              addResult(log, 'info');
+                            }
+                          });
+                          
+                          addResult('📱 Check your notification shade!', 'success');
+                        } else {
+                          addResult('❌ Test functions not available', 'error');
+                        }
+                      } finally {
+                        // Restore original console methods
+                        console.log = originalLog;
+                        console.error = originalError;
+                        console.warn = originalWarn;
                       }
-                    } catch (error) {
-                      addResult('Basic notification test failed', 'error');
+                    } catch (error: any) {
+                      addResult(`❌ Test failed: ${error?.message || error}`, 'error');
                     }
                   }}
                   className="text-xs"
                 >
-                  Basic Notification
+                  Detailed Test
                 </Button>
                 <Button
                   variant="outline"
