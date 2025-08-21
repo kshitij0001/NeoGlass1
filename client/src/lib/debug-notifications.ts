@@ -207,33 +207,71 @@ export const createNotificationDebugFunctions = () => {
       }
 
       try {
+        console.log('📱 STEP 1: Creating notification channel first...');
+        try {
+          await LocalNotifications.createChannel({
+            id: 'neet_study_reminders',
+            name: 'NEET Study Reminders',
+            description: 'Daily study reminders and review notifications',
+            importance: 5, // MAX = 5 (high priority)
+            visibility: 1, // PUBLIC = 1
+            sound: 'default',
+            vibration: true,
+            lights: true,
+            lightColor: '#e9897e'
+          });
+          console.log('✅ Notification channel created/verified');
+        } catch (channelError) {
+          console.warn('⚠️ Channel creation failed (might already exist):', channelError);
+        }
+
+        console.log('📱 STEP 2: Checking permissions...');
+        const permissions = await LocalNotifications.checkPermissions();
+        console.log('📋 Current permissions:', permissions);
+        
+        if (permissions.display !== 'granted') {
+          console.log('🔑 Requesting permissions...');
+          const requested = await LocalNotifications.requestPermissions();
+          console.log('📋 Permission request result:', requested);
+          
+          if (requested.display !== 'granted') {
+            console.error('❌ Permission denied:', requested);
+            return;
+          }
+        }
+
         const notificationId = Math.floor(Math.random() * 2147483647); // Java int max value
+        const immediateTime = new Date(Date.now() + 3000); // 3 seconds from now for immediate testing
         
         const notification = {
           title: '📚 Review Reminder Test',
-          body: 'You have 3 Physics topics due for review today. Keep your streak going!',
+          body: 'SUCCESS! You have 3 Physics topics due for review today. Keep your streak going!',
           id: notificationId,
           schedule: { 
-            at: new Date(Date.now() + 5000), // 5 seconds from now
-            allowWhileIdle: true
+            at: immediateTime,
+            allowWhileIdle: true,
+            repeats: false
           },
           sound: 'default',
-          channelId: 'neet-reminders',
+          channelId: 'neet_study_reminders',
+          smallIcon: 'ic_stat_icon_config_sample',
+          iconColor: '#e9897e',
           ongoing: false,
           autoCancel: true,
           extra: {
-            type: 'review-reminder'
+            type: 'review-reminder-test'
           }
         };
 
         console.log('📚 Review reminder payload:', notification);
+        console.log(`⏰ Will appear in 3 seconds at: ${immediateTime.toLocaleTimeString()}`);
         
         const result = await LocalNotifications.schedule({
           notifications: [notification]
         });
         
         console.log('✅ Review reminder scheduled successfully:', result);
-        console.log('📱 Check your notification shade in 5 seconds');
+        console.log('📱 Check your notification shade in 3 seconds!');
         
       } catch (error) {
         console.error('❌ Review reminder failed:', error);
@@ -250,33 +288,71 @@ export const createNotificationDebugFunctions = () => {
       }
 
       try {
+        console.log('📱 STEP 1: Creating notification channel first...');
+        try {
+          await LocalNotifications.createChannel({
+            id: 'neet_study_reminders',
+            name: 'NEET Study Reminders',
+            description: 'Daily study reminders and review notifications',
+            importance: 5, // MAX = 5 (high priority)
+            visibility: 1, // PUBLIC = 1
+            sound: 'default',
+            vibration: true,
+            lights: true,
+            lightColor: '#e9897e'
+          });
+          console.log('✅ Notification channel created/verified');
+        } catch (channelError) {
+          console.warn('⚠️ Channel creation failed (might already exist):', channelError);
+        }
+
+        console.log('📱 STEP 2: Checking permissions...');
+        const permissions = await LocalNotifications.checkPermissions();
+        console.log('📋 Current permissions:', permissions);
+        
+        if (permissions.display !== 'granted') {
+          console.log('🔑 Requesting permissions...');
+          const requested = await LocalNotifications.requestPermissions();
+          console.log('📋 Permission request result:', requested);
+          
+          if (requested.display !== 'granted') {
+            console.error('❌ Permission denied:', requested);
+            return;
+          }
+        }
+
         const notificationId = Math.floor(Math.random() * 2147483647); // Java int max value
+        const immediateTime = new Date(Date.now() + 3000); // 3 seconds from now for immediate testing
         
         const notification = {
-          title: '⏰ Daily Study Time!',
-          body: 'Time for your evening study session. You have 5 reviews due today!',
+          title: '⏰ Daily Study Time Test!',
+          body: 'SUCCESS! Time for your evening study session. You have 5 reviews due today!',
           id: notificationId,
           schedule: { 
-            at: new Date(Date.now() + 5000), // 5 seconds from now
-            allowWhileIdle: true
+            at: immediateTime,
+            allowWhileIdle: true,
+            repeats: false
           },
           sound: 'default',
-          channelId: 'neet-reminders',
+          channelId: 'neet_study_reminders',
+          smallIcon: 'ic_stat_icon_config_sample',
+          iconColor: '#e9897e',
           ongoing: false,
           autoCancel: true,
           extra: {
-            type: 'daily-reminder'
+            type: 'daily-reminder-test'
           }
         };
 
         console.log('⏰ Daily reminder payload:', notification);
+        console.log(`⏰ Will appear in 3 seconds at: ${immediateTime.toLocaleTimeString()}`);
         
         const result = await LocalNotifications.schedule({
           notifications: [notification]
         });
         
         console.log('✅ Daily reminder scheduled successfully:', result);
-        console.log('📱 Check your notification shade in 5 seconds');
+        console.log('📱 Check your notification shade in 3 seconds!');
         
       } catch (error) {
         console.error('❌ Daily reminder failed:', error);

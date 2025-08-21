@@ -1,0 +1,53 @@
+📋 4:00:28 am: 📱 Creating Android notification channel...
+📋 4:00:28 am: ✅ Android notification channel created successfully
+📋 4:00:28 am: 🔔 Current notification permissions: {
+  "display": "granted"
+}
+📋 4:00:28 am: ✅ Notification permissions already granted
+📋 4:00:28 am: 🔔 Native permission status: granted
+📋 4:00:28 am: 📱 Android APK - Scheduling notification: {
+  "title": "NEET Study Reminder",
+  "body": "You have 3 overdue reviews and 2 reviews due today. Keep your streak going!",
+  "scheduledTime": "2025-08-21T22:30:28.814Z"
+}
+📋 4:00:28 am: 📱 Android APK - Requesting notification permissions...
+📋 4:00:28 am: 🔔 Platform: android
+📋 4:00:28 am: 🔔 Is native platform: true
+📋 4:00:28 am: 📱 Creating Android notification channel...
+📋 4:00:28 am: ✅ Android notification channel created successfully
+📋 4:00:28 am: 🔔 Current notification permissions: {
+  "display": "granted"
+}
+📋 4:00:28 am: ✅ Notification permissions already granted
+📋 4:00:28 am: 📱 Scheduling Android notification with ID: 1522531544
+📋 4:00:28 am: ⏰ Scheduled time: 2025-08-21T22:30:28.814Z
+📋 4:00:28 am: 📱 Android notification payload: {
+  "title": "NEET Study Reminder",
+  "body": "You have 3 overdue reviews and 2 reviews due today. Keep your streak going!",
+  "id": 1522531544,
+  "schedule": {
+    "at": "2025-08-21T22:30:28.814Z",
+    "allowWhileIdle": true,
+    "repeats": false
+  },
+  "sound": "default",
+  "channelId": "neet_study_reminders",
+  "smallIcon": "ic_stat_icon_config_sample",
+  "iconColor": "#e9897e",
+  "ongoing": false,
+  "autoCancel": true,
+  "extra": {
+    "type": "neet-study-reminder",
+    "scheduledTime": "2025-08-21T22:30:28.814Z"
+  }
+}
+📋 4:00:28 am: 🔔 Attempting to schedule notification...
+📋 4:00:28 am: ✅ Notification scheduling result: {
+  "notifications": [
+    {
+      "id": 1522531544
+    }
+  ]
+}
+📋 4:00:28 am: 📱 Native notification scheduled: NEET Study Reminder for Fri Aug 22 2025 04:00:28 GMT+0530 (India Standard Time) with ID: 1522531544
+📋 4:00:28 am: ✅ Review reminder notification sent
