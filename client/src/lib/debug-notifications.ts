@@ -38,70 +38,128 @@ export const createNotificationDebugFunctions = () => {
       }
 
       try {
-        // Check permissions
+        console.log('📱 STEP 1: Checking platform and capabilities...');
+        console.log('Platform details:', {
+          platform: Capacitor.getPlatform(),
+          isNative: Capacitor.isNativePlatform(),
+          userAgent: navigator.userAgent.substring(0, 150),
+          hasLocalNotifications: typeof LocalNotifications !== 'undefined'
+        });
+        
+        console.log('📱 STEP 2: Creating notification channel first...');
+        try {
+          await LocalNotifications.createChannel({
+            id: 'neet-reminders',
+            name: 'NEET Reminders',
+            description: 'Daily study reminders and review notifications',
+            importance: 5, // MAX = 5 (high priority)
+            visibility: 1, // PUBLIC = 1
+            sound: 'default',
+            vibration: true,
+            lights: true,
+            lightColor: '#F59E0B'
+          });
+          console.log('✅ Notification channel created/verified');
+        } catch (channelError) {
+          console.warn('⚠️ Channel creation failed (might already exist):', channelError);
+          // Continue anyway - channel might already exist
+        }
+        
+        console.log('📱 STEP 3: Checking permissions...');
         const permissions = await LocalNotifications.checkPermissions();
-        console.log('Current permissions:', permissions);
+        console.log('📋 Current permissions:', permissions);
         
         if (permissions.display !== 'granted') {
+          console.log('🔑 Requesting permissions...');
           const requested = await LocalNotifications.requestPermissions();
-          console.log('Permission request result:', requested);
+          console.log('📋 Permission request result:', requested);
           
           if (requested.display !== 'granted') {
-            console.error('❌ Permission denied');
+            console.error('❌ Permission denied:', requested);
             return;
           }
         }
+        
+        console.log('✅ Permissions confirmed granted');
 
-        // Schedule immediate test notification
+        console.log('📱 STEP 4: Scheduling test notification...');
         const testId = Date.now();
+        const notificationPayload = {
+          title: '🧪 APK Test Notification',
+          body: 'Success! Native notifications are working on your Android device.',
+          id: testId,
+          schedule: { 
+            at: new Date(Date.now() + 3000), // 3 seconds from now
+            allowWhileIdle: true
+          },
+          sound: 'default',
+          channelId: 'neet-reminders',
+          ongoing: false,
+          autoCancel: true,
+        };
+        
+        console.log('📱 Notification payload:', notificationPayload);
+        
         const result = await LocalNotifications.schedule({
-          notifications: [{
-            title: '🧪 Test Notification',
-            body: 'This is a test notification from NEET Study Companion',
-            id: testId,
-            schedule: { 
-              at: new Date(Date.now() + 2000), // 2 seconds from now
-              allowWhileIdle: true
-            },
-            sound: 'default',
-            channelId: 'neet-reminders',
-            ongoing: false,
-            autoCancel: true,
-          }]
+          notifications: [notificationPayload]
         });
         
-        console.log('✅ Test notification scheduled:', result);
-        console.log('⏰ Should appear in 2 seconds');
+        console.log('✅ NOTIFICATION SCHEDULED SUCCESSFULLY!');
+        console.log('📱 Result:', result);
+        console.log('⏰ Should appear in 3 seconds on your Android device');
+        console.log('🔔 Check your notification shade if you don\'t hear a sound');
+        
       } catch (error) {
-        console.error('❌ Test notification failed:', error);
+        console.error('❌ DETAILED ERROR INFORMATION:');
+        console.error('Error type:', (error as Error)?.constructor?.name || 'Unknown');
+        console.error('Error message:', (error as Error)?.message || String(error));
+        console.error('Full error object:', error);
+        console.error('Error stack:', (error as Error)?.stack || 'No stack available');
+        
+        // Additional debugging
+        console.log('🔍 DEBUGGING INFO:');
+        console.log('Capacitor platform:', Capacitor.getPlatform());
+        console.log('Is native platform:', Capacitor.isNativePlatform());
+        console.log('LocalNotifications available:', typeof LocalNotifications !== 'undefined');
       }
     },
 
-    // Check notification permissions
+    // Check notification permissions with detailed info
     checkPermissions: async () => {
-      console.log('🔍 Checking notification permissions...');
+      console.log('🔍 COMPREHENSIVE PERMISSION CHECK:');
+      
+      const platformInfo = {
+        platform: Capacitor.getPlatform(),
+        isNative: Capacitor.isNativePlatform(),
+        userAgent: navigator.userAgent,
+        hasCapacitor: typeof Capacitor !== 'undefined',
+        hasLocalNotifications: typeof LocalNotifications !== 'undefined'
+      };
+      
+      console.log('📱 Platform info:', platformInfo);
       
       if (!Capacitor.isNativePlatform()) {
-        console.log('❌ Not on native platform');
-        return;
+        console.log('❌ Not on native platform - this is expected in browser');
+        return { platformInfo, permissions: null };
       }
 
       try {
+        console.log('📋 Checking native permissions...');
         const permissions = await LocalNotifications.checkPermissions();
         console.log('📋 Permission status:', permissions);
         
-        const platformInfo = {
-          platform: Capacitor.getPlatform(),
-          isNative: Capacitor.isNativePlatform(),
-          userAgent: navigator.userAgent,
-          hasCapacitor: typeof Capacitor !== 'undefined',
-          hasLocalNotifications: typeof LocalNotifications !== 'undefined'
-        };
+        // Also check if we can list pending notifications
+        try {
+          const pending = await LocalNotifications.getPending();
+          console.log('📋 Pending notifications:', pending.notifications.length);
+        } catch (pendingError) {
+          console.warn('⚠️ Could not check pending notifications:', pendingError);
+        }
         
-        console.log('📱 Platform info:', platformInfo);
         return { permissions, platformInfo };
       } catch (error) {
         console.error('❌ Permission check failed:', error);
+        return { platformInfo, permissions: null, error: (error as Error)?.message || String(error) };
       }
     },
 
