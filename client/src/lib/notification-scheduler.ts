@@ -51,16 +51,26 @@ class NotificationScheduler {
     if (reminderTimeToday <= now) {
       reminderTimeToday.setDate(reminderTimeToday.getDate() + 1);
     }
-
-    const timeToReminder = reminderTimeToday.getTime() - now.getTime();
     
-    console.log(`⏰ Next daily reminder scheduled for: ${reminderTimeToday.toLocaleString()}`);
+    console.log(`⏰ Scheduling daily reminder for: ${reminderTimeToday.toLocaleString()}`);
 
-    this.dailyReminderTimeout = setTimeout(async () => {
-      await this.sendDailyReminder();
-      // Reschedule for the next day
-      await this.scheduleDailyReminders(reminderTime);
-    }, timeToReminder);
+    // Use native notification scheduling for Android APK
+    const title = 'NEET Study Time!';
+    const body = 'Time for your daily study session. Keep your streak going!';
+    
+    await nativeNotificationManager.scheduleReviewReminder(title, body, reminderTimeToday);
+    
+    // Also set up recurring daily notifications for the next 7 days
+    for (let i = 1; i <= 7; i++) {
+      const futureDate = new Date(reminderTimeToday);
+      futureDate.setDate(futureDate.getDate() + i);
+      
+      await nativeNotificationManager.scheduleReviewReminder(
+        'NEET Daily Study Reminder',
+        'Your daily study session is due. Stay consistent!',
+        futureDate
+      );
+    }
   }
 
   async sendDailyReminder() {
@@ -112,12 +122,48 @@ class NotificationScheduler {
 
   async scheduleImmediateReviewCheck() {
     try {
-      const notificationManager = await createNotificationManagerFromSettings();
-      if (!notificationManager) return;
+      const settings = await storage.getSettings();
+      if (!settings?.notifications) {
+        console.log('📵 Notifications disabled in settings');
+        return;
+      }
 
       const reviews = await storage.getReviews();
-      if (reviews && reviews.length > 0) {
-        await notificationManager.scheduleReviewReminder(reviews);
+      if (!reviews || reviews.length === 0) return;
+
+      // Check for overdue and due reviews
+      const now = new Date();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const overdueReviews = reviews.filter(r => {
+        const dueDate = new Date(r.dueDate);
+        return dueDate < today && !r.isCompleted;
+      });
+
+      const dueToday = reviews.filter(r => {
+        const dueDate = new Date(r.dueDate);
+        return dueDate.toDateString() === today.toDateString() && !r.isCompleted;
+      });
+
+      if (overdueReviews.length > 0 || dueToday.length > 0) {
+        let title = 'NEET Study Reviews Due!';
+        let body = '';
+        
+        if (overdueReviews.length > 0) {
+          body += `${overdueReviews.length} overdue review${overdueReviews.length > 1 ? 's' : ''}`;
+        }
+        
+        if (dueToday.length > 0) {
+          if (body) body += ' and ';
+          body += `${dueToday.length} review${dueToday.length > 1 ? 's' : ''} due today`;
+        }
+
+        body += '. Keep your streak going!';
+
+        // Schedule immediate notification
+        await nativeNotificationManager.scheduleReviewReminder(title, body, new Date());
+        console.log('📚 Immediate review notification scheduled');
       }
     } catch (error) {
       console.error('Failed to schedule immediate review check:', error);
@@ -138,16 +184,26 @@ class NotificationScheduler {
     if (streakTime <= now) {
       streakTime.setDate(streakTime.getDate() + 1);
     }
-
-    const timeToStreak = streakTime.getTime() - now.getTime();
     
-    console.log(`🏆 Next streak reminder scheduled for: ${streakTime.toLocaleString()}`);
+    console.log(`🏆 Scheduling streak reminder for: ${streakTime.toLocaleString()}`);
 
-    this.streakReminderTimeout = setTimeout(async () => {
-      await this.sendStreakReminder();
-      // Reschedule for the next day
-      await this.scheduleStreakReminders();
-    }, timeToStreak);
+    // Use native notification scheduling for Android APK
+    const title = '🏆 Don\'t Break Your Streak!';
+    const body = 'Did you study today? Even 5 minutes keeps your momentum going!';
+    
+    await nativeNotificationManager.scheduleReviewReminder(title, body, streakTime);
+    
+    // Schedule streak reminders for the next 7 days
+    for (let i = 1; i <= 7; i++) {
+      const futureDate = new Date(streakTime);
+      futureDate.setDate(futureDate.getDate() + i);
+      
+      await nativeNotificationManager.scheduleReviewReminder(
+        '🏆 Streak Check',
+        'Keep your study momentum strong! Check your reviews.',
+        futureDate
+      );
+    }
   }
 
   async sendStreakReminder() {

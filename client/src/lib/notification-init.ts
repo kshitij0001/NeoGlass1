@@ -41,8 +41,12 @@ export class NotificationInitializer {
       } else {
         console.log('✅ Notification permissions granted');
         
-        // Schedule a test notification for 10 seconds from now
+        // Schedule a test notification for 3 seconds from now
         await this.scheduleStartupTest();
+        
+        // Initialize the notification scheduler after successful setup
+        const { notificationScheduler } = await import('./notification-scheduler');
+        await notificationScheduler.initializeScheduler();
       }
 
       // Set up notification channel for Android

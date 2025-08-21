@@ -1,35 +1,10 @@
 // Browser notification testing fallback
 export const browserNotificationTest = {
   async testBrowserNotification() {
-    console.log('🌐 Testing browser notification fallback...');
-    
-    if (!('Notification' in window)) {
-      console.error('❌ This browser does not support notifications');
-      return false;
-    }
-
-    let permission = Notification.permission;
-    
-    if (permission === 'default') {
-      console.log('🔑 Requesting browser notification permission...');
-      permission = await Notification.requestPermission();
-    }
-    
-    if (permission === 'granted') {
-      console.log('✅ Browser notification permission granted');
-      
-      new Notification('🧪 NEET Study Companion - Browser Test', {
-        body: 'This is a browser test. In the APK, you\'ll get native Android notifications with proper channels.',
-        icon: '/android-launchericon-192-192.png',
-        tag: 'neet-test'
-      });
-      
-      console.log('📱 Browser notification sent! (This simulates what you\'ll get in the APK)');
-      return true;
-    } else {
-      console.error('❌ Browser notification permission denied');
-      return false;
-    }
+    console.log('🚫 Browser notifications disabled - only Android APK notifications supported');
+    console.log('📱 To test notifications: Build APK and install on Android device');
+    console.log('🧪 Use window.testNotifications.testBasicNotification() in APK');
+    return false;
   },
 
   async showNotificationInstructions() {

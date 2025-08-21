@@ -63,8 +63,8 @@ export class NativeNotificationManager {
         id: NOTIFICATION_CHANNEL.id,
         name: NOTIFICATION_CHANNEL.name,
         description: NOTIFICATION_CHANNEL.description,
-        importance: NOTIFICATION_CHANNEL.importance,
-        visibility: NOTIFICATION_CHANNEL.visibility,
+        importance: 4, // High importance for study reminders
+        visibility: 1, // Public visibility
         sound: 'default',
         vibration: true,
         lights: true,

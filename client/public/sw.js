@@ -127,66 +127,7 @@ self.addEventListener('sync', (event) => {
   }
 });
 
-// Push notifications for review reminders
-self.addEventListener('push', (event) => {
-  console.log('Service Worker: Push notification received');
-  
-  let notificationData = {
-    title: 'NEET Companion',
-    body: 'You have reviews due today!',
-    icon: '/icon-192.png',
-    badge: '/badge-72.png',
-    tag: 'review-reminder',
-    requireInteraction: false,
-    actions: [
-      {
-        action: 'review',
-        title: 'Start Reviews',
-        icon: '/icon-review.png'
-      },
-      {
-        action: 'dismiss',
-        title: 'Dismiss',
-        icon: '/icon-dismiss.png'
-      }
-    ]
-  };
-
-  if (event.data) {
-    try {
-      const data = event.data.json();
-      notificationData = { ...notificationData, ...data };
-    } catch (error) {
-      console.error('Service Worker: Failed to parse push data:', error);
-    }
-  }
-
-  event.waitUntil(
-    self.registration.showNotification(notificationData.title, notificationData)
-  );
-});
-
-// Handle notification clicks
-self.addEventListener('notificationclick', (event) => {
-  console.log('Service Worker: Notification clicked:', event.action);
-  
-  event.notification.close();
-
-  if (event.action === 'review') {
-    // Open the app to reviews page
-    event.waitUntil(
-      clients.openWindow('/')
-    );
-  } else if (event.action === 'dismiss') {
-    // Just close the notification
-    return;
-  } else {
-    // Default action - open the app
-    event.waitUntil(
-      clients.openWindow('/')
-    );
-  }
-});
+// Web notifications removed - using Android APK notifications only
 
 // Utility function to sync reviews (placeholder)
 async function syncReviews() {
@@ -212,118 +153,13 @@ self.addEventListener('error', (event) => {
   console.error('Service Worker: Error occurred:', event.error);
 });
 
-// ========================================
-// OFFLINE NOTIFICATION SYSTEM
-// ========================================
-
-let scheduledNotifications = new Map();
-
-// Listen for messages from the main thread
-self.addEventListener('message', (event) => {
-  if (event.data.type === 'SCHEDULE_NOTIFICATION') {
-    const notification = event.data.notification;
-    scheduleOfflineNotification(notification);
-  }
-});
-
-function scheduleOfflineNotification(notification) {
-  const delay = notification.scheduledTime - Date.now();
-  
-  if (delay <= 0) {
-    // Send immediately if time has passed
-    showOfflineNotification(notification);
-    return;
-  }
-  
-  // Clear existing timeout for this notification
-  if (scheduledNotifications.has(notification.id)) {
-    clearTimeout(scheduledNotifications.get(notification.id));
-  }
-  
-  // Schedule the notification
-  const timeoutId = setTimeout(() => {
-    showOfflineNotification(notification);
-    scheduledNotifications.delete(notification.id);
-  }, delay);
-  
-  scheduledNotifications.set(notification.id, timeoutId);
-  console.log(`SW: Scheduled offline notification "${notification.title}" for ${new Date(notification.scheduledTime)}`);
-}
-
-function showOfflineNotification(notification) {
-  const options = {
-    body: notification.body,
-    icon: '/android-launchericon-192-192.png',
-    badge: '/android-launchericon-96-96.png',
-    tag: `offline-${notification.type}`,
-    requireInteraction: false,
-    silent: false,
-    data: notification
-  };
-  
-  self.registration.showNotification(notification.title, options)
-    .then(() => {
-      console.log(`SW: Showed offline notification: ${notification.title}`);
-      
-      // Notify the main thread
-      self.clients.matchAll().then(clients => {
-        clients.forEach(client => {
-          client.postMessage({
-            type: 'NOTIFICATION_SENT',
-            notification: notification
-          });
-        });
-      });
-    })
-    .catch(error => {
-      console.error('SW: Failed to show offline notification:', error);
-    });
-}
-
-// Enhanced sync for offline notifications
+// Background sync for review data only (web notifications removed)
 self.addEventListener('sync', (event) => {
   console.log('Service Worker: Background sync triggered:', event.tag);
   
   if (event.tag === 'sync-reviews') {
     event.waitUntil(syncReviews());
-  } else if (event.tag === 'check-notifications') {
-    event.waitUntil(checkPendingNotifications());
   }
 });
 
-function checkPendingNotifications() {
-  return new Promise((resolve) => {
-    // Check IndexedDB for any missed notifications
-    const request = indexedDB.open('OfflineNotifications', 1);
-    
-    request.onsuccess = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains('notifications')) {
-        resolve();
-        return;
-      }
-      
-      const transaction = db.transaction(['notifications'], 'readonly');
-      const store = transaction.objectStore('notifications');
-      const index = store.index('scheduledTime');
-      
-      const now = Date.now();
-      const range = IDBKeyRange.upperBound(now);
-      
-      index.openCursor(range).onsuccess = (event) => {
-        const cursor = event.target.result;
-        if (cursor) {
-          const notification = cursor.value;
-          showOfflineNotification(notification);
-          cursor.continue();
-        }
-      };
-      
-      transaction.oncomplete = () => resolve();
-    };
-    
-    request.onerror = () => resolve();
-  });
-}
-
-console.log('Service Worker: Script loaded successfully with offline notifications');
+console.log('Service Worker: Script loaded successfully (web notifications removed)');

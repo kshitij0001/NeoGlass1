@@ -193,11 +193,11 @@ export async function initializeOfflineNotifications(): Promise<void> {
   }
   
   // Register service worker if not already registered
-  // Temporarily disable service worker for Vercel deployment compatibility
-  console.log('Service Worker registration disabled for production compatibility');
+  // Web notifications completely removed - using Android APK notifications only
+  console.log('Web notifications disabled - APK uses native Android notifications');
   
-  // Mark as initialized for today (without service worker)
-  localStorage.setItem(initKey, 'true');
+  // Mark as initialized to prevent re-attempts
+  localStorage.setItem(initKey, 'disabled');
 }
 
 /**
