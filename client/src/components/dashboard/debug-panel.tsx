@@ -397,67 +397,251 @@ export function DebugPanel() {
               </p>
               <div className="grid grid-cols-2 gap-1">
                 <Button variant="outline" size="sm" onClick={async () => {
+                  const logs: string[] = [];
+                  const originalLog = console.log;
+                  const originalError = console.error;
+                  const originalWarn = console.warn;
+                  
+                  console.log = (...args: any[]) => { logs.push(args.join(' ')); originalLog.apply(console, args); };
+                  console.error = (...args: any[]) => { logs.push(`❌ ${args.join(' ')}`); originalError.apply(console, args); };
+                  console.warn = (...args: any[]) => { logs.push(`⚠️ ${args.join(' ')}`); originalWarn.apply(console, args); };
+                  
                   try {
+                    addResult('🔄 Testing review reminder...', 'info');
                     const fn = (window as any).testNotifications?.testReviewReminder;
-                    if (fn) { await fn(); addResult('Review reminder tested', 'success'); }
-                    else { addResult('Review reminder not available', 'error'); }
-                  } catch (e) { addResult('Review reminder failed', 'error'); }
+                    if (fn) { 
+                      await fn(); 
+                      logs.forEach(log => {
+                        if (log.includes('❌') || log.includes('failed')) addResult(log, 'error');
+                        else if (log.includes('✅') || log.includes('scheduled')) addResult(log, 'success');
+                        else addResult(log, 'info');
+                      });
+                      addResult('📱 Review reminder test completed', 'success'); 
+                    } else { 
+                      addResult('❌ Review reminder function not available', 'error'); 
+                    }
+                  } catch (e: any) { 
+                    addResult(`❌ Review reminder failed: ${e?.message || e}`, 'error'); 
+                  } finally {
+                    console.log = originalLog; console.error = originalError; console.warn = originalWarn;
+                  }
                 }} className="text-xs">Review Reminder</Button>
                 
                 <Button variant="outline" size="sm" onClick={async () => {
+                  const logs: string[] = [];
+                  const originalLog = console.log;
+                  const originalError = console.error;
+                  const originalWarn = console.warn;
+                  
+                  console.log = (...args: any[]) => { logs.push(args.join(' ')); originalLog.apply(console, args); };
+                  console.error = (...args: any[]) => { logs.push(`❌ ${args.join(' ')}`); originalError.apply(console, args); };
+                  console.warn = (...args: any[]) => { logs.push(`⚠️ ${args.join(' ')}`); originalWarn.apply(console, args); };
+                  
                   try {
+                    addResult('🔄 Testing daily reminder...', 'info');
                     const fn = (window as any).testNotifications?.testDailyReminder;
-                    if (fn) { await fn(); addResult('Daily reminder tested', 'success'); }
-                    else { addResult('Daily reminder not available', 'error'); }
-                  } catch (e) { addResult('Daily reminder failed', 'error'); }
+                    if (fn) { 
+                      await fn(); 
+                      logs.forEach(log => {
+                        if (log.includes('❌') || log.includes('failed')) addResult(log, 'error');
+                        else if (log.includes('✅') || log.includes('scheduled')) addResult(log, 'success');
+                        else addResult(log, 'info');
+                      });
+                      addResult('📱 Daily reminder test completed', 'success'); 
+                    } else { 
+                      addResult('❌ Daily reminder function not available', 'error'); 
+                    }
+                  } catch (e: any) { 
+                    addResult(`❌ Daily reminder failed: ${e?.message || e}`, 'error'); 
+                  } finally {
+                    console.log = originalLog; console.error = originalError; console.warn = originalWarn;
+                  }
                 }} className="text-xs">Daily Reminder</Button>
                 
                 <Button variant="outline" size="sm" onClick={async () => {
+                  const logs: string[] = [];
+                  const originalLog = console.log;
+                  const originalError = console.error;
+                  const originalWarn = console.warn;
+                  
+                  console.log = (...args: any[]) => { logs.push(args.join(' ')); originalLog.apply(console, args); };
+                  console.error = (...args: any[]) => { logs.push(`❌ ${args.join(' ')}`); originalError.apply(console, args); };
+                  console.warn = (...args: any[]) => { logs.push(`⚠️ ${args.join(' ')}`); originalWarn.apply(console, args); };
+                  
                   try {
+                    addResult('🔄 Testing streak milestone...', 'info');
                     const fn = (window as any).testNotifications?.testStreakMilestone;
-                    if (fn) { await fn(); addResult('Streak milestone tested', 'success'); }
-                    else { addResult('Streak milestone not available', 'error'); }
-                  } catch (e) { addResult('Streak milestone failed', 'error'); }
+                    if (fn) { 
+                      await fn(); 
+                      logs.forEach(log => {
+                        if (log.includes('❌') || log.includes('failed')) addResult(log, 'error');
+                        else if (log.includes('✅') || log.includes('scheduled')) addResult(log, 'success');
+                        else addResult(log, 'info');
+                      });
+                      addResult('🏆 Streak milestone test completed', 'success'); 
+                    } else { 
+                      addResult('❌ Streak milestone function not available', 'error'); 
+                    }
+                  } catch (e: any) { 
+                    addResult(`❌ Streak milestone failed: ${e?.message || e}`, 'error'); 
+                  } finally {
+                    console.log = originalLog; console.error = originalError; console.warn = originalWarn;
+                  }
                 }} className="text-xs">Streak Milestone</Button>
                 
                 <Button variant="outline" size="sm" onClick={async () => {
+                  const logs: string[] = [];
+                  const originalLog = console.log;
+                  const originalError = console.error;
+                  const originalWarn = console.warn;
+                  
+                  console.log = (...args: any[]) => { logs.push(args.join(' ')); originalLog.apply(console, args); };
+                  console.error = (...args: any[]) => { logs.push(`❌ ${args.join(' ')}`); originalError.apply(console, args); };
+                  console.warn = (...args: any[]) => { logs.push(`⚠️ ${args.join(' ')}`); originalWarn.apply(console, args); };
+                  
                   try {
+                    addResult('🔄 Testing with actual data...', 'info');
                     const fn = (window as any).testNotifications?.testWithActualData;
-                    if (fn) { await fn(); addResult('Actual data tested', 'success'); }
-                    else { addResult('Actual data test not available', 'error'); }
-                  } catch (e) { addResult('Actual data test failed', 'error'); }
+                    if (fn) { 
+                      await fn(); 
+                      logs.forEach(log => {
+                        if (log.includes('❌') || log.includes('failed')) addResult(log, 'error');
+                        else if (log.includes('✅') || log.includes('scheduled')) addResult(log, 'success');
+                        else addResult(log, 'info');
+                      });
+                      addResult('📈 Actual data test completed', 'success'); 
+                    } else { 
+                      addResult('❌ Actual data test function not available', 'error'); 
+                    }
+                  } catch (e: any) { 
+                    addResult(`❌ Actual data test failed: ${e?.message || e}`, 'error'); 
+                  } finally {
+                    console.log = originalLog; console.error = originalError; console.warn = originalWarn;
+                  }
                 }} className="text-xs">With Actual Data</Button>
                 
                 <Button variant="outline" size="sm" onClick={async () => {
+                  const logs: string[] = [];
+                  const originalLog = console.log;
+                  const originalError = console.error;
+                  const originalWarn = console.warn;
+                  
+                  console.log = (...args: any[]) => { logs.push(args.join(' ')); originalLog.apply(console, args); };
+                  console.error = (...args: any[]) => { logs.push(`❌ ${args.join(' ')}`); originalError.apply(console, args); };
+                  console.warn = (...args: any[]) => { logs.push(`⚠️ ${args.join(' ')}`); originalWarn.apply(console, args); };
+                  
                   try {
+                    addResult('🔄 Testing user configured time...', 'info');
                     const fn = (window as any).testNotifications?.testUserConfiguredTime;
-                    if (fn) { await fn(); addResult('User time tested', 'success'); }
-                    else { addResult('User time test not available', 'error'); }
-                  } catch (e) { addResult('User time test failed', 'error'); }
+                    if (fn) { 
+                      await fn(); 
+                      logs.forEach(log => {
+                        if (log.includes('❌') || log.includes('failed')) addResult(log, 'error');
+                        else if (log.includes('✅') || log.includes('scheduled')) addResult(log, 'success');
+                        else addResult(log, 'info');
+                      });
+                      addResult('⏰ User config time test completed', 'success'); 
+                    } else { 
+                      addResult('❌ User time test function not available', 'error'); 
+                    }
+                  } catch (e: any) { 
+                    addResult(`❌ User time test failed: ${e?.message || e}`, 'error'); 
+                  } finally {
+                    console.log = originalLog; console.error = originalError; console.warn = originalWarn;
+                  }
                 }} className="text-xs">User Config Time</Button>
                 
                 <Button variant="outline" size="sm" onClick={async () => {
+                  const logs: string[] = [];
+                  const originalLog = console.log;
+                  const originalError = console.error;
+                  const originalWarn = console.warn;
+                  
+                  console.log = (...args: any[]) => { logs.push(args.join(' ')); originalLog.apply(console, args); };
+                  console.error = (...args: any[]) => { logs.push(`❌ ${args.join(' ')}`); originalError.apply(console, args); };
+                  console.warn = (...args: any[]) => { logs.push(`⚠️ ${args.join(' ')}`); originalWarn.apply(console, args); };
+                  
                   try {
+                    addResult('🔄 Testing event notification...', 'info');
                     const fn = (window as any).testNotifications?.testEventNotification;
-                    if (fn) { await fn(); addResult('Event notification tested', 'success'); }
-                    else { addResult('Event notification not available', 'error'); }
-                  } catch (e) { addResult('Event notification failed', 'error'); }
+                    if (fn) { 
+                      await fn(); 
+                      logs.forEach(log => {
+                        if (log.includes('❌') || log.includes('failed')) addResult(log, 'error');
+                        else if (log.includes('✅') || log.includes('scheduled')) addResult(log, 'success');
+                        else addResult(log, 'info');
+                      });
+                      addResult('📅 Event notification test completed', 'success'); 
+                    } else { 
+                      addResult('❌ Event notification function not available', 'error'); 
+                    }
+                  } catch (e: any) { 
+                    addResult(`❌ Event notification failed: ${e?.message || e}`, 'error'); 
+                  } finally {
+                    console.log = originalLog; console.error = originalError; console.warn = originalWarn;
+                  }
                 }} className="text-xs">Event Notification</Button>
                 
                 <Button variant="outline" size="sm" onClick={async () => {
+                  const logs: string[] = [];
+                  const originalLog = console.log;
+                  const originalError = console.error;
+                  const originalWarn = console.warn;
+                  
+                  console.log = (...args: any[]) => { logs.push(args.join(' ')); originalLog.apply(console, args); };
+                  console.error = (...args: any[]) => { logs.push(`❌ ${args.join(' ')}`); originalError.apply(console, args); };
+                  console.warn = (...args: any[]) => { logs.push(`⚠️ ${args.join(' ')}`); originalWarn.apply(console, args); };
+                  
                   try {
+                    addResult('🔄 Getting notification status...', 'info');
                     const fn = (window as any).testNotifications?.showStatus;
-                    if (fn) { await fn(); addResult('Status shown in console', 'success'); }
-                    else { addResult('Show status not available', 'error'); }
-                  } catch (e) { addResult('Show status failed', 'error'); }
+                    if (fn) { 
+                      await fn(); 
+                      logs.forEach(log => {
+                        if (log.includes('❌') || log.includes('failed')) addResult(log, 'error');
+                        else if (log.includes('✅') || log.includes('Status:')) addResult(log, 'success');
+                        else addResult(log, 'info');
+                      });
+                      addResult('📋 Status check completed', 'success'); 
+                    } else { 
+                      addResult('❌ Show status function not available', 'error'); 
+                    }
+                  } catch (e: any) { 
+                    addResult(`❌ Show status failed: ${e?.message || e}`, 'error'); 
+                  } finally {
+                    console.log = originalLog; console.error = originalError; console.warn = originalWarn;
+                  }
                 }} className="text-xs">Show Status</Button>
                 
                 <Button variant="outline" size="sm" onClick={async () => {
+                  const logs: string[] = [];
+                  const originalLog = console.log;
+                  const originalError = console.error;
+                  const originalWarn = console.warn;
+                  
+                  console.log = (...args: any[]) => { logs.push(args.join(' ')); originalLog.apply(console, args); };
+                  console.error = (...args: any[]) => { logs.push(`❌ ${args.join(' ')}`); originalError.apply(console, args); };
+                  console.warn = (...args: any[]) => { logs.push(`⚠️ ${args.join(' ')}`); originalWarn.apply(console, args); };
+                  
                   try {
+                    addResult('🔄 Sending personalized notification...', 'info');
                     const fn = (window as any).sendPersonalizedNotificationNow;
-                    if (fn) { await fn(); addResult('Personalized notification sent', 'success'); }
-                    else { addResult('Personalized not available', 'error'); }
-                  } catch (e) { addResult('Personalized notification failed', 'error'); }
+                    if (fn) { 
+                      await fn(); 
+                      logs.forEach(log => {
+                        if (log.includes('❌') || log.includes('failed')) addResult(log, 'error');
+                        else if (log.includes('✅') || log.includes('sent')) addResult(log, 'success');
+                        else addResult(log, 'info');
+                      });
+                      addResult('👤 Personalized notification completed', 'success'); 
+                    } else { 
+                      addResult('❌ Personalized notification function not available', 'error'); 
+                    }
+                  } catch (e: any) { 
+                    addResult(`❌ Personalized notification failed: ${e?.message || e}`, 'error'); 
+                  } finally {
+                    console.log = originalLog; console.error = originalError; console.warn = originalWarn;
+                  }
                 }} className="text-xs">Send Personalized</Button>
               </div>
             </div>
