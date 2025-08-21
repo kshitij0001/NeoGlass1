@@ -330,24 +330,21 @@ export function QuickAddModal({ isOpen, onClose }: QuickAddModalProps) {
             </Label>
             <div className="flex space-x-2">
               <Button
-                variant={difficulty === "Easy" ? "default" : "outline"}
-                className={`flex-1 neobrutalist-btn transition-all duration-150 ${difficulty === "Easy" ? "bg-green-500 text-white border-green-600" : "bg-white dark:bg-gray-100 text-brutal-black border-gray-300"} font-bold border-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.25)] hover:-translate-y-1 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.25)] active:translate-y-1`}
+                className={`flex-1 neobrutalist-btn transition-all duration-150 ${difficulty === "Easy" ? "bg-green-500! text-white! border-green-600 hover:bg-green-500!" : "bg-white! dark:bg-gray-100! text-brutal-black! border-gray-300 hover:bg-white! dark:hover:bg-gray-100!"} font-bold border-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.25)] hover:-translate-y-1 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.25)] active:translate-y-1 hover:opacity-100!`}
                 onClick={() => setDifficulty("Easy")}
                 data-testid="difficulty-easy"
               >
                 Easy
               </Button>
               <Button
-                variant={difficulty === "Medium" ? "default" : "outline"}
-                className={`flex-1 neobrutalist-btn transition-all duration-150 ${difficulty === "Medium" ? "bg-yellow-500 text-brutal-black border-yellow-600" : "bg-white dark:bg-gray-100 text-brutal-black border-gray-300"} font-bold border-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.25)] hover:-translate-y-1 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.25)] active:translate-y-1`}
+                className={`flex-1 neobrutalist-btn transition-all duration-150 ${difficulty === "Medium" ? "bg-yellow-500! text-brutal-black! border-yellow-600 hover:bg-yellow-500!" : "bg-white! dark:bg-gray-100! text-brutal-black! border-gray-300 hover:bg-white! dark:hover:bg-gray-100!"} font-bold border-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.25)] hover:-translate-y-1 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.25)] active:translate-y-1 hover:opacity-100!`}
                 onClick={() => setDifficulty("Medium")}
                 data-testid="difficulty-medium"
               >
                 Medium
               </Button>
               <Button
-                variant={difficulty === "Hard" ? "default" : "outline"}
-                className={`flex-1 neobrutalist-btn transition-all duration-150 ${difficulty === "Hard" ? "bg-red-500 text-white border-red-600" : "bg-white dark:bg-gray-100 text-brutal-black border-gray-300"} font-bold border-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.25)] hover:-translate-y-1 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.25)] active:translate-y-1`}
+                className={`flex-1 neobrutalist-btn transition-all duration-150 ${difficulty === "Hard" ? "bg-red-500! text-white! border-red-600 hover:bg-red-500!" : "bg-white! dark:bg-gray-100! text-brutal-black! border-gray-300 hover:bg-white! dark:hover:bg-gray-100!"} font-bold border-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.25)] hover:-translate-y-1 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.25)] active:translate-y-1 hover:opacity-100!`}
                 onClick={() => setDifficulty("Hard")}
                 data-testid="difficulty-hard"
               >
