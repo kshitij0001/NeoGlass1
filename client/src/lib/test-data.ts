@@ -12,241 +12,144 @@ const getFutureDate = (daysAhead: number) => {
   return format(addDays(new Date(), randomOffset), 'yyyy-MM-dd');
 };
 
-// Beautiful test reviews with realistic NEET topics
+// Beautiful test reviews with realistic NEET topics - FULL MONTH DATA
 export const generateTestReviews = (): Review[] => {
-  const reviews: Review[] = [
-    // Physics - Due today
-    {
-      id: "review-1",
-      topicId: "physics-mechanics-1",
-      subject: "Physics" as const,
-      chapter: "Mechanics",
-      topic: "Newton's Laws of Motion",
-      difficulty: "Medium" as const,
-      interval: 7,
-      dueDate: format(new Date(), 'yyyy-MM-dd'),
-      lastReviewed: getRandomDate(7),
-      timesReviewed: 3,
-      isCompleted: false,
-      notes: "Focus on third law applications in collision problems",
-      createdAt: getRandomDate(14),
-    },
-    {
-      id: "review-2",
-      topicId: "physics-waves-1",
-      subject: "Physics" as const,
-      chapter: "Waves and Sound",
-      topic: "Wave Interference and Beats",
-      difficulty: "Hard" as const,
-      interval: 14,
-      dueDate: format(new Date(), 'yyyy-MM-dd'),
-      lastReviewed: getRandomDate(14),
-      timesReviewed: 2,
-      isCompleted: false,
-      notes: "Practice numerical problems on beat frequency",
-      createdAt: getRandomDate(28),
-    },
-    // Chemistry - Due today
-    {
-      id: "review-3",
-      topicId: "chemistry-organic-1",
-      subject: "Chemistry" as const,
-      chapter: "Organic Chemistry",
-      topic: "Alkenes and Alkynes",
-      difficulty: "Easy" as const,
-      interval: 4,
-      dueDate: format(new Date(), 'yyyy-MM-dd'),
-      lastReviewed: getRandomDate(4),
-      timesReviewed: 1,
-      isCompleted: false,
-      notes: "Remember addition reactions and Markovnikov's rule",
-      createdAt: getRandomDate(8),
-    },
-    {
-      id: "review-4",
-      topicId: "chemistry-physical-1",
-      subject: "Chemistry" as const,
-      chapter: "Physical Chemistry",
-      topic: "Thermodynamics - First Law",
-      difficulty: "Medium" as const,
-      interval: 7,
-      dueDate: format(new Date(), 'yyyy-MM-dd'),
-      lastReviewed: getRandomDate(7),
-      timesReviewed: 4,
-      isCompleted: false,
-      notes: "Focus on enthalpy calculations and Hess's law",
-      createdAt: getRandomDate(21),
-    },
-    // Biology - Due today
-    {
-      id: "review-5",
-      topicId: "biology-genetics-1",
-      subject: "Biology" as const,
-      chapter: "Genetics and Evolution",
-      topic: "Mendelian Genetics",
-      difficulty: "Easy" as const,
-      interval: 4,
-      dueDate: format(new Date(), 'yyyy-MM-dd'),
-      lastReviewed: getRandomDate(4),
-      timesReviewed: 2,
-      isCompleted: false,
-      notes: "Practice dihybrid cross problems",
-      createdAt: getRandomDate(12),
-    },
-    // Overdue reviews
-    {
-      id: "review-6",
-      topicId: "physics-electricity-1",
-      subject: "Physics" as const,
-      chapter: "Current Electricity",
-      topic: "Kirchhoff's Laws",
-      difficulty: "Hard" as const,
-      interval: 28,
-      dueDate: format(subDays(new Date(), 2), 'yyyy-MM-dd'),
-      lastReviewed: getRandomDate(30),
-      timesReviewed: 1,
-      isCompleted: false,
-      notes: "Complex circuit analysis needs more practice",
-      createdAt: getRandomDate(35),
-    },
-    {
-      id: "review-7",
-      topicId: "chemistry-inorganic-1",
-      subject: "Chemistry" as const,
-      chapter: "Inorganic Chemistry",
-      topic: "Coordination Compounds",
-      difficulty: "Hard" as const,
-      interval: 14,
-      dueDate: format(subDays(new Date(), 1), 'yyyy-MM-dd'),
-      lastReviewed: getRandomDate(16),
-      timesReviewed: 3,
-      isCompleted: false,
-      notes: "CFSE calculations and isomerism",
-      createdAt: getRandomDate(30),
-    },
-    // Future reviews
-    {
-      id: "review-8",
-      topicId: "biology-plant-1",
-      subject: "Biology" as const,
-      chapter: "Plant Physiology",
-      topic: "Photosynthesis - Light Reactions",
-      difficulty: "Medium" as const,
-      interval: 7,
-      dueDate: getFutureDate(5),
-      lastReviewed: getRandomDate(2),
-      timesReviewed: 2,
-      isCompleted: false,
-      notes: "Z-scheme and cyclic photophosphorylation",
-      createdAt: getRandomDate(14),
-    },
-    {
-      id: "review-9",
-      topicId: "physics-modern-1",
-      subject: "Physics" as const,
-      chapter: "Modern Physics",
-      topic: "Photoelectric Effect",
-      difficulty: "Medium" as const,
-      interval: 14,
-      dueDate: getFutureDate(10),
-      lastReviewed: getRandomDate(4),
-      timesReviewed: 1,
-      isCompleted: false,
-      notes: "Einstein's equation and stopping potential",
-      createdAt: getRandomDate(18),
-    },
-    {
-      id: "review-10",
-      topicId: "chemistry-organic-2",
-      subject: "Chemistry" as const,
-      chapter: "Organic Chemistry",
-      topic: "Aromatic Compounds",
-      difficulty: "Easy" as const,
-      interval: 4,
-      dueDate: getFutureDate(3),
-      lastReviewed: format(new Date(), 'yyyy-MM-dd'),
-      timesReviewed: 1,
-      isCompleted: false,
-      notes: "Electrophilic substitution mechanisms",
-      createdAt: getRandomDate(4),
-    },
-  ];
-
+  const reviews: Review[] = [];
+  
+  // NEET topics for comprehensive data generation
+  const topics = [
+    // Physics topics
+    { subject: "Physics", chapter: "Mechanics", topic: "Newton's Laws of Motion", difficulty: "Medium" },
+    { subject: "Physics", chapter: "Mechanics", topic: "Work, Energy and Power", difficulty: "Easy" },
+    { subject: "Physics", chapter: "Mechanics", topic: "Circular Motion", difficulty: "Hard" },
+    { subject: "Physics", chapter: "Mechanics", topic: "Rotational Motion", difficulty: "Hard" },
+    { subject: "Physics", chapter: "Waves and Sound", topic: "Wave Motion", difficulty: "Medium" },
+    { subject: "Physics", chapter: "Waves and Sound", topic: "Sound Waves", difficulty: "Easy" },
+    { subject: "Physics", chapter: "Waves and Sound", topic: "Doppler Effect", difficulty: "Hard" },
+    { subject: "Physics", chapter: "Optics", topic: "Ray Optics", difficulty: "Medium" },
+    { subject: "Physics", chapter: "Optics", topic: "Wave Optics", difficulty: "Hard" },
+    { subject: "Physics", chapter: "Electricity", topic: "Electric Field", difficulty: "Medium" },
+    { subject: "Physics", chapter: "Electricity", topic: "Electric Potential", difficulty: "Medium" },
+    { subject: "Physics", chapter: "Electricity", topic: "Current Electricity", difficulty: "Hard" },
+    { subject: "Physics", chapter: "Magnetism", topic: "Magnetic Effects", difficulty: "Medium" },
+    { subject: "Physics", chapter: "Modern Physics", topic: "Photoelectric Effect", difficulty: "Hard" },
+    { subject: "Physics", chapter: "Modern Physics", topic: "Atomic Structure", difficulty: "Medium" },
+    
+    // Chemistry topics
+    { subject: "Chemistry", chapter: "Organic Chemistry", topic: "Hydrocarbons", difficulty: "Easy" },
+    { subject: "Chemistry", chapter: "Organic Chemistry", topic: "Haloalkanes", difficulty: "Medium" },
+    { subject: "Chemistry", chapter: "Organic Chemistry", topic: "Alcohols and Ethers", difficulty: "Medium" },
+    { subject: "Chemistry", chapter: "Organic Chemistry", topic: "Aldehydes and Ketones", difficulty: "Hard" },
+    { subject: "Chemistry", chapter: "Organic Chemistry", topic: "Carboxylic Acids", difficulty: "Medium" },
+    { subject: "Chemistry", chapter: "Organic Chemistry", topic: "Amines", difficulty: "Hard" },
+    { subject: "Chemistry", chapter: "Physical Chemistry", topic: "Atomic Structure", difficulty: "Medium" },
+    { subject: "Chemistry", chapter: "Physical Chemistry", topic: "Chemical Bonding", difficulty: "Hard" },
+    { subject: "Chemistry", chapter: "Physical Chemistry", topic: "Gaseous State", difficulty: "Easy" },
+    { subject: "Chemistry", chapter: "Physical Chemistry", topic: "Thermodynamics", difficulty: "Hard" },
+    { subject: "Chemistry", chapter: "Physical Chemistry", topic: "Chemical Equilibrium", difficulty: "Medium" },
+    { subject: "Chemistry", chapter: "Physical Chemistry", topic: "Ionic Equilibrium", difficulty: "Hard" },
+    { subject: "Chemistry", chapter: "Inorganic Chemistry", topic: "s-Block Elements", difficulty: "Easy" },
+    { subject: "Chemistry", chapter: "Inorganic Chemistry", topic: "p-Block Elements", difficulty: "Medium" },
+    { subject: "Chemistry", chapter: "Inorganic Chemistry", topic: "d-Block Elements", difficulty: "Hard" },
+    
+    // Biology topics
+    { subject: "Biology", chapter: "Cell Biology", topic: "Cell Structure", difficulty: "Easy" },
+    { subject: "Biology", chapter: "Cell Biology", topic: "Cell Division", difficulty: "Medium" },
+    { subject: "Biology", chapter: "Cell Biology", topic: "Biomolecules", difficulty: "Medium" },
+    { subject: "Biology", chapter: "Plant Physiology", topic: "Photosynthesis", difficulty: "Hard" },
+    { subject: "Biology", chapter: "Plant Physiology", topic: "Respiration", difficulty: "Medium" },
+    { subject: "Biology", chapter: "Plant Physiology", topic: "Plant Growth", difficulty: "Medium" },
+    { subject: "Biology", chapter: "Human Physiology", topic: "Digestion", difficulty: "Easy" },
+    { subject: "Biology", chapter: "Human Physiology", topic: "Circulation", difficulty: "Medium" },
+    { subject: "Biology", chapter: "Human Physiology", topic: "Neural Control", difficulty: "Hard" },
+    { subject: "Biology", chapter: "Genetics", topic: "Heredity", difficulty: "Medium" },
+    { subject: "Biology", chapter: "Genetics", topic: "Molecular Basis", difficulty: "Hard" },
+    { subject: "Biology", chapter: "Evolution", topic: "Origin of Life", difficulty: "Medium" },
+    { subject: "Biology", chapter: "Ecology", topic: "Ecosystem", difficulty: "Easy" },
+    { subject: "Biology", chapter: "Ecology", topic: "Biodiversity", difficulty: "Medium" },
+  ] as const;
+  
+  // Generate reviews for each day of the past 30 days
+  for (let day = 0; day < 30; day++) {
+    const reviewsForDay = Math.floor(Math.random() * 8) + 3; // 3-10 reviews per day
+    
+    for (let i = 0; i < reviewsForDay; i++) {
+      const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+      const reviewDate = format(subDays(new Date(), day), 'yyyy-MM-dd');
+      const createdDate = format(subDays(new Date(), day + Math.floor(Math.random() * 7) + 1), 'yyyy-MM-dd');
+      
+      // Determine due date based on review pattern (some overdue, some due today, some future)
+      let dueDate: string;
+      const random = Math.random();
+      if (random < 0.15) {
+        // 15% overdue
+        dueDate = format(subDays(new Date(), Math.floor(Math.random() * 5) + 1), 'yyyy-MM-dd');
+      } else if (random < 0.35) {
+        // 20% due today
+        dueDate = format(new Date(), 'yyyy-MM-dd');
+      } else {
+        // 65% future
+        dueDate = format(addDays(new Date(), Math.floor(Math.random() * 14) + 1), 'yyyy-MM-dd');
+      }
+      
+      const interval = randomTopic.difficulty === 'Easy' ? Math.floor(Math.random() * 5) + 3 : 
+                     randomTopic.difficulty === 'Medium' ? Math.floor(Math.random() * 7) + 7 :
+                     Math.floor(Math.random() * 14) + 14;
+      
+      reviews.push({
+        id: `review-${day}-${i}`,
+        topicId: `${randomTopic.subject.toLowerCase()}-${randomTopic.chapter.toLowerCase().replace(/\s+/g, '-')}-${i}`,
+        subject: randomTopic.subject as "Physics" | "Chemistry" | "Biology",
+        chapter: randomTopic.chapter,
+        topic: randomTopic.topic,
+        difficulty: randomTopic.difficulty as "Easy" | "Medium" | "Hard",
+        interval,
+        dueDate,
+        lastReviewed: reviewDate,
+        timesReviewed: Math.floor(Math.random() * 5) + 1,
+        isCompleted: Math.random() < 0.8, // 80% completed
+        notes: `Review notes for ${randomTopic.topic}`,
+        createdAt: createdDate,
+      });
+    }
+  }
+  
+  console.log(`📊 Generated ${reviews.length} reviews spanning 30 days`);
   return reviews;
 };
 
-// Test sessions with realistic scores
+// Test sessions with realistic scores - FULL MONTH DATA
 export const generateTestSessions = (): TestSession[] => {
-  return [
-    {
-      id: "test-1",
-      date: getRandomDate(1),
-      duration: 180,
-      totalQuestions: 180,
-      correctAnswers: 142,
-      subject: "Physics",
-      score: 78.9,
-      createdAt: getRandomDate(1),
-    },
-    {
-      id: "test-2",
-      date: getRandomDate(3),
-      duration: 60,
-      totalQuestions: 45,
-      correctAnswers: 38,
-      subject: "Chemistry",
-      score: 84.4,
-      createdAt: getRandomDate(3),
-    },
-    {
-      id: "test-3",
-      date: getRandomDate(5),
-      duration: 180,
-      totalQuestions: 180,
-      correctAnswers: 134,
-      score: 74.4,
-      createdAt: getRandomDate(5),
-    },
-    {
-      id: "test-4",
-      date: getRandomDate(7),
-      duration: 90,
-      totalQuestions: 60,
-      correctAnswers: 52,
-      subject: "Biology",
-      score: 86.7,
-      createdAt: getRandomDate(7),
-    },
-    {
-      id: "test-5",
-      date: getRandomDate(10),
-      duration: 180,
-      totalQuestions: 180,
-      correctAnswers: 128,
-      score: 71.1,
-      createdAt: getRandomDate(10),
-    },
-    {
-      id: "test-6",
-      date: getRandomDate(12),
-      duration: 120,
-      totalQuestions: 90,
-      correctAnswers: 71,
-      subject: "Physics",
-      score: 78.9,
-      createdAt: getRandomDate(12),
-    },
-    {
-      id: "test-7",
-      date: getRandomDate(15),
-      duration: 60,
-      totalQuestions: 45,
-      correctAnswers: 36,
-      subject: "Chemistry",
-      score: 80.0,
-      createdAt: getRandomDate(15),
-    },
-  ];
+  const sessions: TestSession[] = [];
+  
+  // Generate test sessions for the past 30 days
+  for (let day = 0; day < 30; day++) {
+    const sessionsForDay = Math.floor(Math.random() * 4) + 1; // 1-4 sessions per day
+    
+    for (let i = 0; i < sessionsForDay; i++) {
+      const sessionDate = format(subDays(new Date(), day), 'yyyy-MM-dd');
+      const subjects = ['Physics', 'Chemistry', 'Biology'] as const;
+      const randomSubject = subjects[Math.floor(Math.random() * subjects.length)];
+      
+      const totalQuestions = Math.floor(Math.random() * 30) + 20; // 20-50 questions
+      const correctAnswers = Math.floor(totalQuestions * (0.4 + Math.random() * 0.4)); // 40-80% accuracy
+      const duration = Math.floor(Math.random() * 60) + 30; // 30-90 minutes
+      
+      sessions.push({
+        id: `session-${day}-${i}`,
+        date: sessionDate,
+        duration,
+        totalQuestions,
+        correctAnswers,
+        subject: randomSubject,
+        score: Math.round((correctAnswers / totalQuestions) * 100),
+        createdAt: sessionDate,
+      });
+    }
+  }
+  
+  console.log(`📊 Generated ${sessions.length} test sessions spanning 30 days`);
+  return sessions;
 };
 
 // Progress data showing good study habits
@@ -276,46 +179,52 @@ export const generateTestProgress = (): Progress => {
   };
 };
 
-// Calendar events
+// Calendar events - FULL MONTH DATA
 export const generateTestEvents = (): ManualEvent[] => {
-  return [
-    {
-      id: "event-1",
-      title: "NEET Mock Test",
-      date: getFutureDate(7),
-      time: "09:00",
-      type: "mock" as const,
-      description: "Full-length mock test at coaching center",
-      createdAt: getRandomDate(5),
-    },
-    {
-      id: "event-2",
-      title: "Physics Doubt Clearing",
-      date: getFutureDate(3),
-      time: "15:00",
-      type: "other" as const,
-      description: "Electromagnetic induction problems",
-      createdAt: getRandomDate(2),
-    },
-    {
-      id: "event-3",
-      title: "Chemistry Lab Practical",
-      date: getFutureDate(5),
-      time: "10:30",
-      type: "exam" as const,
-      description: "Qualitative analysis practical exam",
-      createdAt: getRandomDate(3),
-    },
-    {
-      id: "event-4",
-      title: "NEET 2026",
-      date: "2026-05-05",
-      time: "09:00",
-      type: "exam" as const,
-      description: "The big day! 🎯",
-      createdAt: getRandomDate(30),
-    },
-  ];
+  const events: ManualEvent[] = [];
+  
+  // Generate events for the past 5 days and next 25 days
+  for (let day = -5; day < 25; day++) {
+    if (Math.random() < 0.3) { // 30% chance of event on any day
+      const eventDate = format(addDays(new Date(), day), 'yyyy-MM-dd');
+      const eventTypes = ['Mock Test', 'Study Session', 'Practice Test', 'Revision', 'Chapter Test'] as const;
+      const subjects = ['Physics', 'Chemistry', 'Biology', 'All Subjects'] as const;
+      
+      const randomType = eventTypes[Math.floor(Math.random() * eventTypes.length)];
+      const randomSubject = subjects[Math.floor(Math.random() * subjects.length)];
+      const eventTypeMapping: { [key: string]: "mock" | "exam" | "other" } = {
+        'Mock Test': 'mock',
+        'Practice Test': 'mock',
+        'Chapter Test': 'exam',
+        'Study Session': 'other',
+        'Revision': 'other'
+      };
+      
+      events.push({
+        id: `event-day-${day}`,
+        title: `${randomType} - ${randomSubject}`,
+        date: eventDate,
+        time: `${Math.floor(Math.random() * 4) + 9}:${Math.random() < 0.5 ? '00' : '30'}`, // 9:00-12:30
+        type: eventTypeMapping[randomType] || 'other',
+        description: `Scheduled ${randomType.toLowerCase()} for ${randomSubject}`,
+        createdAt: format(subDays(new Date(), Math.abs(day) + 1), 'yyyy-MM-dd'),
+      });
+    }
+  }
+  
+  // Add the NEET exam date
+  events.push({
+    id: "event-neet-2026",
+    title: "NEET 2026",
+    date: "2026-05-05",
+    time: "09:00",
+    type: "exam" as const,
+    description: "The big day! 🎯",
+    createdAt: getRandomDate(30),
+  });
+  
+  console.log(`📊 Generated ${events.length} events spanning 30 days`);
+  return events;
 };
 
 // Settings with realistic NEET date
@@ -400,9 +309,13 @@ export const populateTestData = async () => {
     await storage.saveSettings(settings);
     
     console.log('✨ Test data populated successfully! Perfect for screenshots.');
-    console.log(`📊 Added ${reviews.length} reviews, ${tests.length} test sessions, ${events.length} events`);
-    console.log('📚 Updated syllabus with realistic progress (~40% completed, ~25% in progress)');
-    console.log('🔄 Reload the page to see the beautiful test data');
+    console.log(`📊 Generated comprehensive month-long data:`);
+    console.log(`   • ${reviews.length} reviews (spanning 30 days with realistic patterns)`);
+    console.log(`   • ${tests.length} test sessions (1-4 sessions per day)`);
+    console.log(`   • ${events.length} events (past and future scheduled activities)`);
+    console.log(`   • Updated syllabus with dynamic progress data`);
+    console.log(`   • Randomized monthly statistics and performance metrics`);
+    console.log('🔄 Reload the page to see the beautiful month-long test data');
     
     return true;
   } catch (error) {

@@ -212,7 +212,7 @@ export const testNotifications = {
     console.log(`• Permission: Native notification system`);
     console.log(`• Service Worker: ${'serviceWorker' in navigator ? '✅' : '❌'}`);
     
-    if (Notification.permission === 'denied') {
+    if (typeof Notification !== 'undefined' && Notification.permission === 'denied') {
       console.log('');
       console.log('🔧 To reset denied permissions:');
       console.log('• Chrome/Edge: Click lock icon → Site settings → Notifications → Allow');
@@ -259,10 +259,10 @@ export const notificationDebugging = {
   checkPermissions() {
     console.log('🔍 Checking notification permissions...');
     console.log(`• Notification API: ${'Notification' in window ? 'Available' : 'Not available'}`);
-    console.log(`• Permission status: ${Notification.permission}`);
+    console.log(`• Permission status: ${typeof Notification !== 'undefined' ? Notification.permission : 'N/A'}`);
     console.log(`• Push Manager: ${'PushManager' in window ? 'Available' : 'Not available'}`);
     
-    if (Notification.permission === 'denied') {
+    if (typeof Notification !== 'undefined' && Notification.permission === 'denied') {
       console.log('');
       console.log('⚠️  PERMISSION DENIED - How to fix:');
       console.log('1. Look for a crossed-out bell icon 🔕 in your address bar');
