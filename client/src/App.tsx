@@ -19,7 +19,7 @@ import { checkAndTriggerStreakMilestone, testConfetti, testAllClearConfetti } fr
 import { populateTestData, clearTestData } from "@/lib/test-data";
 import { testNotifications, notificationDebugging } from "@/lib/test-notifications";
 import { notificationScheduler } from "@/lib/notification-scheduler";
-import { DebugPanel } from "@/components/ui/debug-panel";
+// Debug panel now integrated into dashboard as a card
 
 function AppContent() {
   const { initialize, isInitialized, isLoading, settings, getCurrentStreak } = useStore();
@@ -135,10 +135,7 @@ function AppContent() {
         </Switch>
         
         <BottomNavigation onNavigate={handleNavigate} />
-        {(import.meta.env.DEV || 
-          import.meta.env.MODE === 'development' ||
-          window.location.hostname === 'localhost' ||
-          window.location.hostname.includes('replit')) && <DebugPanel />}
+        {/* Debug panel is now integrated into dashboard as a card */}
       </div>
     </div>
   );
