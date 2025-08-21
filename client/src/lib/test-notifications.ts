@@ -206,24 +206,32 @@ export const testNotifications = {
     }
   },
 
-  showStatus() {
+  async showStatus() {
     console.log('📱 Notification System Status:');
-    console.log(`• Browser support: ${'Notification' in window ? '✅' : '❌'}`);
-    console.log(`• Permission: Native notification system`);
-    console.log(`• Service Worker: ${'serviceWorker' in navigator ? '✅' : '❌'}`);
     
-    if (typeof Notification !== 'undefined' && Notification.permission === 'denied') {
-      console.log('');
-      console.log('🔧 To reset denied permissions:');
-      console.log('• Chrome/Edge: Click lock icon → Site settings → Notifications → Allow');
-      console.log('• Firefox: Click shield icon → Permissions → Notifications → Allow');
-      console.log('• Safari: Safari menu → Settings → Websites → Notifications → Allow');
-    }
+    // Check if we're on native platform (APK)
+    const isNative = (window as any).Capacitor?.isNativePlatform();
+    console.log(`• Platform: ${isNative ? 'Native Android APK' : 'Web Browser'}`);
     
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistration().then(reg => {
-        console.log(`• Service Worker registered: ${reg ? '✅' : '❌'}`);
-      });
+    if (isNative) {
+      // Native APK status check
+      try {
+        const { LocalNotifications } = await import('@capacitor/local-notifications');
+        const permissions = await LocalNotifications.checkPermissions();
+        console.log(`• Native permissions: ${permissions.display === 'granted' ? '✅ Granted' : '❌ Denied'}`);
+        
+        const pending = await LocalNotifications.getPending();
+        console.log(`• Pending notifications: ${pending.notifications.length}`);
+      } catch (error) {
+        console.log('❌ Native notification system error:', error);
+      }
+    } else {
+      // Browser status check
+      console.log(`• Browser support: ${'Notification' in window ? '✅' : '❌'}`);
+      if (typeof Notification !== 'undefined') {
+        console.log(`• Browser permission: ${Notification.permission}`);
+      }
+      console.log(`• Service Worker: ${'serviceWorker' in navigator ? '✅' : '❌'}`);
     }
   },
 
@@ -256,23 +264,36 @@ export const testNotifications = {
 
 // Functions to help debug notification issues
 export const notificationDebugging = {
-  checkPermissions() {
+  async checkPermissions() {
     console.log('🔍 Checking notification permissions...');
-    console.log(`• Notification API: ${'Notification' in window ? 'Available' : 'Not available'}`);
-    console.log(`• Permission status: ${typeof Notification !== 'undefined' ? Notification.permission : 'N/A'}`);
-    console.log(`• Push Manager: ${'PushManager' in window ? 'Available' : 'Not available'}`);
+    // Check if we're on native platform first
+    const isNative = (window as any).Capacitor?.isNativePlatform();
     
-    if (typeof Notification !== 'undefined' && Notification.permission === 'denied') {
+    if (isNative) {
+      console.log('• Platform: Native Android APK - using Capacitor LocalNotifications');
+      try {
+        const { LocalNotifications } = await import('@capacitor/local-notifications');
+        const permissions = await LocalNotifications.checkPermissions();
+        console.log(`• Native permission status: ${permissions.display}`);
+      } catch (error) {
+        console.log('• Native notification check failed:', error);
+      }
+    } else {
+      console.log(`• Notification API: ${'Notification' in window ? 'Available' : 'Not available'}`);
+      console.log(`• Permission status: ${typeof Notification !== 'undefined' ? Notification.permission : 'N/A'}`);
+      console.log(`• Push Manager: ${'PushManager' in window ? 'Available' : 'Not available'}`);
+    }
+    
+    if (!isNative && typeof Notification !== 'undefined' && Notification.permission === 'denied') {
       console.log('');
-      console.log('⚠️  PERMISSION DENIED - How to fix:');
+      console.log('⚠️  BROWSER PERMISSION DENIED - How to fix:');
       console.log('1. Look for a crossed-out bell icon 🔕 in your address bar');
       console.log('2. Click it and select "Always allow notifications"');
       console.log('3. OR click the lock/info icon next to the URL');
       console.log('4. Change Notifications from "Block" to "Allow"');
       console.log('5. Refresh the page');
       console.log('');
-      console.log('Alternative: Clear site data and try again:');
-      console.log('• Right-click → Inspect → Application tab → Storage → Clear site data');
+      console.log('Note: This is browser testing only. Real notifications work in the APK.');
     }
   },
 

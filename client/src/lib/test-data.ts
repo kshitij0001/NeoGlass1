@@ -275,7 +275,7 @@ export const generateTestSyllabus = async () => {
   return updatedSyllabus;
 };
 
-// Function to populate all test data
+// Function to populate all test data AND update UI state
 export const populateTestData = async () => {
   const { storage } = await import('./storage');
   
@@ -308,6 +308,17 @@ export const populateTestData = async () => {
     const settings = generateTestSettings();
     await storage.saveSettings(settings);
     
+    // IMPORTANT: Update the Zustand store state so UI refreshes immediately
+    const { useStore } = await import('@/store');
+    const store = useStore.getState();
+    
+    // Force update the store with new data
+    store.setReviews(reviews);
+    store.setSyllabus(syllabusWithProgress);
+    store.setSettings(settings);
+    store.setEvents(events);
+    store.setTests(tests); // This setter exists in testsSlice
+    
     console.log('✨ Test data populated successfully! Perfect for screenshots.');
     console.log(`📊 Generated comprehensive month-long data:`);
     console.log(`   • ${reviews.length} reviews (spanning 30 days with realistic patterns)`);
@@ -315,7 +326,7 @@ export const populateTestData = async () => {
     console.log(`   • ${events.length} events (past and future scheduled activities)`);
     console.log(`   • Updated syllabus with dynamic progress data`);
     console.log(`   • Randomized monthly statistics and performance metrics`);
-    console.log('🔄 Reload the page to see the beautiful month-long test data');
+    console.log('🔄 Data populated and UI updated - you should see changes immediately!');
     
     return true;
   } catch (error) {
