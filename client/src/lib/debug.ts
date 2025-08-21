@@ -43,33 +43,7 @@ export const enableDebugFeatures = () => {
     window.dispatchEvent(event);
   };
   
-  // Add debug panel styles
-  const debugPanel = document.createElement('div');
-  debugPanel.id = 'debug-panel';
-  debugPanel.style.cssText = `
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #fef08a;
-    border-top: 2px solid #eab308;
-    padding: 8px 16px;
-    font-family: monospace;
-    font-size: 12px;
-    z-index: 9999;
-    color: #854d0e;
-    text-align: center;
-  `;
-  debugPanel.innerHTML = '🐛 DEBUG MODE - Check console for debug functions: debugInfo(), debugStorage(), testConfetti()';
-  
-  // Add panel after DOM is ready
-  if (document.body) {
-    document.body.appendChild(debugPanel);
-  } else {
-    document.addEventListener('DOMContentLoaded', () => {
-      document.body.appendChild(debugPanel);
-    });
-  }
+  // Debug panel is now integrated into dashboard as a component
   
   // Add notification debug functions
   createNotificationDebugFunctions();

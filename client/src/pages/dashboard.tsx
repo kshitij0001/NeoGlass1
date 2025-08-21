@@ -9,8 +9,10 @@ import { FloatingActionButton } from "@/components/ui/floating-action-button";
 import { QuickAddModal } from "@/components/dashboard/quick-add-modal";
 import { DateTestingPanel } from "@/components/ui/date-testing-panel";
 import { SpecialEventsPanel } from "@/components/ui/special-events-panel";
+import { DebugPanel } from "@/components/dashboard/debug-panel";
 import { useState, useEffect } from "react";
 import { initializeSpecialEvents } from "@/lib/special-events";
+import { isDebugMode } from "@/lib/debug";
 
 export default function Dashboard() {
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
@@ -32,6 +34,9 @@ export default function Dashboard() {
           <SubjectProgress />
           <SevenDayOverview />
           <SRSQueue />
+          
+          {/* Debug Panel - Only show in debug mode */}
+          {isDebugMode() && <DebugPanel />}
           
           {/* Development Tools - Only show in development */}
           {import.meta.env.DEV && (
