@@ -17,13 +17,12 @@ export function DebugPanel() {
     setLastAction(message);
   };
 
-  const handleTestConfetti = () => {
+  const handleTestConfetti = async () => {
     try {
-      const event = new CustomEvent('triggerConfetti', { 
-        detail: { type: 'celebration', message: 'Debug test!' } 
-      });
-      window.dispatchEvent(event);
-      addResult('Confetti triggered successfully!', 'success');
+      // Import confetti directly to ensure it works
+      const { testConfetti } = await import('@/lib/confetti');
+      testConfetti();
+      addResult('Confetti triggered directly!', 'success');
     } catch (error) {
       addResult('Failed to trigger confetti', 'error');
     }
@@ -206,9 +205,14 @@ export function DebugPanel() {
                         return;
                       }
                       
-                      const { NotificationInitializer } = await import('@/lib/notification-init');
-                      const granted = await NotificationInitializer.requestPermissions();
-                      addResult(`Permissions: ${granted ? 'Granted' : 'Denied'}`, granted ? 'success' : 'error');
+                      // Use the global test functions instead
+                      const testFunctions = (window as any).testNotifications;
+                      if (testFunctions?.requestPermissions) {
+                        await testFunctions.requestPermissions();
+                        addResult('Permission request sent', 'success');
+                      } else {
+                        addResult('Permission functions not available', 'error');
+                      }
                     } catch (error) {
                       addResult('Permission request failed', 'error');
                     }
@@ -222,10 +226,34 @@ export function DebugPanel() {
                   size="sm"
                   onClick={async () => {
                     try {
-                      addResult('Getting full status...', 'info');
-                      const { NotificationInitializer } = await import('@/lib/notification-init');
-                      const status = await NotificationInitializer.getStatus();
-                      addResult('Status check completed', 'success');
+                      addResult('Getting full system status...', 'info');
+                      
+                      // Platform info
+                      const isNative = !!(window as any).Capacitor?.isNativePlatform?.();
+                      const platform = (window as any).Capacitor?.getPlatform?.() || 'web';
+                      addResult(`Platform: ${platform}`, 'info');
+                      addResult(`Native: ${isNative ? 'Yes' : 'No'}`, isNative ? 'success' : 'info');
+                      
+                      // Storage status
+                      const storageCount = Object.keys(localStorage).length;
+                      addResult(`Storage: ${storageCount} items`, 'success');
+                      
+                      // Notification status
+                      if (isNative) {
+                        try {
+                          const testFunctions = (window as any).testNotifications;
+                          if (testFunctions?.checkPermissions) {
+                            await testFunctions.checkPermissions();
+                            addResult('Notification check: Done', 'success');
+                          }
+                        } catch (e) {
+                          addResult('Notification check: Failed', 'error');
+                        }
+                      } else {
+                        addResult('Notifications: Web limited', 'info');
+                      }
+                      
+                      addResult('Full status check completed!', 'success');
                     } catch (error) {
                       addResult('Status check failed', 'error');
                     }
