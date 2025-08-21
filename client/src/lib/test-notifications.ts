@@ -143,6 +143,21 @@ export const testNotifications = {
   async testEventNotification() {
     console.log('🧪 Testing event notification...');
     
+    const hasPermission = await testNotifications.requestPermission();
+    if (!hasPermission) {
+      console.error('❌ Notification permission denied');
+      return;
+    }
+
+    // Test event notification immediately
+    await nativeNotificationManager.scheduleReviewReminder(
+      '📅 Test Event Reminder',
+      'Mock Test at 10:00 AM - This is how event notifications will appear on your phone!',
+      new Date()
+    );
+
+    console.log('✅ Event notification test sent');
+    
     try {
       const settings = await storage.getSettings();
       const eventTime = settings?.eventNotificationTime || '09:00';
@@ -355,5 +370,31 @@ export const notificationDebugging = {
         console.error('❌ No active service worker found');
       }
     }
+  },
+
+  addTestEvent() {
+    console.log('📅 Adding a test event in 2 minutes for notification testing...');
+    
+    const testEventTime = new Date();
+    testEventTime.setMinutes(testEventTime.getMinutes() + 2);
+    
+    const timeString = testEventTime.toTimeString().slice(0, 5); // HH:MM format
+    const dateString = testEventTime.toISOString().split('T')[0]; // YYYY-MM-DD format
+    
+    console.log(`⏰ Test event will trigger notification at: ${timeString}`);
+    
+    // Add event via store
+    import('@/store').then(({ useStore }) => {
+      const store = useStore.getState();
+      store.addEvent({
+        title: 'TEST Notification',
+        type: 'exam' as const,
+        description: 'Testing if notifications work',
+        date: dateString,
+        time: timeString
+      });
+      console.log('📅 Test event added! Notification should appear in ~2 minutes.');
+      console.log('📅 Check the Calendar page to see the event, and watch for the notification!');
+    });
   }
 };

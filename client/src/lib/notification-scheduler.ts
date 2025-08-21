@@ -255,23 +255,16 @@ class NotificationScheduler {
 
   async sendEventNotification(event: any) {
     try {
-      console.log(`📅 Sending notification for event: ${event.title}`);
+      console.log(`📅 Triggering immediate notification for event: ${event.title}`);
       
-      if (!('Notification' in window)) {
-        console.warn('This browser does not support notifications');
-        return;
-      }
-
-      if (Notification.permission !== 'granted') {
-        console.warn('Notification permission not granted');
-        return;
-      }
-
+      // Use native notification system directly (works on both web and APK)
       await nativeNotificationManager.scheduleReviewReminder(
-        `Event Reminder: ${event.title}`,
-        `${event.type.charAt(0).toUpperCase() + event.type.slice(1)} scheduled for ${event.time}${event.description ? `: ${event.description}` : ''}`,
-        new Date()
+        `📅 ${event.title}`,
+        `${event.type.charAt(0).toUpperCase() + event.type.slice(1)} at ${event.time}${event.description ? ` - ${event.description}` : ''}`,
+        new Date() // Send notification immediately when event time arrives
       );
+      
+      console.log(`✅ Event notification sent for: ${event.title}`);
 
     } catch (error) {
       console.error('❌ Error sending event notification:', error);

@@ -175,14 +175,27 @@ export const reviewsSlice = (set: any, get: any): ReviewsSlice => ({
     await storage.deleteReview(reviewId);
   },
   
-  addEvent: (eventData) => {
+  addEvent: async (eventData) => {
     const { events } = get();
     const newEvent: ManualEvent = {
       ...eventData,
       id: `event-${Date.now()}`,
       createdAt: new Date().toISOString(),
     };
-    set({ events: [...events, newEvent] });
+    const updatedEvents = [...events, newEvent];
+    set({ events: updatedEvents });
+    
+    // Save to storage
+    await storage.saveEvents(updatedEvents);
+    
+    // Reschedule event notifications after adding new event
+    try {
+      const { notificationScheduler } = await import('../../lib/notification-scheduler');
+      await notificationScheduler.scheduleEventNotifications();
+      console.log('📅 Event notifications rescheduled after adding:', newEvent.title);
+    } catch (error) {
+      console.error('❌ Failed to reschedule event notifications:', error);
+    }
   },
   
   async deleteEvent(eventId) {
@@ -190,6 +203,15 @@ export const reviewsSlice = (set: any, get: any): ReviewsSlice => ({
     const updatedEvents = events.filter((e: ManualEvent) => e.id !== eventId);
     set({ events: updatedEvents });
     await storage.deleteEvent(eventId);
+    
+    // Reschedule event notifications after deleting event
+    try {
+      const { notificationScheduler } = await import('../../lib/notification-scheduler');
+      await notificationScheduler.scheduleEventNotifications();
+      console.log('📅 Event notifications rescheduled after deletion');
+    } catch (error) {
+      console.error('❌ Failed to reschedule event notifications after deletion:', error);
+    }
   },
   
   getQueuedReviews: () => {
