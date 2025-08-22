@@ -87,8 +87,25 @@ export const syllabusSlice = (set: any, get: any): SyllabusSlice => ({
   
   addCustomTopic: (chapterId, newTopic) => {
     const { syllabus } = get();
-    const topicId = `custom-topic-${Date.now()}`;
-    const topic: Topic = { ...newTopic, id: topicId, chapterId };
+    
+    // Generate collision-proof ID with subject prefix and random component
+    const chapter = syllabus.flatMap(s => s.chapters).find(c => c.id === chapterId);
+    const subject = syllabus.find(s => s.chapters.some(c => c.id === chapterId));
+    const subjectPrefix = subject?.name.toLowerCase().substring(0, 3) || 'cus';
+    const timestamp = Date.now();
+    const random = Math.floor(Math.random() * 1000);
+    const topicId = `${subjectPrefix}-custom-topic-${timestamp}-${random}`;
+    
+    // Double-check for uniqueness (very rare but safe)
+    const allTopics = syllabus.flatMap((s: any) => s.chapters).flatMap((c: any) => c.topics);
+    let finalTopicId = topicId;
+    let counter = 1;
+    while (allTopics.some((t: any) => t.id === finalTopicId)) {
+      finalTopicId = `${topicId}-${counter}`;
+      counter++;
+    }
+    
+    const topic: Topic = { ...newTopic, id: finalTopicId, chapterId };
     
     const updatedSyllabus = syllabus.map((subject: SubjectData) => ({
       ...subject,
@@ -103,8 +120,24 @@ export const syllabusSlice = (set: any, get: any): SyllabusSlice => ({
   
   addCustomChapter: (subjectId, newChapter) => {
     const { syllabus } = get();
-    const chapterId = `custom-chapter-${Date.now()}`;
-    const chapter: Chapter = { ...newChapter, id: chapterId, subjectId };
+    
+    // Generate collision-proof chapter ID
+    const subject = syllabus.find(s => s.id === subjectId);
+    const subjectPrefix = subject?.name.toLowerCase().substring(0, 3) || 'cus';
+    const timestamp = Date.now();
+    const random = Math.floor(Math.random() * 1000);
+    const chapterId = `${subjectPrefix}-custom-chapter-${timestamp}-${random}`;
+    
+    // Double-check for uniqueness
+    const allChapters = syllabus.flatMap((s: any) => s.chapters);
+    let finalChapterId = chapterId;
+    let counter = 1;
+    while (allChapters.some((c: any) => c.id === finalChapterId)) {
+      finalChapterId = `${chapterId}-${counter}`;
+      counter++;
+    }
+    
+    const chapter: Chapter = { ...newChapter, id: finalChapterId, subjectId };
     
     const updatedSyllabus = syllabus.map((subject: SubjectData) =>
       subject.id === subjectId
