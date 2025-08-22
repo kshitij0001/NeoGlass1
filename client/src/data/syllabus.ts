@@ -578,7 +578,7 @@ export const NEET_SYLLABUS: SubjectData[] = [
         topics: [
           { id: 'carbohydrates', name: 'Carbohydrates: Mono/Disaccharides', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'chem-biomolecules' },
           { id: 'proteins', name: 'Proteins & Amino Acids', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'chem-biomolecules' },
-          { id: 'nucleic-acids', name: 'Nucleic Acids & Vitamins', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'chem-biomolecules' }
+          { id: 'chem-nucleic-acids', name: 'Nucleic Acids & Vitamins', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'chem-biomolecules' }
         ]
       },
       {
@@ -685,7 +685,7 @@ export const NEET_SYLLABUS: SubjectData[] = [
         topics: [
           { id: 'proteins-enzymes', name: 'Proteins & Enzyme Kinetics', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-biomolecules' },
           { id: 'carbs-lipids', name: 'Carbohydrates & Lipids', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-biomolecules' },
-          { id: 'nucleic-acids', name: 'Nucleic Acids & Structure', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-biomolecules' }
+          { id: 'bio-nucleic-acids', name: 'Nucleic Acids & Structure', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-biomolecules' }
         ]
       },
       {
@@ -708,7 +708,7 @@ export const NEET_SYLLABUS: SubjectData[] = [
           { id: 'transport', name: 'Transport in Plants', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-plant-physiology' },
           { id: 'mineral-nutrition', name: 'Mineral Nutrition', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-plant-physiology' },
           { id: 'photosynthesis', name: 'Photosynthesis', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-plant-physiology' },
-          { id: 'respiration', name: 'Respiration in Plants', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-plant-physiology' },
+          { id: 'plant-respiration', name: 'Respiration in Plants', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-plant-physiology' },
           { id: 'plant-growth', name: 'Plant Growth & Hormones', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-plant-physiology' }
         ]
       },
@@ -719,7 +719,7 @@ export const NEET_SYLLABUS: SubjectData[] = [
         subjectId: 'biology',
         topics: [
           { id: 'digestion', name: 'Digestion & Absorption', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-human-physiology' },
-          { id: 'respiration', name: 'Breathing & Respiration', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-human-physiology' },
+          { id: 'human-respiration', name: 'Breathing & Respiration', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-human-physiology' },
           { id: 'circulation', name: 'Body Fluids & Circulation', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-human-physiology' },
           { id: 'excretion', name: 'Excretory Products & Elimination', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-human-physiology' },
           { id: 'locomotion', name: 'Locomotion & Movement', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-human-physiology' },
