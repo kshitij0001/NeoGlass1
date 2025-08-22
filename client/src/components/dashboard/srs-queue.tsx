@@ -134,8 +134,8 @@ export function SRSQueue() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-black text-brutal-black dark:text-white">Today's Reviews</h3>
-        <Badge className="text-brutal-black dark:text-black border-2 border-brutal-black dark:border-white" data-testid="reviews-remaining" style={{ backgroundColor: stats.overdue + stats.dueToday === 0 ? '#caffbf' : '#FF8A8A' }}>
-          {stats.overdue + stats.dueToday === 0 ? 'All caught up!' : `${stats.overdue + stats.dueToday} remaining`}
+        <Badge className="text-brutal-black dark:text-black border-2 border-brutal-black dark:border-white" data-testid="reviews-remaining" style={{ backgroundColor: stats.overdue + stats.dueToday === 0 ? '#FFE55C' : '#FF8A8A' }}>
+          {stats.overdue + stats.dueToday === 0 ? '🎉 All caught up!' : `${stats.overdue + stats.dueToday} remaining`}
         </Badge>
       </div>
 
@@ -351,7 +351,7 @@ function ReviewCard({
             data-testid={`snooze-review-${review.id}`}
             disabled={isPerformingAction}
           >
-            <Clock className="h-4 w-4" />
+            <Clock className="h-4 w-4 transform rotate-12" />
           </Button>
         </div>
       </div>
