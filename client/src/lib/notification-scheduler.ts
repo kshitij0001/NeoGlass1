@@ -6,6 +6,7 @@ import { storage } from './storage';
 class NotificationScheduler {
   private dailyReminderTimeout: NodeJS.Timeout | null = null;
   private streakReminderTimeout: NodeJS.Timeout | null = null;
+  private midnightCheckTimeout: NodeJS.Timeout | null = null;
   private eventTimeouts: NodeJS.Timeout[] = [];
   private isInitialized = false;
   private initializationInProgress = false;
@@ -59,6 +60,9 @@ class NotificationScheduler {
       
       // Schedule immediate review reminder if there are pending reviews
       await this.scheduleImmediateReviewCheck();
+      
+      // Schedule midnight check for new reviews (silent check only)
+      await this.scheduleMidnightCheck();
       
       this.isInitialized = true;
       console.log('✅ Notification scheduler initialized successfully');
@@ -161,6 +165,58 @@ class NotificationScheduler {
       console.log('Daily reminder sent successfully');
     } catch (error) {
       console.error('Failed to send daily reminder:', error);
+    }
+  }
+
+  async scheduleMidnightCheck() {
+    // Clear existing timeout
+    if (this.midnightCheckTimeout) {
+      clearTimeout(this.midnightCheckTimeout);
+    }
+
+    const now = new Date();
+    const midnight = new Date();
+    midnight.setHours(24, 0, 0, 0); // Next midnight
+    
+    const timeUntilMidnight = midnight.getTime() - now.getTime();
+    
+    console.log(`🌙 Scheduling silent midnight check for: ${midnight.toLocaleString()}`);
+    
+    this.midnightCheckTimeout = setTimeout(async () => {
+      await this.performMidnightCheck();
+      // Schedule the next midnight check
+      await this.scheduleMidnightCheck();
+    }, timeUntilMidnight);
+  }
+
+  async performMidnightCheck() {
+    try {
+      console.log('🌙 Performing silent midnight review check...');
+      
+      const reviews = await storage.getReviews();
+      if (!reviews || reviews.length === 0) {
+        console.log('🌙 No reviews found during midnight check');
+        return;
+      }
+
+      // Just check and log what's due - NO notifications sent
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const dueToday = reviews.filter(r => {
+        const dueDate = new Date(r.dueDate);
+        return dueDate.toDateString() === today.toDateString() && !r.isCompleted;
+      });
+
+      const overdueReviews = reviews.filter(r => {
+        const dueDate = new Date(r.dueDate);
+        return dueDate < today && !r.isCompleted;
+      });
+
+      console.log(`🌙 Midnight check complete: ${dueToday.length} due today, ${overdueReviews.length} overdue (no notifications sent)`);
+      
+    } catch (error) {
+      console.error('Failed to perform midnight check:', error);
     }
   }
 
@@ -396,6 +452,11 @@ class NotificationScheduler {
     if (this.streakReminderTimeout) {
       clearTimeout(this.streakReminderTimeout);
       this.streakReminderTimeout = null;
+    }
+    
+    if (this.midnightCheckTimeout) {
+      clearTimeout(this.midnightCheckTimeout);
+      this.midnightCheckTimeout = null;
     }
     
     // Clear event timeouts
