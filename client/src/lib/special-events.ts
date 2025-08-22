@@ -138,13 +138,13 @@ export const RANDOM_MESSAGES = [
   "You're unstoppable bunny 🌟🔥",
   "How you doing bunny? 🐰💕",
   "I believe in you bunny! 💪✨",
-  "You're doing amazing, bunny! 🌟",
+  "You're doing amazing bunny! 🌟",
   "Keep going, bunny! You've got this! 🚀",
   "Thinking of you, bunny 💭💖",
   "You're stronger than you think, bunny! 💪🐰",
-  "Don't forget to take breaks, bunny 😊🌸",
-  "Your hard work will pay off, bunny! 📚✨",
-  "Proud of your dedication, bunny! 🏆💕"
+  "Don't forget to take breaks bunny 😊🌸",
+  "Your hard work will pay off bunny! 📚✨",
+  "Proud of your dedication bunny! 🏆💕"
 ];
 
 // ========================================
