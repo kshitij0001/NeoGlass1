@@ -498,7 +498,7 @@ export const NEET_SYLLABUS: SubjectData[] = [
         difficulty: 'Medium',
         subjectId: 'chemistry',
         topics: [
-          { id: 'nomenclature', name: 'Nomenclature & Isomerism', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'chem-coordination' },
+          { id: 'chem-nomenclature', name: 'Nomenclature & Isomerism', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'chem-coordination' },
           { id: 'cbt-vbt', name: 'CFT/VBT & Magnetic Behaviour', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'chem-coordination' },
           { id: 'stability', name: 'Stability & Applications', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'chem-coordination' }
         ]
@@ -617,7 +617,7 @@ export const NEET_SYLLABUS: SubjectData[] = [
         difficulty: 'Medium',
         subjectId: 'biology',
         topics: [
-          { id: 'nomenclature', name: 'Taxonomy & Nomenclature', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-diversity' },
+          { id: 'bio-nomenclature', name: 'Taxonomy & Nomenclature', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-diversity' },
           { id: 'five-kingdom', name: 'Five Kingdom Classification', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-diversity' },
           { id: 'monera-protist-fungi', name: 'Monera, Protista, Fungi', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-diversity' },
           { id: 'plantae-animalia', name: 'Plantae & Animalia Overview', difficulty: 'Medium', coverageState: 'Not started', chapterId: 'bio-diversity' }
