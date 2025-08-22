@@ -386,7 +386,7 @@ function ReviewCard({
           <Clock className="h-5 w-5 text-white" />
         </div>
         <div 
-          className="text-xs font-bold text-center mt-1 text-white px-2 py-1 rounded-full"
+          className="text-xs font-bold text-center mt-1 text-white w-12 h-12 rounded-full flex items-center justify-center"
           style={{ backgroundColor: '#4A90E2' }}
         >
           Snooze
@@ -400,7 +400,7 @@ function ReviewCard({
         <div className="bg-red-500 p-3 rounded-full border-2 border-white shadow-lg">
           <Trash2 className="h-5 w-5 text-white" />
         </div>
-        <div className="text-xs font-bold text-center mt-1 text-white bg-red-500 px-2 py-1 rounded-full">
+        <div className="text-xs font-bold text-center mt-1 text-white bg-red-500 w-12 h-12 rounded-full flex items-center justify-center">
           Delete
         </div>
       </div>
