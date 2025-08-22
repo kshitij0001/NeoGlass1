@@ -86,12 +86,8 @@ export const reviewsSlice = (set: any, get: any): ReviewsSlice => ({
     // Reviews are scheduled through the SRS system, not calendar events
     // Calendar events should be manually created by users for study sessions/exams
     
-    // Persist to storage
-    try {
-      await storage.saveReviews(updatedReviews);
-    } catch (error) {
-      console.error('Failed to save reviews:', error);
-    }
+    // Note: Storage persistence is handled automatically by Zustand subscribers
+    // Removed manual save to prevent race conditions with auto-save
   },
   
   completeReview: async (reviewId) => {

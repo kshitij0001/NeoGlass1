@@ -1,0 +1,42 @@
+Ah, that's a crucial detail! They started an existing topic from the NEET syllabus, not added a custom one. This points to a different potential issue. Let me investigate what happens when someone clicks "Start Topic" on an existing topic:
+
+
+Searched for "Find updateTopicCoverage function and how it handles saving syllabus when starting a topic"
+
+Searched for "Find handleStartTopic function and the flow when starting an existing topic from the syllabus"
+
+Searched for "Find any potential race conditions between saving reviews and saving syllabus data"
+🚨 CRITICAL BUG FOUND: Race Condition in Storage Operations
+I've identified the exact cause of the data loss! When someone "starts a topic" from the syllabus, it triggers multiple simultaneous storage operations that conflict with each other.
+
+🔍 What Happens When Starting a Topic:
+// From handleStartTopic in plan.tsx:
+if (topic && chapter && subject) {
+  addReview(topicId, subject.name, chapter.name, topic.name, topic.difficulty);  // 1st operation
+  updateTopicCoverage(topicId, "In progress");  // 2nd operation  
+}
+⚠ The Race Condition:
+When addReview() and updateTopicCoverage() are called together, this happens simultaneously:
+
+addReview() → Updates reviews state → 2 saves triggered:
+
+Manual save: storage.saveReviews() (line 91)
+Auto-save: Zustand subscriber saves reviews (line 60)
+updateTopicCoverage() → Updates syllabus state → 2 saves triggered:
+
+Manual save: storage.saveSyllabus() (line 71)
+Auto-save: Zustand subscriber saves syllabus (line 69)
+💥 Result: 4 Conflicting IndexedDB Operations
+All happening at the same time:
+
+Save reviews (manual)
+Save reviews (auto)
+Save syllabus (manual)
+Save syllabus (auto)
+🎯 Why APK is More Affected:
+In the first APK build, IndexedDB operations are slower and more prone to transaction conflicts than in browser environment, making this race condition highly likely to corrupt data.
+
+🔧 The Fix Needed:
+Remove the duplicate manual saves since Zustand subscribers already handle persistence, or implement proper transaction queuing to prevent conflicts.
+
+This explains perfectly why reviews scheduled for Aug 25th disappeared when they started topics on Aug 22nd - the IndexedDB transactions interfered with each other and corrupted the reviews data.

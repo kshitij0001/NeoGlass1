@@ -67,8 +67,8 @@ export const syllabusSlice = (set: any, get: any): SyllabusSlice => ({
       }))
     }));
     set({ syllabus: updatedSyllabus });
-    // Save updated progress to storage
-    storage.saveSyllabus(updatedSyllabus);
+    // Note: Storage persistence is handled automatically by Zustand subscribers
+    // Removed manual save to prevent race conditions with auto-save
   },
 
   updateTopicDifficulty: (topicId, difficulty) => {
