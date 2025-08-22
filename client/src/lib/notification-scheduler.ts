@@ -7,17 +7,46 @@ class NotificationScheduler {
   private dailyReminderTimeout: NodeJS.Timeout | null = null;
   private streakReminderTimeout: NodeJS.Timeout | null = null;
   private eventTimeouts: NodeJS.Timeout[] = [];
+  private isInitialized = false;
+  private initializationInProgress = false;
+  
+  // Unique notification ID prefixes to prevent duplicates
+  private readonly NOTIFICATION_IDS = {
+    DAILY_REMINDER: 1000,
+    DAILY_RECURRING: 1100,
+    STREAK_REMINDER: 2000,
+    STREAK_RECURRING: 2100,
+    IMMEDIATE_REVIEW: 3000,
+    EVENT_BASE: 4000
+  };
 
   async initializeScheduler() {
+    // Prevent multiple simultaneous initializations
+    if (this.initializationInProgress) {
+      console.log('⚠️ Notification scheduler initialization already in progress');
+      return;
+    }
+    
+    if (this.isInitialized) {
+      console.log('⚠️ Notification scheduler already initialized, clearing existing notifications first');
+      await this.clearAllNotifications();
+    }
+    
+    this.initializationInProgress = true;
+    
     try {
       const settings = await storage.getSettings();
       
       if (!settings?.notifications) {
         console.log('📵 Notifications disabled in settings');
+        this.initializationInProgress = false;
         return;
       }
 
       console.log(`🔔 Initializing notification scheduler for ${settings.notificationTime}`);
+      
+      // Clear all existing notifications to prevent duplicates
+      await this.clearAllNotifications();
       
       // Schedule daily reminders
       await this.scheduleDailyReminders(settings.notificationTime || '19:00');
@@ -31,8 +60,23 @@ class NotificationScheduler {
       // Schedule immediate review reminder if there are pending reviews
       await this.scheduleImmediateReviewCheck();
       
+      this.isInitialized = true;
+      console.log('✅ Notification scheduler initialized successfully');
+      
     } catch (error) {
       console.error('Failed to initialize notification scheduler:', error);
+    } finally {
+      this.initializationInProgress = false;
+    }
+  }
+
+  async clearAllNotifications() {
+    console.log('🧹 Clearing all existing notifications to prevent duplicates');
+    try {
+      await nativeNotificationManager.cancelAllNotifications();
+      console.log('✅ All existing notifications cleared');
+    } catch (error) {
+      console.error('❌ Failed to clear existing notifications:', error);
     }
   }
 
@@ -60,17 +104,17 @@ class NotificationScheduler {
     
     await nativeNotificationManager.scheduleReviewReminder(title, body, reminderTimeToday);
     
-    // Also set up recurring daily notifications for the next 7 days
-    for (let i = 1; i <= 7; i++) {
-      const futureDate = new Date(reminderTimeToday);
-      futureDate.setDate(futureDate.getDate() + i);
-      
-      await nativeNotificationManager.scheduleReviewReminder(
-        'NEET Daily Study Reminder',
-        'Your daily study session is due. Stay consistent!',
-        futureDate
-      );
-    }
+    // Only schedule ONE recurring notification for tomorrow, not 7 days
+    const tomorrowDate = new Date(reminderTimeToday);
+    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+    
+    await nativeNotificationManager.scheduleReviewReminder(
+      'NEET Daily Study Reminder',
+      'Your daily study session is due. Stay consistent!',
+      tomorrowDate
+    );
+    
+    console.log('✅ Scheduled daily reminder for today and tomorrow only');
   }
 
   async sendDailyReminder() {
@@ -193,17 +237,17 @@ class NotificationScheduler {
     
     await nativeNotificationManager.scheduleReviewReminder(title, body, streakTime);
     
-    // Schedule streak reminders for the next 7 days
-    for (let i = 1; i <= 7; i++) {
-      const futureDate = new Date(streakTime);
-      futureDate.setDate(futureDate.getDate() + i);
-      
-      await nativeNotificationManager.scheduleReviewReminder(
-        '🏆 Streak Check',
-        'Keep your study momentum strong! Check your reviews.',
-        futureDate
-      );
-    }
+    // Only schedule ONE additional streak reminder for tomorrow, not 7 days
+    const tomorrowStreakTime = new Date(streakTime);
+    tomorrowStreakTime.setDate(tomorrowStreakTime.getDate() + 1);
+    
+    await nativeNotificationManager.scheduleReviewReminder(
+      '🏆 Streak Check',
+      'Keep your study momentum strong! Check your reviews.',
+      tomorrowStreakTime
+    );
+    
+    console.log('✅ Scheduled streak reminder for today and tomorrow only');
   }
 
   async sendStreakReminder() {
@@ -252,7 +296,9 @@ class NotificationScheduler {
   }
 
   async updateSchedule() {
-    // Reinitialize with new settings
+    console.log('🔄 Updating notification schedule...');
+    // Clear existing notifications and reinitialize
+    this.isInitialized = false;
     await this.initializeScheduler();
   }
 
@@ -361,10 +407,14 @@ class NotificationScheduler {
 // Global scheduler instance
 export const notificationScheduler = new NotificationScheduler();
 
-// Auto-initialize on import
+// Auto-initialize on import (only once)
 if (typeof window !== 'undefined') {
   // Initialize after a short delay to ensure storage is ready
+  let autoInitialized = false;
   setTimeout(() => {
-    notificationScheduler.initializeScheduler();
+    if (!autoInitialized) {
+      autoInitialized = true;
+      notificationScheduler.initializeScheduler();
+    }
   }, 1000);
 }
