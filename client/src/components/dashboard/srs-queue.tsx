@@ -351,7 +351,7 @@ function ReviewCard({
             data-testid={`snooze-review-${review.id}`}
             disabled={isPerformingAction}
           >
-            <Clock className="h-4 w-4 transform rotate-12" />
+            <Clock className="h-4 w-4" />
           </Button>
         </div>
       </div>
@@ -386,7 +386,7 @@ function ReviewCard({
           <Clock className="h-5 w-5 text-white" />
         </div>
         <div 
-          className="text-xs font-bold text-center mt-1 text-white px-2 py-1 rounded"
+          className="text-xs font-bold text-center mt-1 text-white px-2 py-1 rounded-full"
           style={{ backgroundColor: '#4A90E2' }}
         >
           Snooze
@@ -400,7 +400,7 @@ function ReviewCard({
         <div className="bg-red-500 p-3 rounded-full border-2 border-white shadow-lg">
           <Trash2 className="h-5 w-5 text-white" />
         </div>
-        <div className="text-xs font-bold text-center mt-1 text-white bg-red-500 px-2 py-1 rounded">
+        <div className="text-xs font-bold text-center mt-1 text-white bg-red-500 px-2 py-1 rounded-full">
           Delete
         </div>
       </div>
