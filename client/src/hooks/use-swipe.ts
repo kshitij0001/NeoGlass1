@@ -48,9 +48,6 @@ export function useSwipe({
   }, []);
 
   const onTouchMove = useCallback((e: TouchEvent) => {
-    // Always prevent default to stop screen scrolling during swipe
-    e.preventDefault();
-
     // Ensure it's a valid touch event with at least one touch point
     if (e.targetTouches.length === 0 || !touchStart.current) return;
 
@@ -67,15 +64,19 @@ export function useSwipe({
     const absDistanceX = Math.abs(distanceX);
     const absDistanceY = Math.abs(distanceY);
 
-    // Determine if we're swiping and in which direction
-    if (absDistanceX > swipeThreshold || absDistanceY > swipeThreshold) {
+    // Only prevent default for intentional swipe gestures, allow normal scrolling otherwise
+    const isHorizontalSwipe = absDistanceX > swipeThreshold && absDistanceX > absDistanceY * 1.5;
+    const isVerticalSwipeDown = distanceY < -swipeThreshold && absDistanceY > absDistanceX * 1.5;
+    
+    // Only prevent scrolling for clear swipe gestures
+    if (isHorizontalSwipe || isVerticalSwipeDown) {
+      e.preventDefault();
       isSwipingRef.current = true;
       
       let direction: 'left' | 'right' | 'up' | 'down' | null = null;
       let progress = 0;
 
-      // Determine primary swipe direction based on which distance is greater
-      if (absDistanceX > absDistanceY) {
+      if (isHorizontalSwipe) {
         // Horizontal swipe
         if (distanceX > swipeThreshold) {
           direction = 'left';
@@ -84,20 +85,18 @@ export function useSwipe({
           direction = 'right';
           progress = Math.min(absDistanceX / (minSwipeDistance * 2), 1);
         }
-      } else {
-        // Vertical swipe
-        if (distanceY > swipeThreshold) {
-          direction = 'up';
-          progress = Math.min(distanceY / (minSwipeDistance * 2), 1);
-        } else if (distanceY < -swipeThreshold) {
-          direction = 'down';
-          progress = Math.min(absDistanceY / (minSwipeDistance * 2), 1);
-        }
+      } else if (isVerticalSwipeDown) {
+        // Only downward swipe for snoozing
+        direction = 'down';
+        progress = Math.min(absDistanceY / (minSwipeDistance * 2), 1);
       }
 
       if (onSwipeMove && direction) {
         onSwipeMove(direction, progress);
       }
+    } else {
+      // Allow normal scrolling for ambiguous touches
+      isSwipingRef.current = false;
     }
   }, [preventDefaultTouchmoveEvent, onSwipeMove, minSwipeDistance, swipeThreshold]);
 
