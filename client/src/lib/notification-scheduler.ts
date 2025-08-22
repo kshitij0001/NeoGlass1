@@ -29,8 +29,9 @@ class NotificationScheduler {
     }
     
     if (this.isInitialized) {
-      console.log('⚠️ Notification scheduler already initialized, clearing existing notifications first');
-      await this.clearAllNotifications();
+      console.log('⚠️ Notification scheduler already initialized, skipping re-initialization');
+      this.initializationInProgress = false;
+      return;
     }
     
     this.initializationInProgress = true;
@@ -468,14 +469,5 @@ class NotificationScheduler {
 // Global scheduler instance
 export const notificationScheduler = new NotificationScheduler();
 
-// Auto-initialize on import (only once)
-if (typeof window !== 'undefined') {
-  // Initialize after a short delay to ensure storage is ready
-  let autoInitialized = false;
-  setTimeout(() => {
-    if (!autoInitialized) {
-      autoInitialized = true;
-      notificationScheduler.initializeScheduler();
-    }
-  }, 1000);
-}
+// Note: Auto-initialization removed to prevent duplicates.
+// Scheduler should only be initialized through NotificationInitializer.initialize()
