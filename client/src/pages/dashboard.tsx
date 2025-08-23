@@ -36,14 +36,15 @@ export default function Dashboard() {
           <SevenDayOverview />
           <SRSQueue />
           
-          {/* Debug Panel - Only show in debug mode and bunny builds */}
+          {/* Debug Panel - Only in debug builds */}
           {isDebugMode() && getAppConfig().features.debugPanel && <DebugPanel />}
           
-          {/* Development Tools - Only show in development */}
-          {import.meta.env.DEV && (
+          {/* Development Tools - Only in debug builds */}
+          {getAppConfig().features.developmentTools && (
             <>
-              <DateTestingPanel />
-              {/* Special Events Panel - Only in bunny builds */}
+              {/* Date Testing Panel - Only in debug builds */}
+              {getAppConfig().features.dateTestingPanel && <DateTestingPanel />}
+              {/* Special Events Panel - Only in debug builds */}
               {getAppConfig().features.specialEvents && <SpecialEventsPanel />}
             </>
           )}
