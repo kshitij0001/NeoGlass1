@@ -93,33 +93,28 @@ class NotificationScheduler {
 
     const [hours, minutes] = reminderTime.split(':').map(Number);
     const now = new Date();
-    const reminderTimeToday = new Date();
-    reminderTimeToday.setHours(hours, minutes, 0, 0);
+    const reminderTimeNext = new Date();
+    reminderTimeNext.setHours(hours, minutes, 0, 0);
 
     // If the time has passed today, schedule for tomorrow
-    if (reminderTimeToday <= now) {
-      reminderTimeToday.setDate(reminderTimeToday.getDate() + 1);
+    if (reminderTimeNext <= now) {
+      reminderTimeNext.setDate(reminderTimeNext.getDate() + 1);
     }
     
-    console.log(`⏰ Scheduling daily reminder for: ${reminderTimeToday.toLocaleString()}`);
+    console.log(`⏰ Scheduling SINGLE daily reminder for: ${reminderTimeNext.toLocaleString()}`);
 
-    // Use native notification scheduling for Android APK
+    // Schedule ONLY ONE notification with unique ID
     const title = 'NEET Study Time!';
     const body = 'Time for your daily study session. Keep your streak going!';
     
-    await nativeNotificationManager.scheduleReviewReminder(title, body, reminderTimeToday);
-    
-    // Only schedule ONE recurring notification for tomorrow, not 7 days
-    const tomorrowDate = new Date(reminderTimeToday);
-    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-    
-    await nativeNotificationManager.scheduleReviewReminder(
-      'NEET Daily Study Reminder',
-      'Your daily study session is due. Stay consistent!',
-      tomorrowDate
+    await nativeNotificationManager.scheduleReviewReminderWithId(
+      this.NOTIFICATION_IDS.DAILY_REMINDER,
+      title, 
+      body, 
+      reminderTimeNext
     );
     
-    console.log('✅ Scheduled daily reminder for today and tomorrow only');
+    console.log('✅ Scheduled single daily reminder (no duplicates)');
   }
 
   async sendDailyReminder() {
@@ -286,25 +281,20 @@ class NotificationScheduler {
       streakTime.setDate(streakTime.getDate() + 1);
     }
     
-    console.log(`🏆 Scheduling streak reminder for: ${streakTime.toLocaleString()}`);
+    console.log(`🏆 Scheduling SINGLE streak reminder for: ${streakTime.toLocaleString()}`);
 
-    // Use native notification scheduling for Android APK
+    // Schedule ONLY ONE notification with unique ID
     const title = '🏆 Don\'t Break Your Streak!';
     const body = 'Did you study today? Even 5 minutes keeps your momentum going!';
     
-    await nativeNotificationManager.scheduleReviewReminder(title, body, streakTime);
-    
-    // Only schedule ONE additional streak reminder for tomorrow, not 7 days
-    const tomorrowStreakTime = new Date(streakTime);
-    tomorrowStreakTime.setDate(tomorrowStreakTime.getDate() + 1);
-    
-    await nativeNotificationManager.scheduleReviewReminder(
-      '🏆 Streak Check',
-      'Keep your study momentum strong! Check your reviews.',
-      tomorrowStreakTime
+    await nativeNotificationManager.scheduleReviewReminderWithId(
+      this.NOTIFICATION_IDS.STREAK_REMINDER,
+      title, 
+      body, 
+      streakTime
     );
     
-    console.log('✅ Scheduled streak reminder for today and tomorrow only');
+    console.log('✅ Scheduled single streak reminder (no duplicates)');
   }
 
   async sendStreakReminder() {
@@ -354,6 +344,13 @@ class NotificationScheduler {
 
   async updateSchedule() {
     console.log('🔄 Updating notification schedule...');
+    
+    // Prevent multiple simultaneous updates
+    if (this.initializationInProgress) {
+      console.log('⚠️ Update already in progress, skipping duplicate update');
+      return;
+    }
+    
     // Clear existing notifications and reinitialize
     this.isInitialized = false;
     await this.initializeScheduler();
@@ -413,7 +410,12 @@ class NotificationScheduler {
             body += ` - ${event.description}`;
           }
 
-          await nativeNotificationManager.scheduleReviewReminder(title, body, eventDate);
+          await nativeNotificationManager.scheduleReviewReminderWithId(
+            this.NOTIFICATION_IDS.EVENT_BASE + events.indexOf(event),
+            title, 
+            body, 
+            eventDate
+          );
           
           console.log(`✅ Event notification scheduled using native Android notifications: "${event.title}"`);
         } else {

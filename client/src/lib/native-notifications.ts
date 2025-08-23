@@ -77,7 +77,13 @@ export class NativeNotificationManager {
   }
 
   async scheduleReviewReminder(title: string, body: string, scheduledTime: Date): Promise<void> {
-    console.log('📱 Android APK - Scheduling notification:', { title, body, scheduledTime });
+    // Use random ID for backward compatibility
+    const notificationId = Math.floor(Math.random() * 2147483647);
+    await this.scheduleReviewReminderWithId(notificationId, title, body, scheduledTime);
+  }
+
+  async scheduleReviewReminderWithId(notificationId: number, title: string, body: string, scheduledTime: Date): Promise<void> {
+    console.log('📱 Android APK - Scheduling notification:', { notificationId, title, body, scheduledTime });
     
     // Only work on native Android platform (APK)
     if (!this.isNative) {
@@ -88,8 +94,6 @@ export class NativeNotificationManager {
     try {
       const hasPermission = await this.requestPermissions();
       if (!hasPermission) return;
-
-      const notificationId = Math.floor(Math.random() * 2147483647); // Java int max value
       
       console.log('📱 Scheduling Android notification with ID:', notificationId);
       console.log('⏰ Scheduled time:', scheduledTime.toISOString());
@@ -148,13 +152,26 @@ export class NativeNotificationManager {
   }
 
   async cancelAllNotifications(): Promise<void> {
-    if (!this.isNative) return;
+    if (!this.isNative) {
+      console.log('⚠️ Cannot cancel notifications - only works in Android APK build');
+      return;
+    }
 
     try {
-      await LocalNotifications.cancel({ notifications: [] });
-      console.log('All notifications cancelled');
+      // Get all pending notifications first
+      const pending = await LocalNotifications.getPending();
+      console.log(`🧹 Found ${pending.notifications.length} pending notifications to cancel`);
+      
+      if (pending.notifications.length > 0) {
+        // Cancel all pending notifications
+        const notificationsToCancel = pending.notifications.map(n => ({ id: n.id }));
+        await LocalNotifications.cancel({ notifications: notificationsToCancel });
+        console.log(`✅ Cancelled ${notificationsToCancel.length} pending notifications`);
+      } else {
+        console.log('✅ No pending notifications to cancel');
+      }
     } catch (error) {
-      console.error('Failed to cancel notifications:', error);
+      console.error('❌ Failed to cancel notifications:', error);
     }
   }
 
