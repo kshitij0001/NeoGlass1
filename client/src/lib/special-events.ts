@@ -546,18 +546,29 @@ async function testAllSpecialNotifications(): Promise<void> {
  * Initialize special events module with offline support
  */
 export function initializeSpecialEvents(): void {
-  // Check for special dates on initialization
-  checkSpecialDate();
+  // Only initialize special events for bunny and debug builds
+  const buildType = import.meta.env.VITE_BUILD_TYPE;
   
-  // Setup personalized notifications (both online and offline)
-  setupPersonalizedNotifications();
-  setupOfflineNotifications();
+  if (buildType === 'normal') {
+    console.log('🚫 Special events disabled for normal build');
+    return;
+  }
+  
+  // Check for special dates on initialization (bunny and debug builds only)
+  if (buildType === 'bunny' || buildType === 'debug') {
+    checkSpecialDate();
+    
+    // Setup personalized notifications (both online and offline)
+    setupPersonalizedNotifications();
+    setupOfflineNotifications();
+  }
   
   // Add test functions to window for debugging (only in development)
   const isDebugBuild = import.meta.env.DEV || 
                       import.meta.env.MODE === 'development' ||
                       window.location.hostname === 'localhost' ||
-                      window.location.hostname.includes('replit');
+                      window.location.hostname.includes('replit') ||
+                      buildType === 'debug';
   
   if (typeof window !== 'undefined' && isDebugBuild) {
     (window as any).testPersonalizedNotification = testPersonalizedNotification;

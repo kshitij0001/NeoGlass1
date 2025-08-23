@@ -1,0 +1,51 @@
+name: Build Normal APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, release ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+    
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build web app (Normal)
+      run: npm run build
+      env:
+        VITE_BUILD_TYPE: normal
+        NODE_ENV: production
+    
+    - name: Sync Capacitor
+      run: npx cap sync android
+    
+    - name: Build Release APK
+      run: |
+        cd android
+        ./gradlew assembleRelease
+    
+    - name: Upload Normal APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: neet-companion-normal-apk
+        path: android/app/build/outputs/apk/release/app-release.apk

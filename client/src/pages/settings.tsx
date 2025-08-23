@@ -534,8 +534,17 @@ export default function Settings() {
             <h3 className="text-lg font-black text-brutal-black dark:text-white mb-4">About</h3>
             <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
               <p><strong>NEET 2026 Study Companion</strong></p>
-              <p>Version 0.7.15</p>
-              <p>Built with ❤️ for My Bunny 🐰</p>
+              <p>Version {import.meta.env.VITE_BUILD_TYPE === 'bunny' ? '0.7.15' : 
+                        import.meta.env.VITE_BUILD_TYPE === 'debug' ? '0.8.0-dev' : '1.0.0'}</p>
+              {import.meta.env.VITE_BUILD_TYPE === 'bunny' && (
+                <p>Built with ❤️ for My Bunny 🐰</p>
+              )}
+              {import.meta.env.VITE_BUILD_TYPE === 'normal' && (
+                <p>Built with precision for NEET aspirants</p>
+              )}
+              {import.meta.env.VITE_BUILD_TYPE === 'debug' && (
+                <p>Developer Build - For Testing & Debugging</p>
+              )}
               <p className="text-xs mt-4">
                 This app uses spaced repetition intervals: [4, 7, 14, 28, 40] days to optimize your learning.
               </p>
