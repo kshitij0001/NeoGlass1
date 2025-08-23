@@ -13,7 +13,6 @@ import { DebugPanel } from "@/components/dashboard/debug-panel";
 import { useState, useEffect } from "react";
 import { initializeSpecialEvents } from "@/lib/special-events";
 import { isDebugMode } from "@/lib/debug";
-import { getAppConfig } from "@/lib/build-variant";
 
 export default function Dashboard() {
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
@@ -36,16 +35,14 @@ export default function Dashboard() {
           <SevenDayOverview />
           <SRSQueue />
           
-          {/* Debug Panel - Only in debug builds */}
-          {isDebugMode() && getAppConfig().features.debugPanel && <DebugPanel />}
+          {/* Debug Panel - Only show in debug mode */}
+          {isDebugMode() && <DebugPanel />}
           
-          {/* Development Tools - Only in debug builds */}
-          {getAppConfig().features.developmentTools && (
+          {/* Development Tools - Only show in development */}
+          {import.meta.env.DEV && (
             <>
-              {/* Date Testing Panel - Only in debug builds */}
-              {getAppConfig().features.dateTestingPanel && <DateTestingPanel />}
-              {/* Special Events Panel - Only in debug builds */}
-              {getAppConfig().features.specialEvents && <SpecialEventsPanel />}
+              <DateTestingPanel />
+              <SpecialEventsPanel />
             </>
           )}
         </div>

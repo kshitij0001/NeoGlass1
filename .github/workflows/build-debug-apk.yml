@@ -29,7 +29,7 @@ jobs:
       - name: Build web app with developer features
         run: npm run build
         env:
-          VITE_BUILD_VARIANT: 'debug'
+          VITE_DEBUG_MODE: 'true'
           NODE_ENV: 'production'
 
       - name: Setup Java 17

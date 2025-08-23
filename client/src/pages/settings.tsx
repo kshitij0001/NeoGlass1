@@ -12,7 +12,6 @@ import { Settings as SettingsIcon, Upload, Download, Trash2, Calendar, Bell, Vol
 import { useStore } from "@/store";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
-import { getAppConfig } from "@/lib/build-variant";
 
 
 export default function Settings() {
@@ -534,11 +533,11 @@ export default function Settings() {
           <Card className="neobrutalist-card bg-white dark:bg-gray-800 p-4 rounded-xl">
             <h3 className="text-lg font-black text-brutal-black dark:text-white mb-4">About</h3>
             <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-              <p><strong>{getAppConfig().about.appName}</strong></p>
-              <p>Version {getAppConfig().about.version}</p>
-              <p>{getAppConfig().about.builtFor}</p>
+              <p><strong>NEET 2026 Study Companion</strong></p>
+              <p>Version 0.7.15</p>
+              <p>Built with ❤️ for My Bunny 🐰</p>
               <p className="text-xs mt-4">
-                {getAppConfig().about.description}
+                This app uses spaced repetition intervals: [4, 7, 14, 28, 40] days to optimize your learning.
               </p>
               <div className="mt-4 text-center">
                 <div className="font-mono text-xs">

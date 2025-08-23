@@ -33,11 +33,11 @@ jobs:
     - name: Install dependencies
       run: npm install
       
-    - name: Build web application (Normal Production)
+    - name: Build web application (Production)
       run: npm run build
       env:
-        VITE_BUILD_VARIANT: 'normal'
         NODE_ENV: 'production'
+        # Ensure no debug features in production
       
     - name: Copy web assets to Android
       run: npx cap copy android
