@@ -1,16 +1,16 @@
-name: Build Developer APK
+name: Build Bunny APK
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # Manual trigger only
   push:
     branches: [ main ]
     paths:
       - 'client/**'
       - 'android/**'
-      - '.github/workflows/build-debug-apk.yml'
+      - '.github/workflows/build-bunny-apk.yml'
 
 jobs:
-  build-developer-apk:
+  build-bunny-apk:
     runs-on: ubuntu-latest
     
     steps:
@@ -26,10 +26,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build web app with developer features
+      - name: Build web app with bunny features
         run: npm run build
         env:
-          VITE_BUILD_VARIANT: 'debug'
+          VITE_BUILD_VARIANT: 'bunny'
           NODE_ENV: 'production'
 
       - name: Setup Java 17
@@ -61,31 +61,26 @@ jobs:
             echo "Debug keystore already exists, skipping generation"
           fi
 
-      - name: Build Developer APK
+      - name: Build Bunny APK
         run: |
           cd android
-          ./gradlew assembleDebug
+          ./gradlew assembleRelease
 
-      - name: Upload Debug APK
+      - name: Upload Bunny APK
         uses: actions/upload-artifact@v4
         with:
-          name: neet-companion-developer-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: neet-companion-bunny-apk
+          path: android/app/build/outputs/apk/release/*.apk
           retention-days: 30
 
       - name: Show APK Info
         run: |
-          echo "🛠️ Developer APK Build Complete!"
-          echo "📱 APK Location: android/app/build/outputs/apk/debug/app-debug.apk"
-          echo "🔧 Developer Features Included:"
-          echo "  - Console debug functions"
-          echo "  - Visual debug panel at bottom"
-          echo "  - Storage inspection tools"
-          echo "  - Platform detection"
+          echo "🐰 Bunny APK Build Complete!"
+          echo "📱 APK Location: android/app/build/outputs/apk/release/"
+          echo "🐰 Bunny Features Included:"
+          echo "  - Built with ❤️ for My Bunny 🐰"
+          echo "  - Bunny-themed notifications"
+          echo "  - No debug panels (production ready)"
+          echo "  - No special events testing panel"
           echo ""
-          echo "Console Commands Available:"
-          echo "  window.debugInfo()     // Platform info"
-          echo "  window.debugStorage()  // Storage inspection"
-          echo "  window.testConfetti()  // Visual effects test"
-          echo ""
-          ls -la android/app/build/outputs/apk/debug/ || echo "APK directory not found"
+          ls -la android/app/build/outputs/apk/release/ || echo "APK directory not found"
