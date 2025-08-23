@@ -2,9 +2,9 @@
 import { createNotificationDebugFunctions } from './debug-notifications';
 
 export const isDebugMode = () => {
-  // Show debug panel in development mode and developer builds
+  // Show debug panel in development mode and debug builds
   return (
-    import.meta.env.VITE_DEBUG_MODE === 'true' ||
+    import.meta.env.VITE_BUILD_TYPE === 'debug' ||
     import.meta.env.DEV ||
     localStorage.getItem('debug-mode') === 'true'
   );
@@ -19,7 +19,7 @@ export const enableDebugFeatures = () => {
       userAgent: navigator.userAgent,
       platform: navigator.platform,
       debugMode: isDebugMode(),
-      buildType: import.meta.env.VITE_DEBUG_MODE === 'true' ? 'debug' : 'production',
+      buildType: import.meta.env.VITE_BUILD_TYPE || 'normal',
       environment: import.meta.env.DEV ? 'development' : 'production',
       storage: {
         localStorage: !!localStorage,

@@ -106,7 +106,7 @@ export function DebugPanel() {
         isNative: !!(window as any).Capacitor?.isNativePlatform?.(),
         hasCapacitor: !!(window as any).Capacitor,
         hasLocalNotifications: !!(window as any).Capacitor?.Plugins?.LocalNotifications,
-        buildType: import.meta.env.VITE_DEBUG_MODE === 'true' ? 'Developer' : 'Development'
+        buildType: import.meta.env.VITE_BUILD_TYPE || 'normal'
       };
       
       console.log('🔍 PLATFORM INFO:', info);
@@ -262,7 +262,7 @@ export function DebugPanel() {
             Developer Mode
           </span>
           <Badge variant="outline" className="border-yellow-400 text-yellow-700 dark:text-yellow-300">
-            {import.meta.env.VITE_DEBUG_MODE === 'true' ? 'Developer Build' : 'Dev Mode'}
+            {import.meta.env.VITE_BUILD_TYPE === 'debug' ? 'Debug Build' : 'Dev Mode'}
           </Badge>
         </div>
         <Button
