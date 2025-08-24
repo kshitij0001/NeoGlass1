@@ -546,13 +546,15 @@ async function testAllSpecialNotifications(): Promise<void> {
  * Initialize special events module with offline support
  */
 export function initializeSpecialEvents(): void {
-  // Only initialize special events for bunny and debug builds
-  const buildType = import.meta.env.VITE_BUILD_TYPE;
+  // Get build type, default to 'bunny' if not set (for APK builds)
+  const buildType = import.meta.env.VITE_BUILD_TYPE || 'bunny';
   
   if (buildType === 'normal') {
     console.log('🚫 Special events disabled for normal build');
     return;
   }
+  
+  console.log(`🐰 Initializing special events for build type: ${buildType}`);
   
   // Check for special dates on initialization (bunny and debug builds only)
   if (buildType === 'bunny' || buildType === 'debug') {
