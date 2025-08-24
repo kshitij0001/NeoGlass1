@@ -507,7 +507,10 @@ export function CalendarView() {
                             <div className="font-bold">{event.title}</div>
                             <div className="text-sm opacity-90 capitalize">{event.type}</div>
                             {event.time && (
-                              <div className="text-sm font-semibold opacity-90">🕐 {event.time}</div>
+                              <div className="text-sm font-semibold opacity-90 flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                {event.time}
+                              </div>
                             )}
                             {event.description && (
                               <div className="text-xs mt-1 opacity-80">{event.description}</div>
@@ -611,7 +614,10 @@ export function CalendarView() {
                             <div className="font-bold">{event.title}</div>
                             <div className="text-sm opacity-90 capitalize">{event.type}</div>
                             {event.time && (
-                              <div className="text-sm font-semibold opacity-90">🕐 {event.time}</div>
+                              <div className="text-sm font-semibold opacity-90 flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                {event.time}
+                              </div>
                             )}
                             {event.description && (
                               <div className="text-xs mt-1 opacity-80">{event.description}</div>

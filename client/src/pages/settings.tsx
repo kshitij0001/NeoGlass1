@@ -536,7 +536,6 @@ export default function Settings() {
               <p><strong>NEET 2026 Study Companion</strong></p>
               <p>Version {import.meta.env.VITE_BUILD_TYPE === 'bunny' ? '0.7.15' : 
                         import.meta.env.VITE_BUILD_TYPE === 'debug' ? '0.8.0-dev' : '1.0.0'}</p>
-              <p className="text-xs text-red-500">DEBUG: VITE_BUILD_TYPE = "{import.meta.env.VITE_BUILD_TYPE || 'undefined'}"</p>
               {import.meta.env.VITE_BUILD_TYPE === 'bunny' && (
                 <p>Built with ❤️ for My Bunny 🐰</p>
               )}
